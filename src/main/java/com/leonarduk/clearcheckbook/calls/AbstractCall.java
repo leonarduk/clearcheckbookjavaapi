@@ -146,6 +146,9 @@ abstract public class AbstractCall<U extends AbstractDataType> {
 			}
 			_logger.debug("get: " + jsonString + " -> " + list + " -> "
 					+ returnedList);
+		} catch (JsonMappingException e) {
+			_logger.warn("No values returned");
+			return returnedList;
 		} catch (IOException e) {
 			_logger.error("getAll : Failed to bring back values", e);
 			throw new ClearcheckbookException(
