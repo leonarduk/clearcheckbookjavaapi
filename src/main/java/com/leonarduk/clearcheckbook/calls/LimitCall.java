@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.leonarduk.clearcheckbook.ClearCheckBookConnection;
 import com.leonarduk.clearcheckbook.ClearcheckbookException;
 import com.leonarduk.clearcheckbook.dto.LimitDataType;
 import com.leonarduk.clearcheckbook.dto.ParsedNameValuePair;
@@ -11,14 +12,14 @@ import com.leonarduk.clearcheckbook.dto.ParsedNameValuePair;
 /**
  * 
  * 
- *
- * @author 	Stephen Leonard
- * @since	30 Jan 2014
- *
- * @version	$Author::           $:  Author of last commit
- * @version $Rev::              $:  Revision of last commit
- * @version $Date::             $:  Date of last commit
- *
+ * 
+ * @author Stephen Leonard
+ * @since 30 Jan 2014
+ * 
+ * @version $Author:: $: Author of last commit
+ * @version $Rev:: $: Revision of last commit
+ * @version $Date:: $: Date of last commit
+ * 
  */
 public class LimitCall extends AbstractCall<LimitDataType> {
 
@@ -26,8 +27,8 @@ public class LimitCall extends AbstractCall<LimitDataType> {
 
 	public static final String TYPE = "limit";
 
-	public LimitCall(String username, String password) {
-		super(TYPE, username, password);
+	public LimitCall(ClearCheckBookConnection connection) {
+		super(TYPE, connection);
 	}
 
 	@Override

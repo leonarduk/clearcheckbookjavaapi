@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.leonarduk.clearcheckbook.ClearCheckBookConnectionTest;
 import com.leonarduk.clearcheckbook.ClearcheckbookException;
 import com.leonarduk.clearcheckbook.dto.PremiumDataType;
 
@@ -18,9 +19,8 @@ public class PremiumCallTest {
 
 	@Before
 	public void setUp() throws Exception {
-		String username = "unittest_luk";
-		String password = "unittest_luk";
-		this.call = new PremiumCall(username, password);
+		this.call = new PremiumCall(
+				ClearCheckBookConnectionTest.getTestConnection());
 
 	}
 

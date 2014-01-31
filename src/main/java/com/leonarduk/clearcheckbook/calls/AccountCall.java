@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.leonarduk.clearcheckbook.ClearCheckBookConnection;
 import com.leonarduk.clearcheckbook.ClearcheckbookException;
 import com.leonarduk.clearcheckbook.dto.AbstractDataType;
 import com.leonarduk.clearcheckbook.dto.AccountDataType;
@@ -15,8 +16,8 @@ public class AccountCall extends AbstractCall<AccountDataType> {
 
 	public static final String TYPE = "account";
 
-	public AccountCall(String username, String password) {
-		super(TYPE, username, password);
+	public AccountCall(ClearCheckBookConnection connection) {
+		super(TYPE, connection);
 	}
 
 	/**

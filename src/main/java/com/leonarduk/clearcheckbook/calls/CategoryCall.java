@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.leonarduk.clearcheckbook.ClearCheckBookConnection;
 import com.leonarduk.clearcheckbook.ClearcheckbookException;
 import com.leonarduk.clearcheckbook.dto.AbstractDataType;
 import com.leonarduk.clearcheckbook.dto.CategoryDataType;
@@ -15,8 +16,8 @@ public class CategoryCall extends AbstractCall<CategoryDataType> {
 
 	public static final String TYPE = "category";
 
-	public CategoryCall(String username, String password) {
-		super(TYPE, "categories", username, password);
+	public CategoryCall(ClearCheckBookConnection connection) {
+		super(TYPE, "categories", connection);
 	}
 
 	/**
@@ -40,7 +41,8 @@ public class CategoryCall extends AbstractCall<CategoryDataType> {
 	 * @return
 	 * @throws ClearcheckbookException
 	 */
-	public boolean delete(ParsedNameValuePair id) throws ClearcheckbookException {
+	public boolean delete(ParsedNameValuePair id)
+			throws ClearcheckbookException {
 		boolean delete = super.delete(id);
 		_logger.debug("edit: OK?" + delete + " " + id);
 		return delete;

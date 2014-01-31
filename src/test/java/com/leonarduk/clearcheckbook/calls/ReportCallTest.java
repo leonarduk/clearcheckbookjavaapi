@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.leonarduk.clearcheckbook.ClearCheckBookConnectionTest;
 import com.leonarduk.clearcheckbook.ClearcheckbookException;
 import com.leonarduk.clearcheckbook.dto.ReportDataType;
 
@@ -21,9 +22,8 @@ public class ReportCallTest {
 
 	@Before
 	public void setUp() throws Exception {
-		String username = "unittest_luk";
-		String password = "unittest_luk";
-		this.call = new ReportCall(username, password);
+		this.call = new ReportCall(
+				ClearCheckBookConnectionTest.getTestConnection());
 
 	}
 

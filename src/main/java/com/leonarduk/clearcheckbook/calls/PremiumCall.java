@@ -2,6 +2,7 @@ package com.leonarduk.clearcheckbook.calls;
 
 import org.apache.log4j.Logger;
 
+import com.leonarduk.clearcheckbook.ClearCheckBookConnection;
 import com.leonarduk.clearcheckbook.ClearcheckbookException;
 import com.leonarduk.clearcheckbook.dto.PremiumDataType;
 
@@ -11,8 +12,8 @@ public class PremiumCall extends AbstractCall<PremiumDataType> {
 
 	public static final String TYPE = "premium";
 
-	public PremiumCall(String username, String password) {
-		super(TYPE, username, password);
+	public PremiumCall(ClearCheckBookConnection connection) {
+		super(TYPE, connection);
 	}
 
 	@Override

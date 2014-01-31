@@ -12,13 +12,11 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 
-import com.gargoylesoftware.htmlunit.HttpMethod;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.leonarduk.clearcheckbook.ClearCheckBookConnection;
 import com.leonarduk.clearcheckbook.ClearcheckbookException;
 import com.leonarduk.clearcheckbook.dto.AbstractDataType;
 import com.leonarduk.clearcheckbook.dto.DataTypeFactory;
 import com.leonarduk.clearcheckbook.dto.ParsedNameValuePair;
-import com.leonarduk.utils.HtmlUnitUtils;
 
 /**
  * Abstract template class to hold the main processing shared by the API calls.
@@ -39,22 +37,19 @@ abstract public class AbstractCall<U extends AbstractDataType> {
 
 	final protected String url;
 	final protected String plurallUrl;
-	final private String password;
-	final private String userName;
-	public final String baseurl = "https://www.clearcheckbook.com/api/";
+	private ClearCheckBookConnection connection;
 
 	private static final Logger _logger = Logger.getLogger(AbstractCall.class);
 
-	protected AbstractCall(String url, String pluralUrl, String userName,
-			String password) {
+	protected AbstractCall(String url, String pluralUrl,
+			ClearCheckBookConnection connection) {
 		this.url = url;
 		this.plurallUrl = pluralUrl;
-		this.userName = userName;
-		this.password = password;
+		this.connection = connection;
 	}
 
-	protected AbstractCall(String url, String userName, String password) {
-		this(url, url + "s", userName, password);
+	protected AbstractCall(String url, ClearCheckBookConnection connection) {
+		this(url, url + "s", connection);
 	}
 
 	/**
@@ -67,7 +62,7 @@ abstract public class AbstractCall<U extends AbstractDataType> {
 	 */
 	protected U get(ParsedNameValuePair id) throws ClearcheckbookException {
 		try {
-			String jsonString = getPage(url, id);
+			String jsonString = this.getConnection().getPage(url, id);
 
 			U dataType = getCore(jsonString);
 			if (null == dataType.getIdParameter().getValue()) {
@@ -82,7 +77,7 @@ abstract public class AbstractCall<U extends AbstractDataType> {
 
 	protected U get() throws ClearcheckbookException {
 		try {
-			String jsonString = getPage(url);
+			String jsonString = this.getConnection().getPage(url);
 			return getCore(jsonString);
 		} catch (IOException e) {
 			throw new ClearcheckbookException("Failed to get " + this.url, e);
@@ -131,7 +126,8 @@ abstract public class AbstractCall<U extends AbstractDataType> {
 			throws ClearcheckbookException {
 		List<U> returnedList = new ArrayList<>();
 		try {
-			String jsonString = getPage(plurallUrl, parameters);
+			String jsonString = this.getConnection().getPage(plurallUrl,
+					parameters);
 			_logger.debug("get: " + jsonString);
 
 			ObjectMapper mapper = new ObjectMapper();
@@ -171,7 +167,8 @@ abstract public class AbstractCall<U extends AbstractDataType> {
 		AbstractDataType dataType = (AbstractDataType) input;
 		String returnString;
 		try {
-			returnString = postPage(this.url, dataType.getInsertParameters());
+			returnString = this.getConnection().postPage(this.url,
+					dataType.getInsertParameters());
 
 			Long id = Long.valueOf(returnString);
 			_logger.info("insert : created " + id);
@@ -194,7 +191,8 @@ abstract public class AbstractCall<U extends AbstractDataType> {
 		AbstractDataType dataType = (AbstractDataType) input;
 		String returnString;
 		try {
-			returnString = putPage(this.url, dataType.getEditParameters());
+			returnString = this.getConnection().putPage(this.url,
+					dataType.getEditParameters());
 			_logger.debug("returned: " + returnString);
 			boolean ok = Boolean.valueOf(returnString);
 			_logger.info("insert : edited " + ok);
@@ -210,11 +208,12 @@ abstract public class AbstractCall<U extends AbstractDataType> {
 	 * @return
 	 * @throws ClearcheckbookException
 	 */
-	protected boolean delete(ParsedNameValuePair id) throws ClearcheckbookException {
+	protected boolean delete(ParsedNameValuePair id)
+			throws ClearcheckbookException {
 		_logger.debug("delete: " + id.getValue());
 		String returnString;
 		try {
-			returnString = deletePage(this.url, id);
+			returnString = this.getConnection().deletePage(this.url, id);
 			boolean ok = Boolean.valueOf(returnString);
 			_logger.info("insert : edited " + ok);
 			return ok;
@@ -232,81 +231,10 @@ abstract public class AbstractCall<U extends AbstractDataType> {
 	}
 
 	/**
-	 * 
-	 * @param url
-	 * @param parameters
-	 * @return
-	 * @throws IOException
+	 * @return the connection
 	 */
-	protected String getPage(String url, ParsedNameValuePair... parameters)
-			throws IOException {
-		_logger.debug("URL:" + getFullUrl(url));
-		HtmlPage page = HtmlUnitUtils.getPage(getFullUrl(url), HttpMethod.GET,
-				userName, password, parameters);
-		return page.asText();
+	public ClearCheckBookConnection getConnection() {
+		return connection;
 	}
 
-	/**
-	 * 
-	 * @param url
-	 * @param parameters
-	 * @return
-	 * @throws IOException
-	 */
-	protected String postPage(String url, ParsedNameValuePair... parameters)
-			throws IOException {
-		String fullPath = getFullUrl(url);
-		_logger.debug("URL:" + fullPath + " " + parameters);
-		HtmlPage page = HtmlUnitUtils.getPage(fullPath, HttpMethod.POST,
-				userName, password, parameters);
-		return page.asText();
-	}
-
-	/**
-	 * 
-	 * @param url
-	 * @return
-	 */
-	private String getFullUrl(String url) {
-		String fullPath = "https://" + userName + ":" + password
-				+ "@www.clearcheckbook.com/api/" + url;
-		return fullPath;
-	}
-
-	/**
-	 * 
-	 * @param url
-	 * @param parameters
-	 * @return
-	 * @throws IOException
-	 */
-	protected String putPage(String url, ParsedNameValuePair... parameters)
-			throws IOException {
-		url += "?";
-		for (int i = 0; i < parameters.length; i++) {
-			url += parameters[i].getName() + "=" + parameters[i].getValue()
-					+ "&";
-		}
-		String fullUrl = getFullUrl(url);
-
-		_logger.debug("URL:" + fullUrl);
-		HtmlPage page = HtmlUnitUtils.getPage(fullUrl, HttpMethod.PUT,
-				userName, password, parameters);
-		return page.asText();
-	}
-
-	/**
-	 * 
-	 * @param url
-	 * @param parameters
-	 * @return
-	 * @throws IOException
-	 */
-	protected String deletePage(String url, ParsedNameValuePair... parameters)
-			throws IOException {
-		_logger.debug("URL:" + this.baseurl + url);
-		HtmlPage page = HtmlUnitUtils.getPage(this.baseurl + url,
-				HttpMethod.DELETE, userName, password, parameters);
-		return page.asText();
-	}
 }

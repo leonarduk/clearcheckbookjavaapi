@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.leonarduk.clearcheckbook.ClearCheckBookConnection;
 import com.leonarduk.clearcheckbook.ClearcheckbookException;
 import com.leonarduk.clearcheckbook.dto.AbstractDataType;
 import com.leonarduk.clearcheckbook.dto.ParsedNameValuePair;
@@ -17,8 +18,8 @@ public class TransactionCall extends AbstractCall<TransactionDataType> {
 
 	public static final String TYPE = "transaction";
 
-	public TransactionCall(String username, String password) {
-		super(TYPE, username, password);
+	public TransactionCall(ClearCheckBookConnection connection) {
+		super(TYPE, connection);
 	}
 
 	/**
@@ -106,7 +107,8 @@ public class TransactionCall extends AbstractCall<TransactionDataType> {
 	 * @Override {@link AbstractCall#get(ParsedNameValuePair)}
 	 * @return transaction
 	 */
-	public TransactionDataType get(ParsedNameValuePair id) throws ClearcheckbookException {
+	public TransactionDataType get(ParsedNameValuePair id)
+			throws ClearcheckbookException {
 		TransactionDataType transactionDataType = super.get(id);
 		_logger.debug("get: " + transactionDataType);
 		return transactionDataType;
@@ -224,7 +226,8 @@ public class TransactionCall extends AbstractCall<TransactionDataType> {
 	 * @throws ClearcheckbookException
 	 */
 	@Override
-	public boolean delete(ParsedNameValuePair input) throws ClearcheckbookException {
+	public boolean delete(ParsedNameValuePair input)
+			throws ClearcheckbookException {
 		return super.delete(input);
 	}
 
@@ -252,9 +255,10 @@ public class TransactionCall extends AbstractCall<TransactionDataType> {
 	public boolean editJive(ParsedNameValuePair id, boolean jiveStatus)
 			throws ClearcheckbookException {
 		String status = (jiveStatus) ? "1" : "0";
-		ParsedNameValuePair statusParameter = new ParsedNameValuePair("status", status);
+		ParsedNameValuePair statusParameter = new ParsedNameValuePair("status",
+				status);
 		try {
-			String exitStatus = putPage("jive", new ParsedNameValuePair[] { id,
+			String exitStatus = this.getConnection().putPage("jive", new ParsedNameValuePair[] { id,
 					statusParameter });
 			return Boolean.valueOf(exitStatus);
 		} catch (IOException e) {

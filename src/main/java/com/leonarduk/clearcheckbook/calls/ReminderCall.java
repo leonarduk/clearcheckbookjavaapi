@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.leonarduk.clearcheckbook.ClearCheckBookConnection;
 import com.leonarduk.clearcheckbook.ClearcheckbookException;
 import com.leonarduk.clearcheckbook.dto.ParsedNameValuePair;
 import com.leonarduk.clearcheckbook.dto.ReminderDataType;
@@ -14,8 +15,8 @@ public class ReminderCall extends AbstractCall<ReminderDataType> {
 
 	public static final String TYPE = "reminder";
 
-	public ReminderCall(String username, String password) {
-		super(TYPE, username, password);
+	public ReminderCall(ClearCheckBookConnection connection) {
+		super(TYPE, connection);
 	}
 
 	@Override

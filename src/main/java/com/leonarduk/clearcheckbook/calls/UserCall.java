@@ -4,10 +4,9 @@ import java.io.IOException;
 
 import org.apache.log4j.Logger;
 
-import com.gargoylesoftware.htmlunit.HttpMethod;
+import com.leonarduk.clearcheckbook.ClearCheckBookConnection;
 import com.leonarduk.clearcheckbook.ClearcheckbookException;
 import com.leonarduk.clearcheckbook.dto.UserDataType;
-import com.leonarduk.utils.HtmlUnitUtils;
 
 public class UserCall extends AbstractCall<UserDataType> {
 
@@ -15,8 +14,8 @@ public class UserCall extends AbstractCall<UserDataType> {
 
 	public static final String TYPE = "user";
 
-	public UserCall(String username, String password) {
-		super(TYPE, username, password);
+	public UserCall(ClearCheckBookConnection connection) {
+		super(TYPE, connection);
 	}
 
 	/**
@@ -78,8 +77,8 @@ public class UserCall extends AbstractCall<UserDataType> {
 		_logger.debug("insert: " + dataType);
 		String returnString;
 		try {
-			returnString = HtmlUnitUtils.getPage(this.baseurl + url,
-					HttpMethod.POST, dataType.getInsertParameters()).asText();
+			returnString = this.getConnection().postPage(this.url,
+					dataType.getInsertParameters());
 
 			Long id = Long.valueOf(returnString);
 			_logger.info("insert: created id " + id);

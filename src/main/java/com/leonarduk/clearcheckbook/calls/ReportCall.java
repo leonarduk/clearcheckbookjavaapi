@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.leonarduk.clearcheckbook.ClearCheckBookConnection;
 import com.leonarduk.clearcheckbook.ClearcheckbookException;
 import com.leonarduk.clearcheckbook.dto.ParsedNameValuePair;
 import com.leonarduk.clearcheckbook.dto.ReportDataType;
@@ -16,8 +17,8 @@ public class ReportCall extends AbstractCall<ReportDataType> {
 
 	public static final String TYPE = "report";
 
-	public ReportCall(String username, String password) {
-		super(TYPE, username, password);
+	public ReportCall(ClearCheckBookConnection connection) {
+		super(TYPE, connection);
 	}
 
 	/**
@@ -53,11 +54,12 @@ public class ReportCall extends AbstractCall<ReportDataType> {
 	public List<ReportDataType> getAll(Type type, int months, String bgcolor,
 			int height, int width) throws ClearcheckbookException {
 		ParsedNameValuePair[] params = new ParsedNameValuePair[] {
-				new ParsedNameValuePair(Fields.TYPE.name().toLowerCase(), type.name()
-						.toLowerCase()),
+				new ParsedNameValuePair(Fields.TYPE.name().toLowerCase(), type
+						.name().toLowerCase()),
 				new ParsedNameValuePair(Fields.MONTHS.name().toLowerCase(),
 						String.valueOf(months)),
-				new ParsedNameValuePair(Fields.BGCOLOR.name().toLowerCase(), bgcolor),
+				new ParsedNameValuePair(Fields.BGCOLOR.name().toLowerCase(),
+						bgcolor),
 				new ParsedNameValuePair(Fields.HEIGHT.name().toLowerCase(),
 						String.valueOf(height)),
 				new ParsedNameValuePair(Fields.WIDTH.name().toLowerCase(),
@@ -70,8 +72,8 @@ public class ReportCall extends AbstractCall<ReportDataType> {
 	public List<ReportDataType> getAll(Type type, int months)
 			throws ClearcheckbookException {
 		ParsedNameValuePair[] params = new ParsedNameValuePair[] {
-				new ParsedNameValuePair(Fields.TYPE.name().toLowerCase(), type.name()
-						.toLowerCase()),
+				new ParsedNameValuePair(Fields.TYPE.name().toLowerCase(), type
+						.name().toLowerCase()),
 				new ParsedNameValuePair(Fields.MONTHS.name().toLowerCase(),
 						String.valueOf(months)) };
 		List<ReportDataType> all = super.getAll(params);

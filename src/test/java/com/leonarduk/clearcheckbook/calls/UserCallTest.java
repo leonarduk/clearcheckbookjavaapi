@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.leonarduk.clearcheckbook.ClearCheckBookConnectionTest;
 import com.leonarduk.clearcheckbook.ClearcheckbookException;
 import com.leonarduk.clearcheckbook.dto.UserDataType;
 import com.leonarduk.utils.DateUtils;
@@ -20,8 +21,8 @@ public class UserCallTest {
 
 	@Before
 	public void setUp() throws Exception {
-		this.username = "unittest_luk";
-		this.call = new UserCall(username, username);
+		this.call = new UserCall(
+				ClearCheckBookConnectionTest.getTestConnection());
 	}
 
 	@Test
