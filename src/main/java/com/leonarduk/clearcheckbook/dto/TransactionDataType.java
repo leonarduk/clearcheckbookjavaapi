@@ -5,6 +5,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import com.leonarduk.clearcheckbook.ClearcheckbookException;
+import com.leonarduk.clearcheckbook.dto.LimitDataType.Fields;
 
 /**
  * 
@@ -20,8 +21,22 @@ import com.leonarduk.clearcheckbook.ClearcheckbookException;
  */
 public class TransactionDataType extends AbstractDataType {
 
-	enum Fields {
-		ID, DATE, AMOUNT, TRANSACTION_TYPE, DESCRIPTION, ACCOUNT_ID, CATEGORY_ID, JIVE, SPECIALSTATUS, PARENT, RELATED_TRANSFER, FROM_ACCOUNT_ID, TO_ACCOUNT_ID, CHECK_NUM, MEMO, PAYEE, INITIAL_BALANCE
+	/**
+	 * 
+	 * This holds the output fields
+	 */
+	public enum Fields {
+		ID, DATE, AMOUNT, TRANSACTION_TYPE, DESCRIPTION, ACCOUNT_ID, CATEGORY_ID, JIVE, SPECIALSTATUS, PARENT, RELATED_TRANSFER, CHECK_NUM, MEMO, PAYEE, INITIAL_BALANCE;
+	}
+	
+	@Override
+	protected Enum<?>[] getFields() {
+		return Fields.values();
+	}
+
+
+	public enum NonoutputFields {
+		FROM_ACCOUNT_ID, TO_ACCOUNT_ID;
 	}
 
 	public enum Type {
@@ -120,14 +135,14 @@ public class TransactionDataType extends AbstractDataType {
 	}
 
 	public Long getFromAccountId() {
-		return getLongValue(Fields.FROM_ACCOUNT_ID);
+		return getLongValue(NonoutputFields.FROM_ACCOUNT_ID);
 	}
 
 	protected Enum<?>[] getInsertFields() {
-		Fields[] insertFields = new Fields[] { Fields.DATE, Fields.AMOUNT,
+		Enum<?>[] insertFields = new Enum<?>[] { Fields.DATE, Fields.AMOUNT,
 				Fields.TRANSACTION_TYPE, Fields.ACCOUNT_ID, Fields.CATEGORY_ID,
-				Fields.DESCRIPTION, Fields.JIVE, Fields.FROM_ACCOUNT_ID,
-				Fields.TO_ACCOUNT_ID, Fields.CHECK_NUM, Fields.MEMO,
+				Fields.DESCRIPTION, Fields.JIVE, NonoutputFields.FROM_ACCOUNT_ID,
+				NonoutputFields.TO_ACCOUNT_ID, Fields.CHECK_NUM, Fields.MEMO,
 				Fields.PAYEE };
 		return insertFields;
 	}
@@ -145,7 +160,7 @@ public class TransactionDataType extends AbstractDataType {
 	}
 
 	public Long getToAccount() {
-		return getLongValue(Fields.TO_ACCOUNT_ID);
+		return getLongValue(NonoutputFields.TO_ACCOUNT_ID);
 	}
 
 	public Type getTransactionType() throws ClearcheckbookException {
@@ -177,7 +192,7 @@ public class TransactionDataType extends AbstractDataType {
 	}
 
 	public void setFromAccountId(long fromAccountId) {
-		setValue(Fields.FROM_ACCOUNT_ID, fromAccountId);
+		setValue(NonoutputFields.FROM_ACCOUNT_ID, fromAccountId);
 	}
 
 	public void setJive(boolean jive) {
@@ -193,7 +208,7 @@ public class TransactionDataType extends AbstractDataType {
 	}
 
 	public void setToAccountId(long toAccountId) {
-		setValue(Fields.TO_ACCOUNT_ID, toAccountId);
+		setValue(NonoutputFields.TO_ACCOUNT_ID, toAccountId);
 	}
 
 	public void setTransactionType(Type transactionType) {

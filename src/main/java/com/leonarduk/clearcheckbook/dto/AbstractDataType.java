@@ -6,14 +6,24 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import com.leonarduk.clearcheckbook.dto.CategoryDataType.Fields;
+
 abstract public class AbstractDataType {
 
-	public enum Id {
-		ID
+	public enum ControlField {
+		ID, PAGE, LIMIT
 	}
 
 	private static final Logger _logger = Logger
 			.getLogger(AbstractDataType.class);;
+
+	protected String getNonNullValue(Enum<?> fields) {
+		String value = getValue(fields);
+		if (null == value) {
+			return "";
+		}
+		return value;
+	}
 
 	/**
 	 * Helper method for use in get method.
@@ -22,8 +32,18 @@ abstract public class AbstractDataType {
 	 * @return
 	 */
 	public static ParsedNameValuePair getIdParameter(long id) {
-		return new ParsedNameValuePair(Id.ID.name().toLowerCase(),
+		return new ParsedNameValuePair(ControlField.ID.name().toLowerCase(),
 				String.valueOf(id));
+	}
+
+	public static ParsedNameValuePair getLimitParameter(int limit) {
+		return new ParsedNameValuePair(ControlField.LIMIT.name().toLowerCase(),
+				String.valueOf(limit));
+	}
+
+	public static ParsedNameValuePair getPageParameter(int page) {
+		return new ParsedNameValuePair(ControlField.PAGE.name().toLowerCase(),
+				String.valueOf(page));
 	}
 
 	final private Map<String, String> fieldsMap;
@@ -69,12 +89,12 @@ abstract public class AbstractDataType {
 		return getParameters(insertFields);
 	}
 
-	public String getId() {
-		return getIdParameter().getValue();
+	public long getId() {
+		return Long.valueOf(getIdParameter().getValue());
 	}
 
 	public ParsedNameValuePair getIdParameter() {
-		return getNameValuePair(Id.ID);
+		return getNameValuePair(ControlField.ID);
 	}
 
 	public ParsedNameValuePair[] getInsertParameters() {
@@ -155,5 +175,16 @@ abstract public class AbstractDataType {
 	public String toString() {
 		return "AbstractDataType [fieldsMap=" + fieldsMap + "]";
 	}
+
+	public String[] getValues() {
+		Enum<?>[] fields = getFields();
+		String[] values = new String[fields.length];
+		for (int i = 0; i < values.length; i++) {
+			values[i] = getNonNullValue(fields[i]);
+		}
+		return values;
+	}
+
+	abstract protected Enum<?>[] getFields();
 
 }

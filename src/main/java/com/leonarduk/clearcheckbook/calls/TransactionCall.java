@@ -3,11 +3,14 @@ package com.leonarduk.clearcheckbook.calls;
 import java.io.IOException;
 import java.util.List;
 
+import javax.management.RuntimeErrorException;
+
 import org.apache.log4j.Logger;
 
 import com.leonarduk.clearcheckbook.ClearCheckBookConnection;
 import com.leonarduk.clearcheckbook.ClearcheckbookException;
 import com.leonarduk.clearcheckbook.dto.AbstractDataType;
+import com.leonarduk.clearcheckbook.dto.AccountDataType;
 import com.leonarduk.clearcheckbook.dto.ParsedNameValuePair;
 import com.leonarduk.clearcheckbook.dto.TransactionDataType;
 
@@ -67,6 +70,29 @@ public class TransactionCall extends AbstractCall<TransactionDataType> {
 	 */
 	public List<TransactionDataType> getAll() throws ClearcheckbookException {
 		return super.getAll();
+	}
+
+	public List<TransactionDataType> getAll(long accountId)
+			throws ClearcheckbookException {
+		return super.getAll(AccountDataType.getIdParameter(accountId));
+	}
+
+	public List<TransactionDataType> getAll(AccountDataType account)
+			throws ClearcheckbookException {
+		return super.getAll(AccountDataType.getIdParameter(account.getId()));
+	}
+
+	public List<TransactionDataType> getAll(long accountId, int page, int limit)
+			throws ClearcheckbookException {
+		return super.getAll(AccountDataType.getIdParameter(accountId),
+				TransactionDataType.getPageParameter(page),
+				TransactionDataType.getLimitParameter(limit));
+	}
+
+	public List<TransactionDataType> getAll(int page, int limit)
+			throws ClearcheckbookException {
+		return super.getAll(TransactionDataType.getPageParameter(page),
+				TransactionDataType.getLimitParameter(limit));
 	}
 
 	/**
@@ -258,8 +284,8 @@ public class TransactionCall extends AbstractCall<TransactionDataType> {
 		ParsedNameValuePair statusParameter = new ParsedNameValuePair("status",
 				status);
 		try {
-			String exitStatus = this.getConnection().putPage("jive", new ParsedNameValuePair[] { id,
-					statusParameter });
+			String exitStatus = this.getConnection().putPage("jive",
+					new ParsedNameValuePair[] { id, statusParameter });
 			return Boolean.valueOf(exitStatus);
 		} catch (IOException e) {
 			throw new ClearcheckbookException(

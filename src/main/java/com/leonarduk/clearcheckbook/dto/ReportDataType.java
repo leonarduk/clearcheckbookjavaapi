@@ -2,6 +2,8 @@ package com.leonarduk.clearcheckbook.dto;
 
 import java.util.Map;
 
+import com.leonarduk.clearcheckbook.dto.LimitDataType.Fields;
+
 /**
  * 
  * 
@@ -18,6 +20,11 @@ public class ReportDataType extends AbstractDataType {
 
 	public enum Fields {
 		TYPE, MONTHS, BGCOLOR, HEIGHT, WIDTH, LABEL, URL
+	}
+
+	@Override
+	protected Enum<?>[] getFields() {
+		return Fields.values();
 	}
 
 	public enum Type {

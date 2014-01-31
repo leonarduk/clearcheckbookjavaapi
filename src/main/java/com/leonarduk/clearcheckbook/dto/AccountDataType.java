@@ -23,7 +23,7 @@ public class AccountDataType extends AbstractDataType {
 	private static final Logger _logger = Logger
 			.getLogger(AccountDataType.class);
 
-	enum Fields {
+	public enum Fields {
 		ID, NAME, TYPE_ID, DEPOSIT, JIVE_DEPOSIT, WITHDRAWAL, JIVE_WITHDRAWAL, INITIAL_BALANCE
 	}
 
@@ -148,6 +148,11 @@ public class AccountDataType extends AbstractDataType {
 
 	public void setJiveWithdrawal(Double value) {
 		setValue(Fields.JIVE_WITHDRAWAL, value);
+	}
+
+	@Override
+	protected Enum<?>[] getFields() {
+		return Fields.values();
 	}
 
 }

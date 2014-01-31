@@ -4,6 +4,8 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import com.leonarduk.clearcheckbook.dto.LimitDataType.Fields;
+
 /**
  * 
  * 
@@ -20,6 +22,11 @@ public class UserDataType extends AbstractDataType {
 
 	enum Fields {
 		EMAIL, PASSWORD, USERNAME, APP
+	}
+
+	@Override
+	protected Enum<?>[] getFields() {
+		return Fields.values();
 	}
 
 	private static final Logger _logger = Logger.getLogger(UserDataType.class);

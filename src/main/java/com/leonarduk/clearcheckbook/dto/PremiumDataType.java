@@ -2,6 +2,8 @@ package com.leonarduk.clearcheckbook.dto;
 
 import java.util.Map;
 
+import com.leonarduk.clearcheckbook.dto.LimitDataType.Fields;
+
 /**
  * 
  * 
@@ -18,6 +20,11 @@ public class PremiumDataType extends AbstractDataType {
 
 	enum Fields {
 		MEMO, STATUS, PAYEE, CHECK_NUM
+	}
+
+	@Override
+	protected Enum<?>[] getFields() {
+		return Fields.values();
 	}
 
 	public PremiumDataType(Map<String, String> map) {

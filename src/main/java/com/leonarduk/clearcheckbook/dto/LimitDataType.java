@@ -23,8 +23,13 @@ public class LimitDataType extends AbstractDataType {
 
 	private static final Logger _logger = Logger.getLogger(LimitDataType.class);
 
-	enum Fields {
+	public enum Fields {
 		ID, NAME, AMOUNT, ACCOUNT_ID, CATEGORY_ID, SPENT, ROLLOVER, RESET_DAY, TRANSFER, DEPOSIT, DURATION, START_DATE, THIS_START_DATE, THIS_END_DATE, ORIGINAL_LIMIT
+	}
+
+	@Override
+	protected Enum<?>[] getFields() {
+		return Fields.values();
 	}
 
 	public enum Duration {

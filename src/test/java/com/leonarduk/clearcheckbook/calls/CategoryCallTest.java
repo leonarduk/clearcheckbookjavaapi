@@ -44,7 +44,7 @@ public class CategoryCallTest {
 		String name = "Insert " + DateUtils.getNowyyyyMMddHHmm();
 		try {
 			List<CategoryDataType> categorys = this.call.getAll();
-			String parent = categorys.get(0).getId();
+			long parent = categorys.get(0).getId();
 			CategoryDataType input = CategoryDataType.create(name, parent);
 			String id = this.call.insert(input);
 			_logger.info("inserted " + id + ":" + input);
@@ -88,7 +88,7 @@ public class CategoryCallTest {
 	@Test
 	public void testCategoryDataType() {
 		String name = "Insert " + DateUtils.getNowyyyyMMddHHmm();
-		String parent = "1";
+		Long parent = Long.valueOf(1);
 		CategoryDataType input = CategoryDataType.create(name, parent);
 
 		_logger.info(input);
@@ -99,7 +99,7 @@ public class CategoryCallTest {
 		assertTrue("Name not set: " + newName + " vs " + input.getName(),
 				newName.equals(input.getName()));
 
-		String newparent = "-1";
+		Long newparent = Long.valueOf(-1);
 		input.setParent(newparent);
 		assertTrue("Type not set", newparent.equals(input.getParent()));
 	}
