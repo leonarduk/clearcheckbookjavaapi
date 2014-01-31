@@ -26,7 +26,9 @@ public class ReminderCall extends AbstractCall<ReminderDataType> {
 	@Override
 	public ReminderDataType get(ParsedNameValuePair id)
 			throws ClearcheckbookException {
-		return super.get(id);
+		ReminderDataType reminderDataType = super.get(id);
+		_logger.debug("get: " + reminderDataType);
+		return reminderDataType;
 	}
 
 	@Override
@@ -40,7 +42,8 @@ public class ReminderCall extends AbstractCall<ReminderDataType> {
 	}
 
 	@Override
-	public boolean delete(ParsedNameValuePair input) throws ClearcheckbookException {
+	public boolean delete(ParsedNameValuePair input)
+			throws ClearcheckbookException {
 		return super.delete(input);
 	}
 
