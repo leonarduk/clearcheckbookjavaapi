@@ -27,8 +27,13 @@ public class LimitCall extends AbstractCall<LimitDataType> {
 
 	public static final String TYPE = "limit";
 
+	@Override
+	protected String getUrlSuffix() {
+		return TYPE;
+	}
+
 	public LimitCall(ClearCheckBookConnection connection) {
-		super(TYPE, connection);
+		super(connection, LimitDataType.class);
 	}
 
 	@Override

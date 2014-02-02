@@ -5,7 +5,6 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import com.leonarduk.clearcheckbook.ClearcheckbookException;
-import com.leonarduk.clearcheckbook.dto.LimitDataType.Fields;
 
 /**
  * 
@@ -19,7 +18,7 @@ import com.leonarduk.clearcheckbook.dto.LimitDataType.Fields;
  * @version $Date:: $: Date of last commit
  * 
  */
-public class TransactionDataType extends AbstractDataType {
+public class TransactionDataType extends AbstractDataType<TransactionDataType> {
 
 	/**
 	 * 

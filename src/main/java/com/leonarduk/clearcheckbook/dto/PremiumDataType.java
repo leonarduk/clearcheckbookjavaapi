@@ -2,8 +2,6 @@ package com.leonarduk.clearcheckbook.dto;
 
 import java.util.Map;
 
-import com.leonarduk.clearcheckbook.dto.LimitDataType.Fields;
-
 /**
  * 
  * 
@@ -16,7 +14,7 @@ import com.leonarduk.clearcheckbook.dto.LimitDataType.Fields;
  * @version $Date:: $: Date of last commit
  * 
  */
-public class PremiumDataType extends AbstractDataType {
+public class PremiumDataType extends AbstractDataType<PremiumDataType> {
 
 	enum Fields {
 		MEMO, STATUS, PAYEE, CHECK_NUM

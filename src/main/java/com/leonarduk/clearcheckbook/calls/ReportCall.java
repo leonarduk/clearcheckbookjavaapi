@@ -18,7 +18,12 @@ public class ReportCall extends AbstractCall<ReportDataType> {
 	public static final String TYPE = "report";
 
 	public ReportCall(ClearCheckBookConnection connection) {
-		super(TYPE, connection);
+		super(connection, ReportDataType.class);
+	}
+
+	@Override
+	protected String getUrlSuffix() {
+		return TYPE;
 	}
 
 	/**

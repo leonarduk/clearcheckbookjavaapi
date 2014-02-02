@@ -18,7 +18,7 @@ import com.leonarduk.clearcheckbook.ClearcheckbookException;
  * @version $Date:: $: Date of last commit
  * 
  */
-public class AccountDataType extends AbstractDataType {
+public class AccountDataType extends AbstractDataType<AccountDataType> {
 
 	private static final Logger _logger = Logger
 			.getLogger(AccountDataType.class);

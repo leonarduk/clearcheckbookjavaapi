@@ -5,8 +5,6 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import com.leonarduk.clearcheckbook.dto.AccountDataType.Fields;
-
 /**
  * 
  * 
@@ -19,7 +17,7 @@ import com.leonarduk.clearcheckbook.dto.AccountDataType.Fields;
  * @version $Date:: $: Date of last commit
  * 
  */
-public class CategoryDataType extends AbstractDataType {
+public class CategoryDataType extends AbstractDataType<CategoryDataType> {
 
 	private static final Logger _logger = Logger
 			.getLogger(CategoryDataType.class);

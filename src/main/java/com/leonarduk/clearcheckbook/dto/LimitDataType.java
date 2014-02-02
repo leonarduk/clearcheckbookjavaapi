@@ -19,7 +19,7 @@ import com.leonarduk.clearcheckbook.dto.AccountDataType.Type;
  * @version $Date:: $: Date of last commit
  * 
  */
-public class LimitDataType extends AbstractDataType {
+public class LimitDataType extends AbstractDataType<LimitDataType> {
 
 	private static final Logger _logger = Logger.getLogger(LimitDataType.class);
 
@@ -86,9 +86,8 @@ public class LimitDataType extends AbstractDataType {
 	}
 
 	public static LimitDataType create(long accountId, long categoryId,
-			int amount, Duration duration, int reset_day,
-			String start_date, boolean rollover, boolean transfer,
-			boolean deposit) {
+			int amount, Duration duration, int reset_day, String start_date,
+			boolean rollover, boolean transfer, boolean deposit) {
 		LimitDataType limitDataType = new LimitDataType();
 		limitDataType.setAccountId(accountId);
 		limitDataType.setCategoryId(categoryId);

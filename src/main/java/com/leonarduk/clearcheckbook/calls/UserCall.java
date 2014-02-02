@@ -15,7 +15,12 @@ public class UserCall extends AbstractCall<UserDataType> {
 	public static final String TYPE = "user";
 
 	public UserCall(ClearCheckBookConnection connection) {
-		super(TYPE, connection);
+		super(connection, UserDataType.class);
+	}
+
+	@Override
+	protected String getUrlSuffix() {
+		return TYPE;
 	}
 
 	/**
@@ -77,7 +82,7 @@ public class UserCall extends AbstractCall<UserDataType> {
 		_logger.debug("insert: " + dataType);
 		String returnString;
 		try {
-			returnString = this.getConnection().postPage(this.url,
+			returnString = this.getConnection().postPage(getUrlSuffix(),
 					dataType.getInsertParameters());
 
 			Long id = Long.valueOf(returnString);

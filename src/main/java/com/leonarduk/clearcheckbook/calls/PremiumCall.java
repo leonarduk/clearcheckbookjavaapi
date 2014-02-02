@@ -13,7 +13,12 @@ public class PremiumCall extends AbstractCall<PremiumDataType> {
 	public static final String TYPE = "premium";
 
 	public PremiumCall(ClearCheckBookConnection connection) {
-		super(TYPE, connection);
+		super(connection, PremiumDataType.class);
+	}
+
+	@Override
+	protected String getUrlSuffix() {
+		return TYPE;
 	}
 
 	@Override

@@ -6,9 +6,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import com.leonarduk.clearcheckbook.dto.CategoryDataType.Fields;
-
-abstract public class AbstractDataType {
+abstract public class AbstractDataType<U> {
 
 	public enum ControlField {
 		ID, PAGE, LIMIT
@@ -24,6 +22,7 @@ abstract public class AbstractDataType {
 		}
 		return value;
 	}
+
 
 	/**
 	 * Helper method for use in get method.
@@ -47,6 +46,7 @@ abstract public class AbstractDataType {
 	}
 
 	final private Map<String, String> fieldsMap;
+	private boolean toBeDeleted = false;
 
 	protected AbstractDataType() {
 		this.fieldsMap = new HashMap<String, String>();
@@ -95,6 +95,10 @@ abstract public class AbstractDataType {
 
 	public ParsedNameValuePair getIdParameter() {
 		return getNameValuePair(ControlField.ID);
+	}
+
+	public boolean toBeDeleted() {
+		return this.toBeDeleted;
 	}
 
 	public ParsedNameValuePair[] getInsertParameters() {

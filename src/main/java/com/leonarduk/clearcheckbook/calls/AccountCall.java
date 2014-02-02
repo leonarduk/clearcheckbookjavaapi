@@ -16,8 +16,13 @@ public class AccountCall extends AbstractCall<AccountDataType> {
 
 	public static final String TYPE = "account";
 
+	@Override
+	protected String getUrlSuffix() {
+		return TYPE;
+	}
+
 	public AccountCall(ClearCheckBookConnection connection) {
-		super(TYPE, connection);
+		super(connection, AccountDataType.class);
 	}
 
 	/**
@@ -89,7 +94,8 @@ public class AccountCall extends AbstractCall<AccountDataType> {
 	 * @return AccountDataType
 	 */
 	@Override
-	public AccountDataType get(ParsedNameValuePair id) throws ClearcheckbookException {
+	public AccountDataType get(ParsedNameValuePair id)
+			throws ClearcheckbookException {
 		AccountDataType accountDataType = super.get(id);
 		_logger.debug("get: " + id + " -> " + accountDataType);
 		return accountDataType;
@@ -146,11 +152,12 @@ public class AccountCall extends AbstractCall<AccountDataType> {
 	 * true/false returns true on a successful edit or false on fail.
 	 * 
 	 * @Override {@link AbstractCall#edit(AbstractDataType)}
-	 * @param AccountDataType input
+	 * @param AccountDataType
+	 *            input
 	 * @return boolean - ok
-	 * @throws ClearcheckbookException 
+	 * @throws ClearcheckbookException
 	 */
-	
+
 	public boolean edit(AccountDataType input) throws ClearcheckbookException {
 		return super.edit(input);
 	}
@@ -172,12 +179,13 @@ public class AccountCall extends AbstractCall<AccountDataType> {
 	 * true / false returns true upon successfull delete or false/null on fail
 	 * 
 	 * @Override {@link AbstractCall#delete(ParsedNameValuePair)}
-	 * @param ParsedNameValuePair idParameter
+	 * @param ParsedNameValuePair
+	 *            idParameter
 	 * @return boolean - ok
-	 * @throws ClearcheckbookException 
+	 * @throws ClearcheckbookException
 	 */
-	public boolean delete(ParsedNameValuePair idParameter) throws ClearcheckbookException {
+	public boolean delete(ParsedNameValuePair idParameter)
+			throws ClearcheckbookException {
 		return super.delete(idParameter);
 	}
-
 }

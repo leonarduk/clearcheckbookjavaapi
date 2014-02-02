@@ -17,7 +17,17 @@ public class CategoryCall extends AbstractCall<CategoryDataType> {
 	public static final String TYPE = "category";
 
 	public CategoryCall(ClearCheckBookConnection connection) {
-		super(TYPE, "categories", connection);
+		super(connection, CategoryDataType.class);
+	}
+
+	@Override
+	protected String getUrlSuffix() {
+		return TYPE;
+	}
+
+	@Override
+	protected String getPluralUrl() {
+		return "categories";
 	}
 
 	/**

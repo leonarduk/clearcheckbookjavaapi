@@ -5,7 +5,6 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import com.leonarduk.clearcheckbook.ClearcheckbookException;
-import com.leonarduk.clearcheckbook.dto.LimitDataType.Fields;
 
 /**
  * 
@@ -19,7 +18,7 @@ import com.leonarduk.clearcheckbook.dto.LimitDataType.Fields;
  * @version $Date:: $: Date of last commit
  * 
  */
-public class ReminderDataType extends AbstractDataType {
+public class ReminderDataType extends AbstractDataType<ReminderDataType> {
 
 	public enum Fields {
 		ID, TITLE, START_DATE, END_DATE, NOTIFY, NOTIFY_TIME, REPEAT, REPEAT_EVERY_NUM, REPEAT_EVERY, FLOATS, FLOATS_EVERY_NUM, FLOATS_EVERY, TRANS_AMOUNT, TRANS_DESCRIPTION, TRANS_TRANSACTION_TYPE, TRANS_ACCOUNT_ID, TRANS_CATEGORY_ID, TRANS_TRANSFERTOACCOUNT, TRANS_CHECK_NUM, TRANS_MEMO, TRANS_PAYEE, START_YEAR, OCCUR_FLOATING, EMAIL, EMAILDAYS, START_MONTH, START_DAY, END_YEAR, END_MONTH, END_DAY, OCCUR_ONCE, OCCUR_REPEATING, TRANS_ACCOUNTFROM, TRANS_ACCOUNTTO;

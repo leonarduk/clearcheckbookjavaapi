@@ -4,8 +4,6 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import com.leonarduk.clearcheckbook.dto.LimitDataType.Fields;
-
 /**
  * 
  * 
@@ -18,7 +16,7 @@ import com.leonarduk.clearcheckbook.dto.LimitDataType.Fields;
  * @version $Date:: $: Date of last commit
  * 
  */
-public class UserDataType extends AbstractDataType {
+public class UserDataType extends AbstractDataType<UserDataType> {
 
 	enum Fields {
 		EMAIL, PASSWORD, USERNAME, APP

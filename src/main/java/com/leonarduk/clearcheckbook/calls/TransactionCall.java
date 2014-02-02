@@ -3,8 +3,6 @@ package com.leonarduk.clearcheckbook.calls;
 import java.io.IOException;
 import java.util.List;
 
-import javax.management.RuntimeErrorException;
-
 import org.apache.log4j.Logger;
 
 import com.leonarduk.clearcheckbook.ClearCheckBookConnection;
@@ -22,7 +20,12 @@ public class TransactionCall extends AbstractCall<TransactionDataType> {
 	public static final String TYPE = "transaction";
 
 	public TransactionCall(ClearCheckBookConnection connection) {
-		super(TYPE, connection);
+		super(connection, TransactionDataType.class);
+	}
+
+	@Override
+	protected String getUrlSuffix() {
+		return TYPE;
 	}
 
 	/**

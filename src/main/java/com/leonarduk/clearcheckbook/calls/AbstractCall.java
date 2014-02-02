@@ -1,10 +1,12 @@
 package com.leonarduk.clearcheckbook.calls;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonParseException;
@@ -15,7 +17,6 @@ import org.codehaus.jackson.type.TypeReference;
 import com.leonarduk.clearcheckbook.ClearCheckBookConnection;
 import com.leonarduk.clearcheckbook.ClearcheckbookException;
 import com.leonarduk.clearcheckbook.dto.AbstractDataType;
-import com.leonarduk.clearcheckbook.dto.DataTypeFactory;
 import com.leonarduk.clearcheckbook.dto.ParsedNameValuePair;
 
 /**
@@ -33,23 +34,25 @@ import com.leonarduk.clearcheckbook.dto.ParsedNameValuePair;
  * @version $Date:: $: Date of last commit
  * 
  */
-abstract public class AbstractCall<U extends AbstractDataType> {
+abstract public class AbstractCall<U extends AbstractDataType<?>> {
 
-	final protected String url;
-	final protected String plurallUrl;
 	private ClearCheckBookConnection connection;
+
+	@SuppressWarnings("rawtypes")
+	private Class<? extends AbstractDataType> dataTypeClass;
 
 	private static final Logger _logger = Logger.getLogger(AbstractCall.class);
 
-	protected AbstractCall(String url, String pluralUrl,
-			ClearCheckBookConnection connection) {
-		this.url = url;
-		this.plurallUrl = pluralUrl;
+	protected AbstractCall(ClearCheckBookConnection connection,
+			@SuppressWarnings("rawtypes") Class<? extends AbstractDataType> dataTypeClass) {
 		this.connection = connection;
+		this.dataTypeClass = dataTypeClass;
 	}
 
-	protected AbstractCall(String url, ClearCheckBookConnection connection) {
-		this(url, url + "s", connection);
+	abstract protected String getUrlSuffix();
+
+	protected String getPluralUrl() {
+		return getUrlSuffix() + "s";
 	}
 
 	/**
@@ -62,25 +65,28 @@ abstract public class AbstractCall<U extends AbstractDataType> {
 	 */
 	protected U get(ParsedNameValuePair id) throws ClearcheckbookException {
 		try {
-			String jsonString = this.getConnection().getPage(url, id);
+			String jsonString = this.getConnection()
+					.getPage(getUrlSuffix(), id);
 
 			U dataType = getCore(jsonString);
 			if (null == dataType.getIdParameter().getValue()) {
-				throw new ClearcheckbookException("Could not get " + this.url);
+				throw new ClearcheckbookException("Could not get "
+						+ getUrlSuffix());
 			}
 			return dataType;
 		} catch (IOException e) {
-			throw new ClearcheckbookException("Failed to get " + this.url
+			throw new ClearcheckbookException("Failed to get " + getUrlSuffix()
 					+ " id: " + id.getValue(), e);
 		}
 	}
 
 	protected U get() throws ClearcheckbookException {
 		try {
-			String jsonString = this.getConnection().getPage(url);
+			String jsonString = this.getConnection().getPage(getUrlSuffix());
 			return getCore(jsonString);
 		} catch (IOException e) {
-			throw new ClearcheckbookException("Failed to get " + this.url, e);
+			throw new ClearcheckbookException(
+					"Failed to get " + getUrlSuffix(), e);
 		}
 	}
 
@@ -96,7 +102,7 @@ abstract public class AbstractCall<U extends AbstractDataType> {
 	private U getCore(String jsonString) throws ClearcheckbookException,
 			JsonParseException, JsonMappingException, IOException {
 		if (jsonString.equals("null")) {
-			throw new ClearcheckbookException("Failed to get " + this.url);
+			throw new ClearcheckbookException("Failed to get " + getUrlSuffix());
 		}
 		_logger.debug("getCore: " + jsonString);
 		ObjectMapper mapper = new ObjectMapper();
@@ -105,8 +111,7 @@ abstract public class AbstractCall<U extends AbstractDataType> {
 		HashMap<String, String> map = mapper.readValue(jsonString,
 				new TypeReference<HashMap<String, String>>() {
 				});
-		@SuppressWarnings("unchecked")
-		U dataType = (U) DataTypeFactory.getDataType(map, this.url);
+		U dataType = createDataTypeInstance(map, this.dataTypeClass);
 		return dataType;
 	}
 
@@ -126,7 +131,7 @@ abstract public class AbstractCall<U extends AbstractDataType> {
 			throws ClearcheckbookException {
 		List<U> returnedList = new ArrayList<>();
 		try {
-			String jsonString = this.getConnection().getPage(plurallUrl,
+			String jsonString = this.getConnection().getPage(getPluralUrl(),
 					parameters);
 			_logger.debug("get: " + jsonString);
 
@@ -140,8 +145,7 @@ abstract public class AbstractCall<U extends AbstractDataType> {
 			for (Iterator<HashMap<String, String>> iterator = list.iterator(); iterator
 					.hasNext();) {
 				HashMap<String, String> map = iterator.next();
-				@SuppressWarnings("unchecked")
-				U dataType = (U) DataTypeFactory.getDataType(map, this.url);
+				U dataType = createDataTypeInstance(map, this.dataTypeClass);
 				returnedList.add(dataType);
 			}
 			_logger.debug("get: " + jsonString + " -> " + list + " -> "
@@ -153,9 +157,54 @@ abstract public class AbstractCall<U extends AbstractDataType> {
 			_logger.error("getAll : Failed to bring back values", e);
 			throw new ClearcheckbookException(
 					"getAll : Failed to bring back values", e);
-		} finally {
 		}
 		return returnedList;
+	}
+
+	/**
+	 * Helper class to create instance of this.dataTypeClass
+	 * 
+	 * @param map
+	 * @return
+	 * @throws ClearcheckbookException
+	 */
+	private U createDataTypeInstance(HashMap<String, String> map,
+			Class<?> classType) throws ClearcheckbookException {
+		try {
+			@SuppressWarnings("unchecked")
+			U dataType = (U) classType.getDeclaredConstructor(Map.class)
+					.newInstance(map);
+			return dataType;
+		} catch (InstantiationException | IllegalAccessException
+				| IllegalArgumentException | InvocationTargetException
+				| NoSuchMethodException | SecurityException e) {
+			throw new ClearcheckbookException("Failed to find constructor for "
+					+ classType.getName());
+		}
+
+	}
+
+	/**
+	 * Helper wrapper function to iterate over a list of items to
+	 * insert/edit/delete calling the relevant method on each.
+	 * 
+	 * @throws ClearcheckbookException
+	 */
+	protected void bulkProcess(List<U> dataTypeList)
+			throws ClearcheckbookException {
+		for (Iterator<U> iterator = dataTypeList.iterator(); iterator.hasNext();) {
+			U u = iterator.next();
+			// Inserts
+			if (null == u.getIdParameter()) {
+				edit(u);
+			}
+			// deletes
+			else if (u.toBeDeleted()) {
+				delete(u.getIdParameter());
+			} else {
+				edit(u);
+			}
+		}
 	}
 
 	/**
@@ -167,19 +216,21 @@ abstract public class AbstractCall<U extends AbstractDataType> {
 	 */
 	protected String insert(U input) throws ClearcheckbookException {
 		_logger.debug("insert: " + input);
-		AbstractDataType dataType = (AbstractDataType) input;
+		AbstractDataType<?> dataType = (AbstractDataType<?>) input;
 		String returnString;
 		try {
-			returnString = this.getConnection().postPage(this.url,
+			returnString = this.getConnection().postPage(getUrlSuffix(),
 					dataType.getInsertParameters());
 
 			Long id = Long.valueOf(returnString);
 			_logger.info("insert : created " + id);
 			return id.toString();
 		} catch (NumberFormatException e) {
-			throw new ClearcheckbookException("Failed to create " + this.url, e);
+			throw new ClearcheckbookException("Failed to create "
+					+ getUrlSuffix(), e);
 		} catch (IOException e) {
-			throw new ClearcheckbookException("Failed to create " + this.url, e);
+			throw new ClearcheckbookException("Failed to create "
+					+ getUrlSuffix(), e);
 		}
 	}
 
@@ -191,17 +242,18 @@ abstract public class AbstractCall<U extends AbstractDataType> {
 	 */
 	protected boolean edit(U input) throws ClearcheckbookException {
 		_logger.debug("edit: " + input);
-		AbstractDataType dataType = (AbstractDataType) input;
+		AbstractDataType<?> dataType = (AbstractDataType<?>) input;
 		String returnString;
 		try {
-			returnString = this.getConnection().putPage(this.url,
+			returnString = this.getConnection().putPage(getUrlSuffix(),
 					dataType.getEditParameters());
 			_logger.debug("returned: " + returnString);
 			boolean ok = Boolean.valueOf(returnString);
 			_logger.info("insert : edited " + ok);
 			return ok;
 		} catch (IOException e) {
-			throw new ClearcheckbookException("Failed to create " + this.url, e);
+			throw new ClearcheckbookException("Failed to create "
+					+ getUrlSuffix(), e);
 		}
 	}
 
@@ -216,13 +268,13 @@ abstract public class AbstractCall<U extends AbstractDataType> {
 		_logger.debug("delete: " + id.getValue());
 		String returnString;
 		try {
-			returnString = this.getConnection().deletePage(this.url, id);
+			returnString = this.getConnection().deletePage(getUrlSuffix(), id);
 			boolean ok = Boolean.valueOf(returnString);
 			_logger.info("insert : edited " + ok);
 			return ok;
 		} catch (IOException e) {
-			throw new ClearcheckbookException("Failed to delete " + this.url
-					+ " id: " + id.getValue(), e);
+			throw new ClearcheckbookException("Failed to delete "
+					+ getUrlSuffix() + " id: " + id.getValue(), e);
 		}
 	}
 

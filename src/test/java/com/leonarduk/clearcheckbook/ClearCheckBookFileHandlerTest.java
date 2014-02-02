@@ -1,7 +1,6 @@
 package com.leonarduk.clearcheckbook;
 
 import static org.junit.Assert.*;
-import static org.easymock.EasyMock.*;
 
 import java.io.File;
 import java.io.IOException;

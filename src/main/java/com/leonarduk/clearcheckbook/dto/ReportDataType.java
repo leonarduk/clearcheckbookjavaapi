@@ -2,8 +2,6 @@ package com.leonarduk.clearcheckbook.dto;
 
 import java.util.Map;
 
-import com.leonarduk.clearcheckbook.dto.LimitDataType.Fields;
-
 /**
  * 
  * 
@@ -16,7 +14,7 @@ import com.leonarduk.clearcheckbook.dto.LimitDataType.Fields;
  * @version $Date:: $: Date of last commit
  * 
  */
-public class ReportDataType extends AbstractDataType {
+public class ReportDataType extends AbstractDataType<ReminderDataType> {
 
 	public enum Fields {
 		TYPE, MONTHS, BGCOLOR, HEIGHT, WIDTH, LABEL, URL

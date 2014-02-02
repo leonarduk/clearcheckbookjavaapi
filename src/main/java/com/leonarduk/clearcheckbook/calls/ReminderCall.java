@@ -16,7 +16,12 @@ public class ReminderCall extends AbstractCall<ReminderDataType> {
 	public static final String TYPE = "reminder";
 
 	public ReminderCall(ClearCheckBookConnection connection) {
-		super(TYPE, connection);
+		super(connection, ReminderDataType.class);
+	}
+
+	@Override
+	protected String getUrlSuffix() {
+		return TYPE;
 	}
 
 	@Override
