@@ -6,10 +6,26 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-abstract public class AbstractDataType<U> {
+abstract public class AbstractDataType<U extends AbstractDataType<?>> {
 
 	public enum ControlField {
 		ID, PAGE, LIMIT
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (null == obj || !obj.getClass().equals(this.getClass())) {
+			return false;
+		}
+		@SuppressWarnings("unchecked")
+		U that = (U) obj;
+		Enum<?>[] fields = getFields();
+		for (int i = 0; i < fields.length; i++) {
+			if (!getNonNullValue(fields[i]).equals(that.getNonNullValue(fields[i]))) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	private static final Logger _logger = Logger
@@ -22,7 +38,6 @@ abstract public class AbstractDataType<U> {
 		}
 		return value;
 	}
-
 
 	/**
 	 * Helper method for use in get method.

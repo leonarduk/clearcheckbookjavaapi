@@ -85,6 +85,7 @@ public class ClearCheckBookFileHandler {
 		_logger.debug("importTransactions: " + fileName);
 		return importFromFile(fileName, TransactionDataType.class);
 	}
+
 	/**
 	 * 
 	 * @param fileName
@@ -133,8 +134,8 @@ public class ClearCheckBookFileHandler {
 	 * @return
 	 * @throws ClearcheckbookException
 	 */
-	public <D extends AbstractDataType<?>> List<D> importFromFile(String fileName,
-			Class<D> c) throws ClearcheckbookException {
+	public <D extends AbstractDataType<?>> List<D> importFromFile(
+			String fileName, Class<D> c) throws ClearcheckbookException {
 
 		String separator = ",";
 		List<D> dataItems = new LinkedList<>();
@@ -149,14 +150,16 @@ public class ClearCheckBookFileHandler {
 			for (String columnn : columnNames) {
 				headerFields.add(columnn);
 			}
+			// first data line
+			line = br.readLine();
 
-			Map<String, String> fieldsMap = new HashMap<>();
 			while (line != null) {
+				Map<String, String> fieldsMap = new HashMap<>();
 				Iterable<String> fields = Splitter.on(separator).trimResults()
 						.split(line);
 				Iterator<String> headerIter = headerFields.iterator();
 				for (String field : fields) {
-					fieldsMap.put(headerIter.next(), field);
+					fieldsMap.put(headerIter.next().toLowerCase(), field);
 				}
 				try {
 					D newElem = c.getDeclaredConstructor(Map.class)
