@@ -19,6 +19,7 @@ import com.leonarduk.clearcheckbook.dto.CategoryDataType;
 import com.leonarduk.clearcheckbook.dto.LimitDataType;
 import com.leonarduk.clearcheckbook.dto.ReminderDataType;
 import com.leonarduk.clearcheckbook.dto.TransactionDataType;
+import com.leonarduk.utils.DateUtils;
 
 public class ClearCheckBookClientTest {
 
@@ -151,27 +152,48 @@ public class ClearCheckBookClientTest {
 			List<TransactionDataType> expected = this.client.getTransactions();
 			List<TransactionDataType> actual = this.client
 					.importTransactions(transactionsFileName);
-			assertSame(expected.size(), actual.size());
-			_logger.info("testImportTransactions: " + actual.size() + ": "
-					+ actual);
-			Map<Long, AbstractDataType<?>> expectedMap = new HashMap<>();
-			for (Iterator<TransactionDataType> iterator = expected.iterator(); iterator
-					.hasNext();) {
-				TransactionDataType next = iterator.next();
-				expectedMap.put(next.getId(), next);
-			}
-			for (Iterator<TransactionDataType> iterator = actual.iterator(); iterator
-					.hasNext();) {
-				TransactionDataType transactionDataType = iterator.next();
-				assertTrue(expectedMap.containsKey(transactionDataType.getId()));
-				AbstractDataType<?> expectedValue = expectedMap.get(transactionDataType.getId());
-				assertTrue(expectedValue.equals(
-						transactionDataType));
-			}
+			compareTransactionList(expected, actual);
 
 		} catch (ClearcheckbookException e) {
 			_logger.fatal("Failed to testExportTransactions", e);
 			fail();
+		}
+	}
+
+	@Test
+	public void testBulkUpdate() {
+		try {
+			List<TransactionDataType> file = this.client
+					.importTransactions(transactionsFileName);
+			file.get(0).setDescription(
+					"updated " + DateUtils.getNowyyyyMMddHHmm());
+			this.client.processTransactions(file);
+			List<TransactionDataType> after = this.client.getTransactions();
+			compareTransactionList(file, after);
+
+		} catch (ClearcheckbookException e) {
+			_logger.fatal("Failed to testExportTransactions", e);
+			fail();
+		}
+	}
+
+	private void compareTransactionList(List<TransactionDataType> expected,
+			List<TransactionDataType> actual) {
+		assertSame(expected.size(), actual.size());
+		_logger.info("testImportTransactions: " + actual.size() + ": " + actual);
+		Map<Long, AbstractDataType<?>> expectedMap = new HashMap<>();
+		for (Iterator<TransactionDataType> iterator = expected.iterator(); iterator
+				.hasNext();) {
+			TransactionDataType next = iterator.next();
+			expectedMap.put(next.getId(), next);
+		}
+		for (Iterator<TransactionDataType> iterator = actual.iterator(); iterator
+				.hasNext();) {
+			TransactionDataType transactionDataType = iterator.next();
+			assertTrue(expectedMap.containsKey(transactionDataType.getId()));
+			AbstractDataType<?> expectedValue = expectedMap
+					.get(transactionDataType.getId());
+			assertTrue(expectedValue.equals(transactionDataType));
 		}
 	}
 

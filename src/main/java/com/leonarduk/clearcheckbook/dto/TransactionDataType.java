@@ -1,6 +1,5 @@
 package com.leonarduk.clearcheckbook.dto;
 
-import java.util.Arrays;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -109,25 +108,24 @@ public class TransactionDataType extends AbstractDataType<TransactionDataType> {
 	 * @return
 	 */
 	public static TransactionDataType create(Long id, String date,
-			double amount, Type transactionType, long accountId,
-			long categoryId, String description, boolean jive,
-			long fromAccountId, long toAccountId, String checkNum, String memo,
-			String payee) {
+			double amount, long accountId, long categoryId, String description,
+			boolean jive, long fromAccountId, long toAccountId,
+			String checkNum, String memo, String payee) {
 		TransactionDataType create = TransactionDataType.create(date, amount,
-				transactionType, accountId, categoryId, description, jive,
-				fromAccountId, toAccountId, checkNum, memo, payee);
+				accountId, categoryId, description, jive, fromAccountId,
+				toAccountId, checkNum, memo, payee);
 		create.setValue(Fields.ID, id);
 		return create;
 	}
 
 	public static TransactionDataType create(String date, double amount,
-			Type transactionType, long accountId, long categoryId,
-			String description, boolean jive, long fromAccountId,
-			long toAccountId, String checkNum, String memo, String payee) {
+			long accountId, long categoryId, String description, boolean jive,
+			long fromAccountId, long toAccountId, String checkNum, String memo,
+			String payee) {
 		TransactionDataType transactionDataType = new TransactionDataType();
 		transactionDataType.setDate(date);
 		transactionDataType.setAmount(amount);
-		transactionDataType.setTransactionType(transactionType);
+		transactionDataType.setTransactionType(getTransactionType(amount));
 		transactionDataType.setAccountId(accountId);
 		transactionDataType.setCategoryId(categoryId);
 		transactionDataType.setDescription(description);
@@ -142,6 +140,19 @@ public class TransactionDataType extends AbstractDataType<TransactionDataType> {
 		return transactionDataType;
 	}
 
+	/**
+	 * if amount is negative is WITHDRAWAL else DEPOSIT
+	 * 
+	 * @param amount
+	 * @return
+	 */
+	private static Type getTransactionType(double amount) {
+		if (amount < 0) {
+			return Type.WITHDRAWAL;
+		}
+		return Type.DEPOSIT;
+	}
+
 	private TransactionDataType() {
 		super();
 	}
@@ -149,10 +160,7 @@ public class TransactionDataType extends AbstractDataType<TransactionDataType> {
 	public TransactionDataType(Map<String, String> map)
 			throws ClearcheckbookException {
 		super(map);
-		String value = getValue(Fields.TRANSACTION_TYPE);
-		if (Type.isMember(value)) {
-			setTransactionType(Type.valueOf(value));
-		}
+		setTransactionType(getTransactionType(getAmount()));
 	}
 
 	public Long getAccountId() {

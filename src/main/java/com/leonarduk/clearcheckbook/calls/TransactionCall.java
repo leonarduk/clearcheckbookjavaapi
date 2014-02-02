@@ -24,6 +24,11 @@ public class TransactionCall extends AbstractCall<TransactionDataType> {
 	}
 
 	@Override
+	public void bulkProcess(List<TransactionDataType> dataTypeList)
+			throws ClearcheckbookException {
+		super.bulkProcess(dataTypeList);
+	}
+	@Override
 	protected String getUrlSuffix() {
 		return TYPE;
 	}

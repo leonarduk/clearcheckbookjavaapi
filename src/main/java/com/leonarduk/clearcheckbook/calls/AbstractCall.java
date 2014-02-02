@@ -197,12 +197,15 @@ abstract public class AbstractCall<U extends AbstractDataType<?>> {
 			U u = iterator.next();
 			// Inserts
 			if (null == u.getIdParameter()) {
-				edit(u);
+				_logger.info("insert: " + u);
+				insert(u);
 			}
 			// deletes
 			else if (u.toBeDeleted()) {
+				_logger.info("delete: " + u);
 				delete(u.getIdParameter());
 			} else {
+				_logger.info("edit: " + u);
 				edit(u);
 			}
 		}

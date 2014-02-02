@@ -15,7 +15,6 @@ import com.leonarduk.clearcheckbook.ClearcheckbookException;
 import com.leonarduk.clearcheckbook.dto.AbstractDataType;
 import com.leonarduk.clearcheckbook.dto.ParsedNameValuePair;
 import com.leonarduk.clearcheckbook.dto.TransactionDataType;
-import com.leonarduk.clearcheckbook.dto.TransactionDataType.Type;
 import com.leonarduk.utils.DateUtils;
 
 /**
@@ -87,7 +86,6 @@ public class TransactionCallTest {
 
 			String date = original.getDate();
 			Double amount = original.getAmount();
-			Type transactionType = original.getTransactionType();
 			Long accountId = original.getAccountId();
 			Long categoryId = original.getCategoryId();
 			String description = original.getDescription();
@@ -98,9 +96,9 @@ public class TransactionCallTest {
 			String memo = original.getMemo();
 			String payee = original.getPayee();
 
-			input = TransactionDataType.create(date, amount, transactionType,
-					accountId, categoryId, description, jive, fromAccountId,
-					toAccountId, checkNum, memo, payee);
+			input = TransactionDataType.create(date, amount, accountId,
+					categoryId, description, jive, fromAccountId, toAccountId,
+					checkNum, memo, payee);
 
 			input.setDate(DateUtils.getTodaysDateyyyyMMdd());
 			input.setAmount(1000);

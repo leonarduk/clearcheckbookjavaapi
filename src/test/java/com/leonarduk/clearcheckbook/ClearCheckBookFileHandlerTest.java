@@ -65,8 +65,8 @@ public class ClearCheckBookFileHandlerTest {
 			List<CategoryDataType> categories = this.fileHandler
 					.importCategories(testCategoriesfileName);
 			_logger.info("Read:" + categories.size() + ": " + categories);
-			for (Iterator<CategoryDataType> iterator = categories
-					.iterator(); iterator.hasNext();) {
+			for (Iterator<CategoryDataType> iterator = categories.iterator(); iterator
+					.hasNext();) {
 				System.out.println(iterator.next());
 
 			}
@@ -84,7 +84,6 @@ public class ClearCheckBookFileHandlerTest {
 		}
 	}
 
-	
 	@Test
 	public void testImportTransactions() {
 		try {
@@ -133,8 +132,7 @@ public class ClearCheckBookFileHandlerTest {
 	private TransactionDataType[] createTestTransactions() {
 		String date = DateUtils.getTodaysDateyyyyMMdd();
 		double amount = 10;
-		double amount2 = 1000;
-		Type transactionType = TransactionDataType.Type.DEPOSIT;
+		double amount2 = -1000;
 		long accountId = 101;
 		long categoryId = 123;
 		String description = "deposit some cash";
@@ -146,13 +144,13 @@ public class ClearCheckBookFileHandlerTest {
 		String payee = "Boss";
 
 		TransactionDataType[] transactions = new TransactionDataType[] {
-				TransactionDataType.create(Long.valueOf(123),date, amount, transactionType,
+				TransactionDataType.create(Long.valueOf(123), date, amount,
 						accountId, categoryId, description, jive,
 						fromAccountId, toAccountId, checkNum, memo, payee),
-				TransactionDataType.create(Long.valueOf(124),date, amount2, transactionType,
+				TransactionDataType.create(Long.valueOf(124), date, amount2,
 						accountId, categoryId, description, jive,
 						fromAccountId, toAccountId, checkNum, memo, payee) };
-		
+
 		return transactions;
 	}
 

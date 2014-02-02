@@ -207,8 +207,6 @@ public class ReminderDataType extends AbstractDataType<ReminderDataType> {
 		TransactionDataType transactionDataType = TransactionDataType
 				.create(date,
 						getDoubleValue(Fields.TRANS_AMOUNT),
-						TransactionDataType.Type
-								.fromOrdinal(getIntegerValue(Fields.TRANS_TRANSACTION_TYPE)),
 						getLongValue(Fields.TRANS_ACCOUNT_ID),
 						getLongValue(Fields.TRANS_CATEGORY_ID),
 						getValue(Fields.TRANS_DESCRIPTION), jive,
