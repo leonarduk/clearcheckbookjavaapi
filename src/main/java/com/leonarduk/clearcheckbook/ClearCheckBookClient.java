@@ -81,4 +81,9 @@ public class ClearCheckBookClient {
 		return this.fileHandler.exportTransactions(fileName, transactions);
 	}
 
+	public List<TransactionDataType> importTransactions(
+			String transactionsFileName) throws ClearcheckbookException {
+		return this.fileHandler.importTransactions(transactionsFileName);
+	}
+
 }

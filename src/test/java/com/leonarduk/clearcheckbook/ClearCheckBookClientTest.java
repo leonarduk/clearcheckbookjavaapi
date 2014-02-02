@@ -1,13 +1,19 @@
 package com.leonarduk.clearcheckbook;
 
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.http.util.Asserts;
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.leonarduk.clearcheckbook.dto.AbstractDataType;
 import com.leonarduk.clearcheckbook.dto.AccountDataType;
 import com.leonarduk.clearcheckbook.dto.CategoryDataType;
 import com.leonarduk.clearcheckbook.dto.LimitDataType;
@@ -19,6 +25,11 @@ public class ClearCheckBookClientTest {
 	private static final Logger _logger = Logger
 			.getLogger(ClearCheckBookClientTest.class);
 	private ClearCheckBookClient client;
+	private final String categoriesFileName = "clientCategories.csv";
+	private final String accountsFileName = "clientAccounts.csv";
+	private final String limitsfileName = "clientLimits.csv";
+	private final String remindersFileName = "clientReminders.csv";
+	private final String transactionsFileName = "clientTransactions.csv";
 
 	@Before
 	public void setUp() throws Exception {
@@ -77,8 +88,7 @@ public class ClearCheckBookClientTest {
 	public void testExportAccounts() {
 		try {
 			List<AccountDataType> accounts = this.client.getAccounts();
-			String fileName = "testExportAccounts.csv";
-			this.client.exportAccounts(fileName, accounts);
+			this.client.exportAccounts(accountsFileName, accounts);
 			_logger.info(accounts);
 		} catch (ClearcheckbookException e) {
 			_logger.fatal("Failed to testExportAccounts", e);
@@ -91,8 +101,7 @@ public class ClearCheckBookClientTest {
 		try {
 			List<CategoryDataType> categoryDataTypes = this.client
 					.getCategories();
-			String fileName = "testExportCategories.csv";
-			this.client.exportCategories(fileName, categoryDataTypes);
+			this.client.exportCategories(categoriesFileName, categoryDataTypes);
 			_logger.info(categoryDataTypes);
 		} catch (ClearcheckbookException e) {
 			_logger.fatal("Failed to testExportCategories", e);
@@ -104,8 +113,7 @@ public class ClearCheckBookClientTest {
 	public void testExportLimits() {
 		try {
 			List<LimitDataType> limits = this.client.getLimits();
-			String fileName = "testExportLimits.csv";
-			this.client.exportLimits(fileName, limits);
+			this.client.exportLimits(limitsfileName, limits);
 			_logger.info(limits);
 		} catch (ClearcheckbookException e) {
 			_logger.fatal("Failed to testExportLimits", e);
@@ -117,8 +125,7 @@ public class ClearCheckBookClientTest {
 	public void testExportReminders() {
 		try {
 			List<ReminderDataType> reminders = this.client.getReminders();
-			String fileName = "testExportReminders.csv";
-			this.client.exportReminders(fileName, reminders);
+			this.client.exportReminders(remindersFileName, reminders);
 			_logger.info(reminders);
 		} catch (ClearcheckbookException e) {
 			_logger.fatal("Failed to testExportReminders", e);
@@ -128,11 +135,40 @@ public class ClearCheckBookClientTest {
 
 	@Test
 	public void testExportTransactions() {
-		String fileName = "testExportTransactions";
 		try {
 			List<TransactionDataType> transactions = this.client
 					.getTransactions();
-			this.client.exportTransactions(fileName, transactions);
+			this.client.exportTransactions(transactionsFileName, transactions);
+		} catch (ClearcheckbookException e) {
+			_logger.fatal("Failed to testExportTransactions", e);
+			fail();
+		}
+	}
+
+	@Test
+	public void testImportTransactions() {
+		try {
+			List<TransactionDataType> expected = this.client.getTransactions();
+			List<TransactionDataType> actual = this.client
+					.importTransactions(transactionsFileName);
+			assertSame(expected.size(), actual.size());
+			_logger.info("testImportTransactions: " + actual.size() + ": "
+					+ actual);
+			Map<Long, AbstractDataType<?>> expectedMap = new HashMap<>();
+			for (Iterator<TransactionDataType> iterator = expected.iterator(); iterator
+					.hasNext();) {
+				TransactionDataType next = iterator.next();
+				expectedMap.put(next.getId(), next);
+			}
+			for (Iterator<TransactionDataType> iterator = actual.iterator(); iterator
+					.hasNext();) {
+				TransactionDataType transactionDataType = iterator.next();
+				assertTrue(expectedMap.containsKey(transactionDataType.getId()));
+				AbstractDataType<?> expectedValue = expectedMap.get(transactionDataType.getId());
+				assertTrue(expectedValue.equals(
+						transactionDataType));
+			}
+
 		} catch (ClearcheckbookException e) {
 			_logger.fatal("Failed to testExportTransactions", e);
 			fail();

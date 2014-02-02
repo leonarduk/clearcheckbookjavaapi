@@ -1,5 +1,6 @@
 package com.leonarduk.clearcheckbook.dto;
 
+import java.util.Arrays;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -54,6 +55,16 @@ public class TransactionDataType extends AbstractDataType<TransactionDataType> {
 			return String.valueOf(ordinal());
 		};
 
+		public static boolean isMember(String key) {
+			Type[] values = values();
+			for (int i = 0; i < values.length; i++) {
+				if (values[i].name().equalsIgnoreCase(key)) {
+					return true;
+				}
+			}
+			return false;
+		}
+
 		public static Type fromString(String ordinal)
 				throws ClearcheckbookException {
 			try {
@@ -79,6 +90,24 @@ public class TransactionDataType extends AbstractDataType<TransactionDataType> {
 	private static final Logger _logger = Logger
 			.getLogger(TransactionDataType.class);
 
+	/**
+	 * Version with id field.
+	 * 
+	 * @param id
+	 * @param date
+	 * @param amount
+	 * @param transactionType
+	 * @param accountId
+	 * @param categoryId
+	 * @param description
+	 * @param jive
+	 * @param fromAccountId
+	 * @param toAccountId
+	 * @param checkNum
+	 * @param memo
+	 * @param payee
+	 * @return
+	 */
 	public static TransactionDataType create(Long id, String date,
 			double amount, Type transactionType, long accountId,
 			long categoryId, String description, boolean jive,
@@ -117,8 +146,13 @@ public class TransactionDataType extends AbstractDataType<TransactionDataType> {
 		super();
 	}
 
-	public TransactionDataType(Map<String, String> map) {
+	public TransactionDataType(Map<String, String> map)
+			throws ClearcheckbookException {
 		super(map);
+		String value = getValue(Fields.TRANSACTION_TYPE);
+		if (Type.isMember(value)) {
+			setTransactionType(Type.valueOf(value));
+		}
 	}
 
 	public Long getAccountId() {

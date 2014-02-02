@@ -23,7 +23,11 @@ abstract public class AbstractDataType<U extends AbstractDataType<?>> {
 		U that = (U) obj;
 		Enum<?>[] fields = getFields();
 		for (int i = 0; i < fields.length; i++) {
-			if (!getNonNullValue(fields[i]).equals(that.getNonNullValue(fields[i]))) {
+			if (!getNonNullValue(fields[i]).equals(
+					that.getNonNullValue(fields[i]))) {
+				_logger.info(fields[i].name() + " don't match. "
+						+ getNonNullValue(fields[i]) + " vs "
+						+ that.getNonNullValue(fields[i]));
 				return false;
 			}
 		}

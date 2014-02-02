@@ -43,7 +43,8 @@ abstract public class AbstractCall<U extends AbstractDataType<?>> {
 
 	private static final Logger _logger = Logger.getLogger(AbstractCall.class);
 
-	protected AbstractCall(ClearCheckBookConnection connection,
+	protected AbstractCall(
+			ClearCheckBookConnection connection,
 			@SuppressWarnings("rawtypes") Class<? extends AbstractDataType> dataTypeClass) {
 		this.connection = connection;
 		this.dataTypeClass = dataTypeClass;
@@ -179,7 +180,7 @@ abstract public class AbstractCall<U extends AbstractDataType<?>> {
 				| IllegalArgumentException | InvocationTargetException
 				| NoSuchMethodException | SecurityException e) {
 			throw new ClearcheckbookException("Failed to find constructor for "
-					+ classType.getName());
+					+ classType.getName(), e);
 		}
 
 	}
