@@ -17,6 +17,7 @@ import org.codehaus.jackson.type.TypeReference;
 import com.leonarduk.clearcheckbook.ClearCheckBookConnection;
 import com.leonarduk.clearcheckbook.ClearcheckbookException;
 import com.leonarduk.clearcheckbook.dto.AbstractDataType;
+import com.leonarduk.clearcheckbook.dto.AbstractDataType.ControlField;
 import com.leonarduk.clearcheckbook.dto.ParsedNameValuePair;
 
 /**
@@ -195,15 +196,17 @@ abstract public class AbstractCall<U extends AbstractDataType<?>> {
 			throws ClearcheckbookException {
 		for (Iterator<U> iterator = dataTypeList.iterator(); iterator.hasNext();) {
 			U u = iterator.next();
+			String id = u.getIdParameter().getValue();
+
 			// Inserts
-			if (null == u.getIdParameter()) {
+			if ("".equals(id) || u.getId() == 0) {
 				_logger.info("insert: " + u);
 				insert(u);
 			}
 			// deletes
-			else if (u.toBeDeleted()) {
+			else if (u.getId() < 0) {
 				_logger.info("delete: " + u);
-				delete(u.getIdParameter());
+				delete(AbstractDataType.getIdParameter(-1 * u.getId()));
 			} else {
 				_logger.info("edit: " + u);
 				edit(u);
@@ -274,7 +277,7 @@ abstract public class AbstractCall<U extends AbstractDataType<?>> {
 		try {
 			returnString = this.getConnection().deletePage(getUrlSuffix(), id);
 			boolean ok = Boolean.valueOf(returnString);
-			_logger.info("insert : edited " + ok);
+			_logger.info("insert : deleted " + ok);
 			return ok;
 		} catch (IOException e) {
 			throw new ClearcheckbookException("Failed to delete "

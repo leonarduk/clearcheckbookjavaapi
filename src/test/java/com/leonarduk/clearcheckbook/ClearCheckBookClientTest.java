@@ -165,7 +165,7 @@ public class ClearCheckBookClientTest {
 		try {
 			List<TransactionDataType> file = this.client
 					.importTransactions(transactionsFileName);
-			file.get(0).setDescription(
+			file.get(1).setDescription(
 					"updated " + DateUtils.getNowyyyyMMddHHmm());
 			this.client.processTransactions(file);
 			List<TransactionDataType> after = this.client.getTransactions();

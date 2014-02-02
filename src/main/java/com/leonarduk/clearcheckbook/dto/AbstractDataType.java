@@ -11,7 +11,44 @@ import com.leonarduk.clearcheckbook.ClearcheckbookException;
 abstract public class AbstractDataType<U extends AbstractDataType<?>> {
 
 	public enum ControlField {
-		ID, PAGE, LIMIT
+		ID, LIMIT, PAGE
+	}
+
+	private static final Logger _logger = Logger
+			.getLogger(AbstractDataType.class);
+
+	/**
+	 * Helper method for use in get method.
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public static ParsedNameValuePair getIdParameter(long id) {
+		return new ParsedNameValuePair(ControlField.ID.name().toLowerCase(),
+				String.valueOf(id));
+	};
+
+	public static ParsedNameValuePair getLimitParameter(int limit) {
+		return new ParsedNameValuePair(ControlField.LIMIT.name().toLowerCase(),
+				String.valueOf(limit));
+	}
+
+	public static ParsedNameValuePair getPageParameter(int page) {
+		return new ParsedNameValuePair(ControlField.PAGE.name().toLowerCase(),
+				String.valueOf(page));
+	}
+
+	final private Map<String, String> fieldsMap;
+
+	protected AbstractDataType() {
+		this.fieldsMap = new HashMap<String, String>();
+	}
+	public AbstractDataType(Map<String, String> map) {
+		this.fieldsMap = map;
+	}
+
+	protected void addField(Enum<?> field, String value) {
+		this.fieldsMap.put(field.name().toLowerCase(), value);
 	}
 
 	@Override
@@ -34,8 +71,74 @@ abstract public class AbstractDataType<U extends AbstractDataType<?>> {
 		return true;
 	}
 
-	private static final Logger _logger = Logger
-			.getLogger(AbstractDataType.class);;
+	protected Boolean getBooleanValue(Enum<?> field) {
+		String value = getValue(field);
+		if (null == value)
+			return null;
+		return Boolean.valueOf(value);
+	}
+
+	protected Double getDoubleValue(Enum<?> field) {
+		String value = getValue(field);
+		if (null == value)
+			return null;
+		return Double.valueOf(value);
+	}
+
+	protected Enum<?>[] getEditFields() {
+		throw new IllegalArgumentException("Not implemented");
+	}
+
+	public ParsedNameValuePair[] getEditParameters() {
+		Enum<?>[] insertFields = getEditFields();
+		return getParameters(insertFields);
+	}
+
+	abstract protected Enum<?>[] getFields();
+
+	public long getId() {
+		return Long.valueOf(getIdParameter().getValue());
+	}
+
+	public ParsedNameValuePair getIdParameter() {
+		return getNameValuePair(ControlField.ID);
+	}
+
+	protected Enum<?>[] getInsertFields() {
+		throw new IllegalArgumentException("Not implemented");
+	}
+
+	public ParsedNameValuePair[] getInsertParameters() {
+		Enum<?>[] insertFields = getInsertFields();
+		return getParameters(insertFields);
+	}
+
+	protected Integer getIntegerValue(Enum<?> field) {
+		String value = getValue(field);
+		if (null == value)
+			return null;
+		return Integer.valueOf(value);
+	}
+
+	protected Long getLongValue(Enum<?> field) {
+		String value = getValue(field);
+		if (null == value)
+			return null;
+		return Long.valueOf(value);
+	}
+
+	/**
+	 * 
+	 * @param field
+	 * @return
+	 */
+	protected ParsedNameValuePair getNameValuePair(Enum<?> field) {
+		String lowerKey = field.name().toLowerCase();
+		ParsedNameValuePair nameValuePair = new ParsedNameValuePair(lowerKey,
+				getValue(lowerKey));
+		_logger.debug("getNameValuePair : " + lowerKey + " -> " + nameValuePair);
+		return nameValuePair;
+	}
 
 	protected String getNonNullValue(Enum<?> fields) {
 		String value = getValue(fields);
@@ -45,32 +148,33 @@ abstract public class AbstractDataType<U extends AbstractDataType<?>> {
 		return value;
 	}
 
-	/**
-	 * Helper method for use in get method.
-	 * 
-	 * @param id
-	 * @return
-	 */
-	public static ParsedNameValuePair getIdParameter(long id) {
-		return new ParsedNameValuePair(ControlField.ID.name().toLowerCase(),
-				String.valueOf(id));
+	private ParsedNameValuePair[] getParameters(Enum<?>[] fields) {
+		ParsedNameValuePair[] parameters = new ParsedNameValuePair[fields.length];
+		for (int i = 0; i < fields.length; i++) {
+			parameters[i] = getNameValuePair(fields[i]);
+		}
+		_logger.debug("getParameters: " + Arrays.asList(parameters));
+		return parameters;
 	}
 
-	public static ParsedNameValuePair getLimitParameter(int limit) {
-		return new ParsedNameValuePair(ControlField.LIMIT.name().toLowerCase(),
-				String.valueOf(limit));
+	protected String getValue(Enum<?> field) {
+		String key = field.name().toLowerCase();
+		return getValue(key);
 	}
 
-	public static ParsedNameValuePair getPageParameter(int page) {
-		return new ParsedNameValuePair(ControlField.PAGE.name().toLowerCase(),
-				String.valueOf(page));
+	protected String getValue(String key) {
+		String value = this.fieldsMap.get(key);
+		_logger.debug("getValue : " + key + "=" + value);
+		return value;
 	}
 
-	final private Map<String, String> fieldsMap;
-	private boolean toBeDeleted = false;
-
-	protected AbstractDataType() {
-		this.fieldsMap = new HashMap<String, String>();
+	public String[] getValues() throws ClearcheckbookException {
+		Enum<?>[] fields = getFields();
+		String[] values = new String[fields.length];
+		for (int i = 0; i < values.length; i++) {
+			values[i] = getNonNullValue(fields[i]);
+		}
+		return values;
 	}
 
 	protected void setIntValueFromBooleanString(Enum<?> field, String value) {
@@ -89,105 +193,6 @@ abstract public class AbstractDataType<U extends AbstractDataType<?>> {
 		setValue(field, value);
 	}
 
-	public AbstractDataType(Map<String, String> map) {
-		this.fieldsMap = map;
-	}
-
-	protected void addField(Enum<?> field, String value) {
-		this.fieldsMap.put(field.name().toLowerCase(), value);
-	}
-
-	protected Enum<?>[] getEditFields() {
-		throw new IllegalArgumentException("Not implemented");
-	}
-
-	protected Enum<?>[] getInsertFields() {
-		throw new IllegalArgumentException("Not implemented");
-	}
-
-	public ParsedNameValuePair[] getEditParameters() {
-		Enum<?>[] insertFields = getEditFields();
-		return getParameters(insertFields);
-	}
-
-	public long getId() {
-		return Long.valueOf(getIdParameter().getValue());
-	}
-
-	public ParsedNameValuePair getIdParameter() {
-		return getNameValuePair(ControlField.ID);
-	}
-
-	public boolean toBeDeleted() {
-		return this.toBeDeleted;
-	}
-
-	public ParsedNameValuePair[] getInsertParameters() {
-		Enum<?>[] insertFields = getInsertFields();
-		return getParameters(insertFields);
-	}
-
-	/**
-	 * 
-	 * @param field
-	 * @return
-	 */
-	protected ParsedNameValuePair getNameValuePair(Enum<?> field) {
-		String lowerKey = field.name().toLowerCase();
-		ParsedNameValuePair nameValuePair = new ParsedNameValuePair(lowerKey,
-				getValue(lowerKey));
-		_logger.debug("getNameValuePair : " + lowerKey + " -> " + nameValuePair);
-		return nameValuePair;
-	}
-
-	private ParsedNameValuePair[] getParameters(Enum<?>[] fields) {
-		ParsedNameValuePair[] parameters = new ParsedNameValuePair[fields.length];
-		for (int i = 0; i < fields.length; i++) {
-			parameters[i] = getNameValuePair(fields[i]);
-		}
-		_logger.debug("getParameters: " + Arrays.asList(parameters));
-		return parameters;
-	}
-
-	protected String getValue(Enum<?> field) {
-		String key = field.name().toLowerCase();
-		return getValue(key);
-	}
-
-	protected Double getDoubleValue(Enum<?> field) {
-		String value = getValue(field);
-		if (null == value)
-			return null;
-		return Double.valueOf(value);
-	}
-
-	protected Boolean getBooleanValue(Enum<?> field) {
-		String value = getValue(field);
-		if (null == value)
-			return null;
-		return Boolean.valueOf(value);
-	}
-
-	protected Integer getIntegerValue(Enum<?> field) {
-		String value = getValue(field);
-		if (null == value)
-			return null;
-		return Integer.valueOf(value);
-	}
-
-	protected Long getLongValue(Enum<?> field) {
-		String value = getValue(field);
-		if (null == value)
-			return null;
-		return Long.valueOf(value);
-	}
-
-	protected String getValue(String key) {
-		String value = this.fieldsMap.get(key);
-		_logger.debug("getValue : " + key + "=" + value);
-		return value;
-	}
-
 	protected void setValue(Enum<?> field, Object value) {
 		if (null == value || value.equals("")) {
 			this.fieldsMap.put(field.name().toLowerCase(), null);
@@ -200,16 +205,5 @@ abstract public class AbstractDataType<U extends AbstractDataType<?>> {
 	public String toString() {
 		return "AbstractDataType [fieldsMap=" + fieldsMap + "]";
 	}
-
-	public String[] getValues() throws ClearcheckbookException {
-		Enum<?>[] fields = getFields();
-		String[] values = new String[fields.length];
-		for (int i = 0; i < values.length; i++) {
-			values[i] = getNonNullValue(fields[i]);
-		}
-		return values;
-	}
-
-	abstract protected Enum<?>[] getFields();
 
 }
