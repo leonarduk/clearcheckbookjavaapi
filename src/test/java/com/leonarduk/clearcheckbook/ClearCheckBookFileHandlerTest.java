@@ -146,12 +146,13 @@ public class ClearCheckBookFileHandlerTest {
 		String payee = "Boss";
 
 		TransactionDataType[] transactions = new TransactionDataType[] {
-				TransactionDataType.create(date, amount, transactionType,
+				TransactionDataType.create(Long.valueOf(123),date, amount, transactionType,
 						accountId, categoryId, description, jive,
 						fromAccountId, toAccountId, checkNum, memo, payee),
-				TransactionDataType.create(date, amount2, transactionType,
+				TransactionDataType.create(Long.valueOf(124),date, amount2, transactionType,
 						accountId, categoryId, description, jive,
 						fromAccountId, toAccountId, checkNum, memo, payee) };
+		
 		return transactions;
 	}
 

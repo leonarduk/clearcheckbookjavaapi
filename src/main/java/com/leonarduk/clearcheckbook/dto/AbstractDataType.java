@@ -6,6 +6,8 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import com.leonarduk.clearcheckbook.ClearcheckbookException;
+
 abstract public class AbstractDataType<U extends AbstractDataType<?>> {
 
 	public enum ControlField {
@@ -195,7 +197,7 @@ abstract public class AbstractDataType<U extends AbstractDataType<?>> {
 		return "AbstractDataType [fieldsMap=" + fieldsMap + "]";
 	}
 
-	public String[] getValues() {
+	public String[] getValues() throws ClearcheckbookException {
 		Enum<?>[] fields = getFields();
 		String[] values = new String[fields.length];
 		for (int i = 0; i < values.length; i++) {

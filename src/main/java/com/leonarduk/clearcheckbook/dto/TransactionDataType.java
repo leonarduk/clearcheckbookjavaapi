@@ -27,15 +27,24 @@ public class TransactionDataType extends AbstractDataType<TransactionDataType> {
 	public enum Fields {
 		ID, DATE, AMOUNT, TRANSACTION_TYPE, DESCRIPTION, ACCOUNT_ID, CATEGORY_ID, JIVE, SPECIALSTATUS, PARENT, RELATED_TRANSFER, CHECK_NUM, MEMO, PAYEE, INITIAL_BALANCE;
 	}
-	
+
 	@Override
 	protected Enum<?>[] getFields() {
 		return Fields.values();
 	}
 
-
 	public enum NonoutputFields {
 		FROM_ACCOUNT_ID, TO_ACCOUNT_ID;
+	}
+
+	@Override
+	public String[] getValues() throws ClearcheckbookException {
+		String[] values = super.getValues();
+
+		// Convert transaction type from number to text
+		int ordinal = Fields.TRANSACTION_TYPE.ordinal();
+		values[ordinal] = Type.fromString(values[ordinal]).name();
+		return values;
 	}
 
 	public enum Type {
@@ -69,6 +78,18 @@ public class TransactionDataType extends AbstractDataType<TransactionDataType> {
 
 	private static final Logger _logger = Logger
 			.getLogger(TransactionDataType.class);
+
+	public static TransactionDataType create(Long id, String date,
+			double amount, Type transactionType, long accountId,
+			long categoryId, String description, boolean jive,
+			long fromAccountId, long toAccountId, String checkNum, String memo,
+			String payee) {
+		TransactionDataType create = TransactionDataType.create(date, amount,
+				transactionType, accountId, categoryId, description, jive,
+				fromAccountId, toAccountId, checkNum, memo, payee);
+		create.setValue(Fields.ID, id);
+		return create;
+	}
 
 	public static TransactionDataType create(String date, double amount,
 			Type transactionType, long accountId, long categoryId,
@@ -140,9 +161,9 @@ public class TransactionDataType extends AbstractDataType<TransactionDataType> {
 	protected Enum<?>[] getInsertFields() {
 		Enum<?>[] insertFields = new Enum<?>[] { Fields.DATE, Fields.AMOUNT,
 				Fields.TRANSACTION_TYPE, Fields.ACCOUNT_ID, Fields.CATEGORY_ID,
-				Fields.DESCRIPTION, Fields.JIVE, NonoutputFields.FROM_ACCOUNT_ID,
-				NonoutputFields.TO_ACCOUNT_ID, Fields.CHECK_NUM, Fields.MEMO,
-				Fields.PAYEE };
+				Fields.DESCRIPTION, Fields.JIVE,
+				NonoutputFields.FROM_ACCOUNT_ID, NonoutputFields.TO_ACCOUNT_ID,
+				Fields.CHECK_NUM, Fields.MEMO, Fields.PAYEE };
 		return insertFields;
 	}
 
