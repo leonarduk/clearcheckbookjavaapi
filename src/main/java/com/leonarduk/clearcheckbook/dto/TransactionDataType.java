@@ -48,14 +48,14 @@ public class TransactionDataType extends AbstractDataType<TransactionDataType> {
 		FROM_ACCOUNT_ID, TO_ACCOUNT_ID;
 	}
 
+	
 	@Override
 	public String[] getValues() throws ClearcheckbookException {
-		String[] values = super.getValues();
-
-		// Convert transaction type from number to text
-		int ordinal = Fields.TRANSACTION_TYPE.ordinal();
-		values[ordinal] = Type.fromString(values[ordinal]).name();
-		
+		Enum<?>[] fields = getFileFields();
+		String[] values = new String[fields.length];
+		for (int i = 0; i < values.length; i++) {
+			values[i] = getNonNullValue(fields[i]);
+		}
 		return values;
 	}
 

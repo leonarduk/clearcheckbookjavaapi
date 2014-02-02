@@ -159,7 +159,9 @@ public class ClearCheckBookFileHandler {
 						.split(line);
 				Iterator<String> headerIter = headerFields.iterator();
 				for (String field : fields) {
-					fieldsMap.put(headerIter.next().toLowerCase(), field);
+					String headerName = headerIter.next();
+					_logger.debug(headerName + "=" + field);
+					fieldsMap.put(headerName.toLowerCase(), field);
 				}
 				try {
 					D newElem = c.getDeclaredConstructor(Map.class)

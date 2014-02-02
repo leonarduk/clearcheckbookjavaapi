@@ -19,8 +19,11 @@ import com.leonarduk.utils.DateUtils;
 
 public class ClearCheckBookFileHandlerTest {
 
-	private final String testCategoriesfileName = "categories.csv";
-	private final String testTransactionFile = "transactions.csv";
+	public static final String datadir = "src/main/resources/";
+	private final String testCategoriesfileName = datadir
+			+ "filehandler_categories.csv";
+	private final String testTransactionFile = datadir
+			+ "filehandler_transactions.csv";
 
 	private static final Logger _logger = Logger
 			.getLogger(ClearCheckBookFileHandlerTest.class);
