@@ -58,7 +58,7 @@ public class ClearCheckBookFileHandler {
 			List<TransactionDataType> transactions)
 			throws ClearcheckbookException {
 		_logger.debug("exportTransactions: " + fileName + " " + transactions);
-		Enum<?>[] headers = TransactionDataType.Fields.values();
+		Enum<?>[] headers = TransactionDataType.getFileFields();
 		return exportToFile(fileName, headers, transactions);
 	}
 

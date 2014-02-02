@@ -1,10 +1,14 @@
 package com.leonarduk.clearcheckbook.dto;
 
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 
 import com.leonarduk.clearcheckbook.ClearcheckbookException;
+import com.leonarduk.utils.DateUtils;
 
 /**
  * 
@@ -25,12 +29,19 @@ public class TransactionDataType extends AbstractDataType<TransactionDataType> {
 	 * This holds the output fields
 	 */
 	public enum Fields {
-		ID, DATE, AMOUNT, TRANSACTION_TYPE, DESCRIPTION, ACCOUNT_ID, CATEGORY_ID, JIVE, SPECIALSTATUS, PARENT, RELATED_TRANSFER, CHECK_NUM, MEMO, PAYEE, INITIAL_BALANCE;
+		ID, DATE, AMOUNT, TRANSACTION_TYPE, DESCRIPTION, ACCOUNT_ID, CATEGORY_ID, JIVE, CHECK_NUM, MEMO, PAYEE, SPECIALSTATUS, PARENT, RELATED_TRANSFER, INITIAL_BALANCE;
 	}
 
 	@Override
 	protected Enum<?>[] getFields() {
 		return Fields.values();
+	}
+
+	public static Enum<?>[] getFileFields() {
+		Fields[] values = Fields.values();
+		List<Fields> asList = new LinkedList<>(Arrays.asList(values));
+		asList.remove(Fields.TRANSACTION_TYPE.ordinal());
+		return asList.toArray(new Fields[asList.size()]);
 	}
 
 	public enum NonoutputFields {
@@ -44,6 +55,7 @@ public class TransactionDataType extends AbstractDataType<TransactionDataType> {
 		// Convert transaction type from number to text
 		int ordinal = Fields.TRANSACTION_TYPE.ordinal();
 		values[ordinal] = Type.fromString(values[ordinal]).name();
+		
 		return values;
 	}
 
