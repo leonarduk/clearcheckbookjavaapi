@@ -86,6 +86,13 @@ public class ClearCheckBookClient {
 		return this.fileHandler.importTransactions(transactionsFileName);
 	}
 
+	public List<TransactionDataType> importTransactions(
+			String transactionsFileName, FilePreprocessor preprocessor)
+			throws ClearcheckbookException {
+		return this.fileHandler.importTransactions(transactionsFileName,
+				preprocessor);
+	}
+
 	public void processTransactions(List<TransactionDataType> dataTypeList)
 			throws ClearcheckbookException {
 		this.connection.transaction().bulkProcess(dataTypeList);

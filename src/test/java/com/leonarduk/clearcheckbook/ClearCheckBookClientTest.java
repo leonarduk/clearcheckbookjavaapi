@@ -181,8 +181,9 @@ public class ClearCheckBookClientTest {
 	@Test
 	public void testBulkUpdateNationwide() {
 		try {
-			List<TransactionDataType> file = this.client
-					.importTransactions(transactionsNationwideFileName);
+			List<TransactionDataType> file = this.client.importTransactions(
+					transactionsNationwideFileName,
+					new NationwideFilePreprocessor());
 			file.get(1).setDescription(
 					"updated " + DateUtils.getNowyyyyMMddHHmm());
 			this.client.processTransactions(file);
@@ -197,7 +198,7 @@ public class ClearCheckBookClientTest {
 
 	private void compareTransactionList(List<TransactionDataType> expected,
 			List<TransactionDataType> actual) {
-		assertSame(expected.size(), actual.size());
+		assertEquals(expected.size(), actual.size());
 		_logger.info("testImportTransactions: " + actual.size() + ": " + actual);
 		Map<Long, AbstractDataType<?>> expectedMap = new HashMap<>();
 		for (Iterator<TransactionDataType> iterator = expected.iterator(); iterator

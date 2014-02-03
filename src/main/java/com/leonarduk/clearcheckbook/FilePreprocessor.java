@@ -30,21 +30,21 @@ public class FilePreprocessor {
 	 */
 	public Map<String, String> processRow(Map<String, String> fieldsMap)
 			throws ClearcheckbookException {
-		Map<String, String> newMap = new HashMap<>();
-		newMap.put(TransactionDataType.Fields.DATE.name().toLowerCase(),
+		fieldsMap.put(TransactionDataType.Fields.DATE.name().toLowerCase(),
 				getDate(fieldsMap));
-		newMap.put(TransactionDataType.Fields.AMOUNT.name().toLowerCase(),
+		fieldsMap.put(TransactionDataType.Fields.AMOUNT.name().toLowerCase(),
 				getAmount(fieldsMap));
-		newMap.put(TransactionDataType.Fields.DESCRIPTION.name().toLowerCase(),
-				getDesription(fieldsMap));
-		newMap.put(TransactionDataType.Fields.CHECK_NUM.name().toLowerCase(),
+		fieldsMap.put(TransactionDataType.Fields.DESCRIPTION.name()
+				.toLowerCase(), getDesription(fieldsMap));
+		fieldsMap.put(
+				TransactionDataType.Fields.CHECK_NUM.name().toLowerCase(),
 				getCheckNum(fieldsMap));
-		newMap.put(TransactionDataType.Fields.MEMO.name().toLowerCase(),
+		fieldsMap.put(TransactionDataType.Fields.MEMO.name().toLowerCase(),
 				getMemo(fieldsMap));
-		newMap.put(TransactionDataType.Fields.PAYEE.name().toLowerCase(),
+		fieldsMap.put(TransactionDataType.Fields.PAYEE.name().toLowerCase(),
 				getPayee(fieldsMap));
 
-		return newMap;
+		return fieldsMap;
 	}
 
 	protected String getPayee(Map<String, String> fieldsMap) {
