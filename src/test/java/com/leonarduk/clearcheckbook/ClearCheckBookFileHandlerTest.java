@@ -5,8 +5,10 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
@@ -24,6 +26,10 @@ public class ClearCheckBookFileHandlerTest {
 			+ "filehandler_categories.csv";
 	private final String testTransactionFile = datadir
 			+ "filehandler_transactions.csv";
+	private final String testMiniTransactionFile = datadir
+			+ "filehandler_transactions_mini.csv";
+	private final String testNationwideTransactionFile = datadir
+			+ "nationwide.csv";
 
 	private static final Logger _logger = Logger
 			.getLogger(ClearCheckBookFileHandlerTest.class);
@@ -105,6 +111,64 @@ public class ClearCheckBookFileHandlerTest {
 			for (int i = 0; i < expected.length; i++) {
 				assertTrue("transaction does not match what is expected",
 						expected[i].equals(transactions.get(i)));
+			}
+		} catch (ClearcheckbookException e) {
+			_logger.fatal("Failed to import transactions", e);
+			fail();
+		}
+	}
+
+	@Test
+	public void testImportNationwide() {
+		try {
+			Map<String, String> remapMap = new HashMap<>();
+			// "DATE","AMOUNT","DESCRIPTION","CHECK_NUM","MEMO","PAYEE"
+			// "Date","Transaction type","Description","Paid out","Paid in","Balance"
+			// "21 Nov 2013","Transfer from","0275/636 848 557","","£120.00","£120.00"
+
+			FilePreprocessor processor = new NationwideFilePreprocessor();
+			List<TransactionDataType> transactions = this.fileHandler
+					.importTransactions(testNationwideTransactionFile,
+							processor);
+			_logger.info("Read:" + transactions.size() + ": " + transactions);
+			for (Iterator<TransactionDataType> iterator = transactions
+					.iterator(); iterator.hasNext();) {
+				System.out.println(iterator.next());
+
+			}
+			TransactionDataType[] expected = createTestTransactions();
+			assertEquals("Wrong number of transactions: " + transactions.size()
+					+ " vs " + expected.length, expected.length,
+					transactions.size());
+			for (int i = 0; i < expected.length; i++) {
+				assertTrue("transaction does not match what is expected",
+						expected[i].equals(transactions.get(i)));
+			}
+		} catch (ClearcheckbookException e) {
+			_logger.fatal("Failed to import transactions", e);
+			fail();
+		}
+	}
+
+	@Test
+	public void testImportMiniTransactions() {
+		try {
+			List<TransactionDataType> expected = this.fileHandler
+					.importTransactions(testTransactionFile);
+			List<TransactionDataType> transactions = this.fileHandler
+					.importTransactions(testMiniTransactionFile);
+			_logger.info("Read:" + transactions.size() + ": " + transactions);
+			for (Iterator<TransactionDataType> iterator = transactions
+					.iterator(); iterator.hasNext();) {
+				System.out.println(iterator.next());
+
+			}
+			assertEquals("Wrong number of transactions: " + transactions.size()
+					+ " vs " + expected.size(), expected.size(),
+					transactions.size());
+			for (int i = 0; i < expected.size(); i++) {
+				assertTrue("transaction does not match what is expected",
+						expected.get(i).equals(transactions.get(i)));
 			}
 		} catch (ClearcheckbookException e) {
 			_logger.fatal("Failed to import transactions", e);

@@ -43,6 +43,7 @@ abstract public class AbstractDataType<U extends AbstractDataType<?>> {
 	protected AbstractDataType() {
 		this.fieldsMap = new HashMap<String, String>();
 	}
+
 	public AbstractDataType(Map<String, String> map) {
 		this.fieldsMap = map;
 	}
@@ -54,6 +55,7 @@ abstract public class AbstractDataType<U extends AbstractDataType<?>> {
 	@Override
 	public boolean equals(Object obj) {
 		if (null == obj || !obj.getClass().equals(this.getClass())) {
+			_logger.info("not equal " + this + " vs " + obj);
 			return false;
 		}
 		@SuppressWarnings("unchecked")

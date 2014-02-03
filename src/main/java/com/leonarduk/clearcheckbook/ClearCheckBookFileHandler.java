@@ -82,8 +82,13 @@ public class ClearCheckBookFileHandler {
 
 	public List<TransactionDataType> importTransactions(String fileName)
 			throws ClearcheckbookException {
+		return importTransactions(fileName, null);
+	}
+
+	public List<TransactionDataType> importTransactions(String fileName,
+			FilePreprocessor processor) throws ClearcheckbookException {
 		_logger.debug("importTransactions: " + fileName);
-		return importFromFile(fileName, TransactionDataType.class);
+		return importFromFile(fileName, TransactionDataType.class, processor);
 	}
 
 	/**
@@ -136,11 +141,22 @@ public class ClearCheckBookFileHandler {
 	 */
 	public <D extends AbstractDataType<?>> List<D> importFromFile(
 			String fileName, Class<D> c) throws ClearcheckbookException {
+		return importFromFile(fileName, c, new FilePreprocessor());
+	}
+
+	public <D extends AbstractDataType<?>> List<D> importFromFile(
+			String fileName, Class<D> class1, FilePreprocessor processor)
+			throws ClearcheckbookException {
 
 		String separator = ",";
 		List<D> dataItems = new LinkedList<>();
 
 		try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+
+			// Ignore some rows
+			for (int i = 0; i < processor.getRowsToSkip(); i++) {
+				br.readLine();
+			}
 
 			// Read header
 			List<String> headerFields = new LinkedList<>();
@@ -148,8 +164,10 @@ public class ClearCheckBookFileHandler {
 			Iterable<String> columnNames = Splitter.on(separator).trimResults()
 					.split(line);
 			for (String columnn : columnNames) {
-				headerFields.add(columnn);
+
+				headerFields.add(columnn.replace("\"", ""));
 			}
+
 			// first data line
 			line = br.readLine();
 
@@ -160,12 +178,15 @@ public class ClearCheckBookFileHandler {
 				Iterator<String> headerIter = headerFields.iterator();
 				for (String field : fields) {
 					String headerName = headerIter.next();
-					_logger.debug(headerName + "=" + field);
-					fieldsMap.put(headerName.toLowerCase(), field);
+					_logger.debug(headerName + "=" + field.replace("\"", ""));
+					fieldsMap.put(headerName.toLowerCase(),
+							field.replace("\"", ""));
 				}
+				Map<String, String> processedMap = processor
+						.processRow(fieldsMap);
 				try {
-					D newElem = c.getDeclaredConstructor(Map.class)
-							.newInstance(fieldsMap);
+					D newElem = class1.getDeclaredConstructor(Map.class)
+							.newInstance(processedMap);
 					dataItems.add(newElem);
 				} catch (Exception e) {
 					throw new ClearcheckbookException("Failed to import file",
@@ -195,12 +216,14 @@ public class ClearCheckBookFileHandler {
 		try {
 			File file = new File(fileName);
 			writer = new PrintWriter(file, "UTF-8");
-			String separator = ",";
+			String separator = "\",\"";
 			writer.println(Joiner.on(separator).join(headers));
 			for (Iterator<? extends AbstractDataType> iterator = dataTypes
 					.iterator(); iterator.hasNext();) {
 				AbstractDataType<?> dataType = iterator.next();
-				writer.println(Joiner.on(separator).join(dataType.getValues()));
+				writer.println("\""
+						+ Joiner.on(separator).join(dataType.getValues())
+						+ "\"");
 			}
 			writer.close();
 			return file;

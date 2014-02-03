@@ -29,7 +29,7 @@ public class TransactionDataType extends AbstractDataType<TransactionDataType> {
 	 * This holds the output fields
 	 */
 	public enum Fields {
-		ID, DATE, AMOUNT, TRANSACTION_TYPE, DESCRIPTION, ACCOUNT_ID, CATEGORY_ID, JIVE, CHECK_NUM, MEMO, PAYEE, SPECIALSTATUS, PARENT, RELATED_TRANSFER, INITIAL_BALANCE;
+		ID, DATE, AMOUNT, DESCRIPTION, CHECK_NUM, MEMO, PAYEE, ACCOUNT_ID, CATEGORY_ID, JIVE, TRANSACTION_TYPE, SPECIALSTATUS, PARENT, RELATED_TRANSFER, INITIAL_BALANCE;
 	}
 
 	@Override
@@ -48,7 +48,6 @@ public class TransactionDataType extends AbstractDataType<TransactionDataType> {
 		FROM_ACCOUNT_ID, TO_ACCOUNT_ID;
 	}
 
-	
 	@Override
 	public String[] getValues() throws ClearcheckbookException {
 		Enum<?>[] fields = getFileFields();
@@ -172,6 +171,9 @@ public class TransactionDataType extends AbstractDataType<TransactionDataType> {
 	public TransactionDataType(Map<String, String> map)
 			throws ClearcheckbookException {
 		super(map);
+		if (null == getJive()) {
+			setJive(false);
+		}
 		setTransactionType(getTransactionType(getAmount()));
 	}
 
