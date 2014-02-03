@@ -82,7 +82,7 @@ public class ClearCheckBookFileHandler {
 
 	public List<TransactionDataType> importTransactions(String fileName)
 			throws ClearcheckbookException {
-		return importTransactions(fileName, null);
+		return importTransactions(fileName, new FilePreprocessor());
 	}
 
 	public List<TransactionDataType> importTransactions(String fileName,
@@ -217,7 +217,7 @@ public class ClearCheckBookFileHandler {
 			File file = new File(fileName);
 			writer = new PrintWriter(file, "UTF-8");
 			String separator = "\",\"";
-			writer.println(Joiner.on(separator).join(headers));
+			writer.println("\"" + Joiner.on(separator).join(headers) + "\"");
 			for (Iterator<? extends AbstractDataType> iterator = dataTypes
 					.iterator(); iterator.hasNext();) {
 				AbstractDataType<?> dataType = iterator.next();

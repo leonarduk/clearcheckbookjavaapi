@@ -31,6 +31,7 @@ public class ClearCheckBookClientTest {
 	private final String limitsfileName = "clientLimits.csv";
 	private final String remindersFileName = "clientReminders.csv";
 	private final String transactionsFileName = "clientTransactions.csv";
+	private String transactionsNationwideFileName = "src/main/resources/nationwide.csv";
 
 	@Before
 	public void setUp() throws Exception {
@@ -177,6 +178,23 @@ public class ClearCheckBookClientTest {
 		}
 	}
 
+	@Test
+	public void testBulkUpdateNationwide() {
+		try {
+			List<TransactionDataType> file = this.client
+					.importTransactions(transactionsNationwideFileName);
+			file.get(1).setDescription(
+					"updated " + DateUtils.getNowyyyyMMddHHmm());
+			this.client.processTransactions(file);
+			List<TransactionDataType> after = this.client.getTransactions();
+			compareTransactionList(file, after);
+
+		} catch (ClearcheckbookException e) {
+			_logger.fatal("Failed to testExportTransactions", e);
+			fail();
+		}
+	}
+
 	private void compareTransactionList(List<TransactionDataType> expected,
 			List<TransactionDataType> actual) {
 		assertSame(expected.size(), actual.size());
@@ -190,6 +208,7 @@ public class ClearCheckBookClientTest {
 		for (Iterator<TransactionDataType> iterator = actual.iterator(); iterator
 				.hasNext();) {
 			TransactionDataType transactionDataType = iterator.next();
+			_logger.debug("comparing " + transactionDataType);
 			assertTrue(expectedMap.containsKey(transactionDataType.getId()));
 			AbstractDataType<?> expectedValue = expectedMap
 					.get(transactionDataType.getId());

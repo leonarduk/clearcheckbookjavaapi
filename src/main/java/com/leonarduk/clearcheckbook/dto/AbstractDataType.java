@@ -99,7 +99,11 @@ abstract public class AbstractDataType<U extends AbstractDataType<?>> {
 	abstract protected Enum<?>[] getFields();
 
 	public long getId() {
-		return Long.valueOf(getIdParameter().getValue());
+		String value = getIdParameter().getValue();
+		if (null == value) {
+			return 0;
+		}
+		return Long.valueOf(value);
 	}
 
 	public ParsedNameValuePair getIdParameter() {
