@@ -32,7 +32,7 @@ public class Config {
 	/**
 	 * This will read the config from src/main/resources/config.properties and
 	 * store it for use in later calls by
-	 * {@link Config#getPropertyValue(String)}
+	 * {@link Config#getMandatoryPropertyValue(String)}
 	 * 
 	 */
 	private void loadConfig() {
@@ -61,8 +61,8 @@ public class Config {
 	 * @param key
 	 * @return
 	 */
-	public String getPropertyValue(String key) {
-		String value = getPropertyValueWithOverride(key);
+	public String getMandatoryPropertyValue(String key) {
+		String value = getOptionalPropertyValue(key);
 		if (value != null) {
 			_logger.info("Using " + value + " for " + key);
 			return value;
@@ -80,7 +80,7 @@ public class Config {
 	 * @param key
 	 * @return
 	 */
-	private String getPropertyValueWithOverride(String key) {
+	public String getOptionalPropertyValue(String key) {
 		String cliOverrideStr = System.getProperty(key);
 		if (cliOverrideStr != null) {
 			_logger.debug("Using command line override for [" + key + "]");
@@ -102,14 +102,14 @@ public class Config {
 	}
 
 	public Integer getPropertyIntegerValue(String key) {
-		return Integer.valueOf(this.getPropertyValue(key));
+		return Integer.valueOf(this.getMandatoryPropertyValue(key));
 	}
 
 	public Double getPropertyDoubleValue(String key) {
-		return Double.valueOf(this.getPropertyValue(key));
+		return Double.valueOf(this.getMandatoryPropertyValue(key));
 	}
 
 	public long getPropertyLongValue(String key) {
-		return Long.valueOf(this.getPropertyValue(key));
+		return Long.valueOf(this.getMandatoryPropertyValue(key));
 	}
 }

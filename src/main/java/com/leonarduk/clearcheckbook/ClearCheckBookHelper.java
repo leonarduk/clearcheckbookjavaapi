@@ -1,19 +1,24 @@
 package com.leonarduk.clearcheckbook;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
 
 import com.leonarduk.clearcheckbook.dto.AccountDataType;
 import com.leonarduk.clearcheckbook.dto.CategoryDataType;
 import com.leonarduk.clearcheckbook.dto.LimitDataType;
 import com.leonarduk.clearcheckbook.dto.ReminderDataType;
 import com.leonarduk.clearcheckbook.dto.TransactionDataType;
-import com.leonarduk.utils.Config;
 
 /**
- * 
- * 
+ * A class to hold helper methods around the API. This adds caching to the
+ * {@link ClearCheckBookConnection} class. It is expected client code will use
+ * this class as an interface to the API.
  * 
  * @author Stephen Leonard
  * @since 6 Feb 2014
@@ -23,53 +28,63 @@ import com.leonarduk.utils.Config;
  * @version $Date:: $: Date of last commit
  * 
  */
-public class ClearCheckBookClient {
+public class ClearCheckBookHelper {
+
+	private static final Logger _logger = Logger
+			.getLogger(ClearCheckBookHelper.class);
 	private ClearCheckBookConnection connection;
 	private ClearCheckBookFileHandler fileHandler;
 
-	public ClearCheckBookClient(String userName, String password) {
+	public ClearCheckBookHelper(String userName, String password) {
 
 		this.connection = new ClearCheckBookConnection(userName, password);
 		this.fileHandler = new ClearCheckBookFileHandler();
 	}
 
+	private Map<Long, AccountDataType> accountsMap = null;
+
 	/**
+	 * fetch accounts from memory cache if fetched already.
 	 * 
-	 * @param args
+	 * @return
 	 * @throws ClearcheckbookException
 	 */
-	public static void main(String[] args) throws ClearcheckbookException {
-		Config config = new Config();
-
-		String userName = config.getPropertyValue("clearcheckbook.user");
-		String password = config.getPropertyValue("clearcheckbook.password");
-
-		ClearCheckBookClient client = new ClearCheckBookClient(userName,
-				password);
-
-		System.out.println("Clearcheckbook Tools - connecting as " + userName);
-
-		// download accounts
-		List<AccountDataType> accounts = client.getAccounts();
-		for (Iterator<AccountDataType> iterator = accounts.iterator(); iterator
-				.hasNext();) {
-			AccountDataType accountDataType = iterator.next();
-			System.out.println(accountDataType.getId() + " : "
-					+ accountDataType.getName() + " "
-					+ accountDataType.getCurrentBalance());
-
-		}
-		// download transactions
-
-		// upload transactions
-		// List<TransactionDataType> dataTypeList = null; // TODO
-		//
-		// client.processTransactions(dataTypeList);
-
+	public List<AccountDataType> getAccounts() throws ClearcheckbookException {
+		return new ArrayList<>(getAccountsMap().values());
 	}
 
-	public List<AccountDataType> getAccounts() throws ClearcheckbookException {
-		return this.connection.account().getAll();
+	/**
+	 * fetch accounts from memory cache if fetched already.
+	 * 
+	 * @return
+	 * @throws ClearcheckbookException
+	 */
+	public Map<Long, AccountDataType> getAccountsMap()
+			throws ClearcheckbookException {
+		if (null == accountsMap) {
+
+			List<AccountDataType> accounts = this.connection.account().getAll();
+			accountsMap = new HashMap<Long, AccountDataType>();
+			for (Iterator<AccountDataType> iterator = accounts.iterator(); iterator
+					.hasNext();) {
+				AccountDataType accountDataType = iterator.next();
+				accountsMap.put(accountDataType.getId(), accountDataType);
+			}
+		}
+		return accountsMap;
+	}
+
+	/**
+	 * API extension to compare the provided account id with the list of ids for
+	 * this user.
+	 * 
+	 * @param accountId
+	 * @return
+	 * @throws ClearcheckbookException
+	 */
+	public boolean isAccountIdValid(Long accountId)
+			throws ClearcheckbookException {
+		return getAccountsMap().containsKey(accountId);
 	}
 
 	public List<LimitDataType> getLimits() throws ClearcheckbookException {
