@@ -25,7 +25,7 @@ public class ClearCheckBookClientTest {
 
 	private static final Logger _logger = Logger
 			.getLogger(ClearCheckBookClientTest.class);
-	private ClearCheckBookClient client;
+	private ClearCheckBookHelper client;
 	private final String categoriesFileName = "clientCategories.csv";
 	private final String accountsFileName = "clientAccounts.csv";
 	private final String limitsfileName = "clientLimits.csv";
@@ -37,7 +37,7 @@ public class ClearCheckBookClientTest {
 	public void setUp() throws Exception {
 		String user = "unittest_luk";
 		String password = "unittest_luk";
-		client = new ClearCheckBookClient(user, password);
+		client = new ClearCheckBookHelper(user, password);
 	}
 
 	@Test

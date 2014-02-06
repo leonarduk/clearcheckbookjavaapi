@@ -1,22 +1,15 @@
 package com.leonarduk.clearcheckbook;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.http.entity.mime.Header;
 import org.apache.log4j.Logger;
 
 import com.leonarduk.clearcheckbook.dto.AccountDataType;
-import com.leonarduk.clearcheckbook.dto.CategoryDataType;
-import com.leonarduk.clearcheckbook.dto.LimitDataType;
-import com.leonarduk.clearcheckbook.dto.ReminderDataType;
 import com.leonarduk.clearcheckbook.dto.TransactionDataType;
 import com.leonarduk.utils.Config;
 
@@ -81,32 +74,79 @@ public class ClearCheckBookCLI {
 
 	private void getMenu() throws ClearcheckbookException {
 		String[] options = new String[] { "Accounts", "Transaction", "Quit" };
+		System.out.println("MAIN MENU");
 		for (int i = 0; i < options.length; i++) {
 			System.out.println(i + " " + options[i]);
 		}
 
-		int option;
-		try {
-			option = getIntegerInput("Choose option:", options.length - 1);
-			switch (option) {
-			case 0:
-				getAccountsMenu();
-				break;
-			case 1:
-				getTransactionsMenu();
-				break;
-			default:
-				System.out.println("Exiting");
-				System.exit(0);
-			}
-		} catch (IOException e) {
-			throw new ClearcheckbookException("Invalid option: ", e);
+		int option = getIntegerInput("Choose option:", options.length - 1);
+		switch (option) {
+		case 0:
+			getAccountsMenu();
+			break;
+		case 1:
+			getTransactionsMenu();
+			break;
+		default:
+			System.out.println("Exiting");
+			System.exit(0);
 		}
 	}
 
-	private static void getTransactionsMenu() {
+	private void getTransactionsMenu() throws ClearcheckbookException {
+		String[] options = new String[] { "List", "Export", "Import" };
+		for (int i = 0; i < options.length; i++) {
+			System.out.println(i + " " + options[i]);
+		}
+
+		int option = getIntegerInput("Choose option:", options.length - 1);
+		switch (option) {
+		case 0:
+			listTransactions();
+			break;
+		case 1:
+			exportTransactions();
+			break;
+		case 2:
+			importTransactions();
+			break;
+		default:
+			throw new ClearcheckbookException("Invalid option: " + option);
+		}
+
+	}
+
+	private void importTransactions() {
 		// TODO Auto-generated method stub
 
+	}
+
+	private void listTransactions() throws ClearcheckbookException {
+		// TODO Auto-generated method stub
+
+	}
+
+	private void exportTransactions() throws ClearcheckbookException {
+		List<AccountDataType> accounts = helper.getAccounts();
+		System.out
+				.println("Choose number of account or select 0 for all transactions");
+		for (int i = 0; i < accounts.size(); i++) {
+			AccountDataType accountDataType = accounts.get(i);
+			System.out.println((i + 1) + " " + accountDataType.getId() + " "
+					+ accountDataType.getName() + " "
+					+ accountDataType.getCurrentBalance());
+		}
+		int option = getIntegerInput("Choose option:", accounts.size());
+		String fileName = getStringInput("Enter file name:");
+		if (option == 0) {
+			this.helper.exportTransactions(fileName,
+					this.helper.getTransactions());
+		} else {
+			AccountDataType account = accounts.get(option - 1);
+			List<TransactionDataType> transactions = this.helper
+					.getTransactions(account);
+			this.helper.exportTransactions(fileName, transactions);
+		}
 	}
 
 	private void getAccountsMenu() throws ClearcheckbookException {
@@ -115,21 +155,16 @@ public class ClearCheckBookCLI {
 			System.out.println(i + " " + options[i]);
 		}
 
-		int option;
-		try {
-			option = getIntegerInput("Choose option:", options.length - 1);
-			switch (option) {
-			case 0:
-				listAccounts();
-				break;
-			case 1:
-				exportAccounts();
-				break;
-			default:
-				throw new ClearcheckbookException("Invalid option: " + option);
-			}
-		} catch (IOException e) {
-			throw new ClearcheckbookException("Invalid option: ", e);
+		int option = getIntegerInput("Choose option:", options.length - 1);
+		switch (option) {
+		case 0:
+			listAccounts();
+			break;
+		case 1:
+			exportAccounts();
+			break;
+		default:
+			throw new ClearcheckbookException("Invalid option: " + option);
 		}
 	}
 
@@ -139,7 +174,7 @@ public class ClearCheckBookCLI {
 	}
 
 	private int getIntegerInput(String question, int maxNumber)
-			throws IOException {
+			throws ClearcheckbookException {
 		System.out.print(question);
 
 		try {
@@ -154,7 +189,21 @@ public class ClearCheckBookCLI {
 		} catch (NumberFormatException nfe) {
 			System.err.println("Invalid Format!");
 			return getIntegerInput(question, maxNumber);
+		} catch (IOException e) {
+			throw new ClearcheckbookException("Failed to get option", e);
 		}
+	}
+
+	private String getStringInput(String question)
+			throws ClearcheckbookException {
+		System.out.print(question);
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		try {
+			return br.readLine();
+		} catch (IOException e) {
+			throw new ClearcheckbookException("Failed to get input", e);
+		}
+
 	}
 
 	private Map<Long, AccountDataType> accountsMap = null;
