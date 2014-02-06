@@ -5,6 +5,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import com.leonarduk.clearcheckbook.ClearcheckbookException;
+import com.leonarduk.utils.NumberUtils;
 
 /**
  * 
@@ -128,6 +129,17 @@ public class AccountDataType extends AbstractDataType<AccountDataType> {
 
 	public Double getWithdrawal() {
 		return getDoubleValue(Fields.WITHDRAWAL);
+	}
+
+	/**
+	 * Extension of the API to take the deposit - withdrawal values to give
+	 * balance.
+	 * 
+	 * @return
+	 */
+	public Double getCurrentBalance() {
+		return NumberUtils.formatMoney(getDeposit().doubleValue()
+				- getWithdrawal().doubleValue());
 	}
 
 	public void setWithdrawal(Double value) {

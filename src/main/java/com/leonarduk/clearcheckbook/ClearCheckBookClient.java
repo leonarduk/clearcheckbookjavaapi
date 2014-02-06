@@ -54,7 +54,9 @@ public class ClearCheckBookClient {
 		for (Iterator<AccountDataType> iterator = accounts.iterator(); iterator
 				.hasNext();) {
 			AccountDataType accountDataType = iterator.next();
-			System.out.println(accountDataType);
+			System.out.println(accountDataType.getId() + " : "
+					+ accountDataType.getName() + " "
+					+ accountDataType.getCurrentBalance());
 
 		}
 		// download transactions
