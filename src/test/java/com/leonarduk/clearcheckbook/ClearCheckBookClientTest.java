@@ -35,7 +35,9 @@ public class ClearCheckBookClientTest {
 
 	@Before
 	public void setUp() throws Exception {
-		client = new ClearCheckBookClient();
+		String user = "unittest_luk";
+		String password = "unittest_luk";
+		client = new ClearCheckBookClient(user, password);
 	}
 
 	@Test
