@@ -33,7 +33,7 @@ public class ClearCheckBookClient {
 		// download transactions
 
 		// upload transactions
-		List<TransactionDataType> dataTypeList;
+		List<TransactionDataType> dataTypeList = null; //TODO
 
 		client.processTransactions(dataTypeList);
 

@@ -141,26 +141,7 @@ public class ClearCheckBookFileHandler {
 	 */
 	public <D extends AbstractDataType<?>> List<D> importFromFile(
 			String fileName, Class<D> c) throws ClearcheckbookException {
-		return importFromFile(fileName, c, new 
-
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				());
+		return importFromFile(fileName, c, new FilePreprocessor());
 	}
 
 	public <D extends AbstractDataType<?>> List<D> importFromFile(
