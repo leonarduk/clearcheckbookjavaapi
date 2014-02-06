@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import com.leonarduk.clearcheckbook.dto.TransactionDataType;
 import com.leonarduk.utils.DateUtils;
 
 public class NationwideFilePreprocessor extends FilePreprocessor {

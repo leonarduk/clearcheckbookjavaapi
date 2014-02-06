@@ -4,8 +4,6 @@ import java.io.IOException;
 
 import org.apache.log4j.Logger;
 
-import com.gargoylesoftware.htmlunit.HttpMethod;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.leonarduk.clearcheckbook.calls.AbstractCall;
 import com.leonarduk.clearcheckbook.calls.AccountCall;
 import com.leonarduk.clearcheckbook.calls.CategoryCall;
@@ -50,7 +48,6 @@ public class ClearCheckBookConnection {
 		this.userCall = new UserCall(this);
 
 	}
-
 
 	public AccountCall account() {
 		return accountCall;
@@ -102,9 +99,9 @@ public class ClearCheckBookConnection {
 	public String getPage(String url, ParsedNameValuePair... parameters)
 			throws IOException {
 		_logger.debug("URL:" + getFullUrl(url));
-		HtmlPage page = HtmlUnitUtils.getPage(getFullUrl(url), HttpMethod.GET,
+		String page = HtmlUnitUtils.getPageText(getFullUrl(url), "GET",
 				userName, password, parameters);
-		return page.asText();
+		return page;
 	}
 
 	/**
@@ -118,9 +115,9 @@ public class ClearCheckBookConnection {
 			throws IOException {
 		String fullPath = getFullUrl(url);
 		_logger.debug("URL:" + fullPath + " " + parameters);
-		HtmlPage page = HtmlUnitUtils.getPage(fullPath, HttpMethod.POST,
-				userName, password, parameters);
-		return page.asText();
+		String page = HtmlUnitUtils.getPageText(fullPath, "POST", userName,
+				password, parameters);
+		return page;
 	}
 
 	/**
@@ -151,9 +148,9 @@ public class ClearCheckBookConnection {
 		String fullUrl = getFullUrl(url);
 
 		_logger.debug("URL:" + fullUrl);
-		HtmlPage page = HtmlUnitUtils.getPage(fullUrl, HttpMethod.PUT,
-				userName, password, parameters);
-		return page.asText();
+		String page = HtmlUnitUtils.getPageText(fullUrl, "PUT", userName,
+				password, parameters);
+		return page;
 	}
 
 	/**
@@ -166,9 +163,9 @@ public class ClearCheckBookConnection {
 	public String deletePage(String url, ParsedNameValuePair... parameters)
 			throws IOException {
 		_logger.debug("URL:" + this.baseurl + url);
-		HtmlPage page = HtmlUnitUtils.getPage(this.baseurl + url,
-				HttpMethod.DELETE, userName, password, parameters);
-		return page.asText();
+		String page = HtmlUnitUtils.getPageText(this.baseurl + url, "DELETE",
+				userName, password, parameters);
+		return page;
 	}
 
 }

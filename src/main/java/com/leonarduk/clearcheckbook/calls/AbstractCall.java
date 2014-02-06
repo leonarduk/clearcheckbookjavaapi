@@ -17,7 +17,6 @@ import org.codehaus.jackson.type.TypeReference;
 import com.leonarduk.clearcheckbook.ClearCheckBookConnection;
 import com.leonarduk.clearcheckbook.ClearcheckbookException;
 import com.leonarduk.clearcheckbook.dto.AbstractDataType;
-import com.leonarduk.clearcheckbook.dto.AbstractDataType.ControlField;
 import com.leonarduk.clearcheckbook.dto.ParsedNameValuePair;
 
 /**

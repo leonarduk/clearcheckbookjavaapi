@@ -13,6 +13,10 @@ public class DateUtils {
 		return getFormattedDate("yyyyMMddHHmm");
 	}
 
+	public static String getNowyyyyMMddHHmmss() {
+		return getFormattedDate("yyyyMMddhhmmss.000");
+	}
+
 	public static String getFormattedDate(String format, Date date) {
 		SimpleDateFormat sdf = new SimpleDateFormat(format);
 		return sdf.format(date);

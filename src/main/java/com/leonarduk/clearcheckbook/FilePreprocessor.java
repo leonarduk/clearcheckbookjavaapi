@@ -1,6 +1,5 @@
 package com.leonarduk.clearcheckbook;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import com.leonarduk.clearcheckbook.dto.TransactionDataType;

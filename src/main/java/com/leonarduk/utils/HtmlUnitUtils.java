@@ -9,7 +9,6 @@ import java.util.List;
 import javax.xml.bind.DatatypeConverter;
 
 import org.apache.log4j.Logger;
-import org.eclipse.jetty.util.ajax.JSONObjectConvertor;
 
 import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
@@ -49,6 +48,20 @@ public class HtmlUnitUtils {
 		textField.setValueAttribute(value);
 	}
 
+	public static String getPageText(String url, String method,
+			NameValuePair... parameters) throws FailingHttpStatusCodeException,
+			IOException {
+		return getPage(url, HttpMethod.valueOf(HttpMethod.class, method),
+				parameters).asText();
+	}
+
+	public static String getPageText(String url, String method,
+			String userName, String password, NameValuePair... parameters)
+			throws FailingHttpStatusCodeException, IOException {
+		return getPage(url, HttpMethod.valueOf(HttpMethod.class, method),
+				userName, password, parameters).asText();
+	}
+
 	public static HtmlPage getPage(String url, HttpMethod method,
 			String userName, String password, NameValuePair... parameters)
 			throws FailingHttpStatusCodeException, IOException {
@@ -66,7 +79,8 @@ public class HtmlUnitUtils {
 		// WebRequestSettings object
 		WebRequest requestSettings = new WebRequest(new URL(url), method);
 
-		if (null != parameters && parameters.length > 0 && parameters[0] != null) {
+		if (null != parameters && parameters.length > 0
+				&& parameters[0] != null) {
 			// Then we set the request parameters
 			requestSettings.setRequestParameters(Arrays.asList(parameters));
 		}
@@ -82,11 +96,7 @@ public class HtmlUnitUtils {
 		return getPage(url, method, null, null, parameters);
 	}
 
-	public String convertJSON() {
-		JSONObjectConvertor convertor;
-		return null;
-	}
-
+	
 	private static void setCredentials(WebClient webClient, String username,
 			String password) {
 		String base64encodedUsernameAndPassword = base64Encode(username + ":"

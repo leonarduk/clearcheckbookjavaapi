@@ -13,19 +13,30 @@ import com.leonarduk.utils.Config;
 public class ClearCheckBookClient {
 	private ClearCheckBookConnection connection;
 	private ClearCheckBookFileHandler fileHandler;
-	private Config config;
 
-	public ClearCheckBookClient() {
-		config = new Config();
-		String userName = config.getPropertyValue("clearcheckbook.user");
-		String password = config.getPropertyValue("clearcheckbook.password");
+	public ClearCheckBookClient(String userName, String password) {
 
 		this.connection = new ClearCheckBookConnection(userName, password);
 		this.fileHandler = new ClearCheckBookFileHandler();
 	}
 
-	public static void main(String[] args) {
-		ClearCheckBookClient client = new ClearCheckBookClient();
+	public static void main(String[] args) throws ClearcheckbookException {
+		Config config = new Config();
+		String userName = config.getPropertyValue("clearcheckbook.user");
+		String password = config.getPropertyValue("clearcheckbook.password");
+
+		ClearCheckBookClient client = new ClearCheckBookClient(userName,
+				password);
+
+		// download accounts
+
+		// download transactions
+
+		// upload transactions
+		List<TransactionDataType> dataTypeList;
+
+		client.processTransactions(dataTypeList);
+
 	}
 
 	public List<AccountDataType> getAccounts() throws ClearcheckbookException {
