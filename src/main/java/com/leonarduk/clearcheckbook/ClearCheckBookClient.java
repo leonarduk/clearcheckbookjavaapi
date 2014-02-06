@@ -1,6 +1,7 @@
 package com.leonarduk.clearcheckbook;
 
 import java.io.File;
+import java.util.Iterator;
 import java.util.List;
 
 import com.leonarduk.clearcheckbook.dto.AccountDataType;
@@ -10,6 +11,18 @@ import com.leonarduk.clearcheckbook.dto.ReminderDataType;
 import com.leonarduk.clearcheckbook.dto.TransactionDataType;
 import com.leonarduk.utils.Config;
 
+/**
+ * 
+ * 
+ * 
+ * @author Stephen Leonard
+ * @since 6 Feb 2014
+ * 
+ * @version $Author:: $: Author of last commit
+ * @version $Rev:: $: Revision of last commit
+ * @version $Date:: $: Date of last commit
+ * 
+ */
 public class ClearCheckBookClient {
 	private ClearCheckBookConnection connection;
 	private ClearCheckBookFileHandler fileHandler;
@@ -20,22 +33,36 @@ public class ClearCheckBookClient {
 		this.fileHandler = new ClearCheckBookFileHandler();
 	}
 
+	/**
+	 * 
+	 * @param args
+	 * @throws ClearcheckbookException
+	 */
 	public static void main(String[] args) throws ClearcheckbookException {
 		Config config = new Config();
+
 		String userName = config.getPropertyValue("clearcheckbook.user");
 		String password = config.getPropertyValue("clearcheckbook.password");
 
 		ClearCheckBookClient client = new ClearCheckBookClient(userName,
 				password);
 
-		// download accounts
+		System.out.println("Clearcheckbook Tools - connecting as " + userName);
 
+		// download accounts
+		List<AccountDataType> accounts = client.getAccounts();
+		for (Iterator<AccountDataType> iterator = accounts.iterator(); iterator
+				.hasNext();) {
+			AccountDataType accountDataType = iterator.next();
+			System.out.println(accountDataType);
+
+		}
 		// download transactions
 
 		// upload transactions
-		List<TransactionDataType> dataTypeList = null; //TODO
-
-		client.processTransactions(dataTypeList);
+		// List<TransactionDataType> dataTypeList = null; // TODO
+		//
+		// client.processTransactions(dataTypeList);
 
 	}
 
