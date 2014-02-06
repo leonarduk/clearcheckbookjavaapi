@@ -11,6 +11,7 @@ import com.leonarduk.clearcheckbook.dto.AbstractDataType;
 import com.leonarduk.clearcheckbook.dto.AccountDataType;
 import com.leonarduk.clearcheckbook.dto.ParsedNameValuePair;
 import com.leonarduk.clearcheckbook.dto.TransactionDataType;
+import com.leonarduk.clearcheckbook.dto.AbstractDataType.ControlField;
 
 public class TransactionCall extends AbstractCall<TransactionDataType> {
 
@@ -28,6 +29,7 @@ public class TransactionCall extends AbstractCall<TransactionDataType> {
 			throws ClearcheckbookException {
 		super.bulkProcess(dataTypeList);
 	}
+
 	@Override
 	protected String getUrlSuffix() {
 		return TYPE;
@@ -85,9 +87,16 @@ public class TransactionCall extends AbstractCall<TransactionDataType> {
 		return super.getAll(AccountDataType.getIdParameter(accountId));
 	}
 
+	/**
+	 * 
+	 * @param account
+	 * @return
+	 * @throws ClearcheckbookException
+	 */
 	public List<TransactionDataType> getAll(AccountDataType account)
 			throws ClearcheckbookException {
-		return super.getAll(AccountDataType.getIdParameter(account.getId()));
+		return super.getAll(new ParsedNameValuePair("account_id", String
+				.valueOf(account.getId())));
 	}
 
 	public List<TransactionDataType> getAll(long accountId, int page, int limit)

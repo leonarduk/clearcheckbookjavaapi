@@ -127,26 +127,41 @@ public class ClearCheckBookCLI {
 	}
 
 	private void exportTransactions() throws ClearcheckbookException {
+		System.out.println("Fetching account list...");
 		List<AccountDataType> accounts = helper.getAccounts();
-		System.out
-				.println("Choose number of account or select 0 for all transactions");
 		for (int i = 0; i < accounts.size(); i++) {
 			AccountDataType accountDataType = accounts.get(i);
 			System.out.println((i + 1) + " " + accountDataType.getId() + " "
 					+ accountDataType.getName() + " "
 					+ accountDataType.getCurrentBalance());
 		}
-		int option = getIntegerInput("Choose option:", accounts.size());
-		String fileName = getStringInput("Enter file name:");
+		int option = getIntegerInput(
+				"Choose number of account or select 0 for all transactions:",
+				accounts.size());
+		List<TransactionDataType> transactions;
+		String defaultFilename;
+
 		if (option == 0) {
-			this.helper.exportTransactions(fileName,
-					this.helper.getTransactions());
+			System.out.println("Fetching all transactions...");
+			defaultFilename = "all_transactions.csv";
+			transactions = this.helper.getTransactions();
 		} else {
 			AccountDataType account = accounts.get(option - 1);
-			List<TransactionDataType> transactions = this.helper
-					.getTransactions(account);
-			this.helper.exportTransactions(fileName, transactions);
+			System.out.println("Fetching transactions for " + account.getName()
+					+ "...");
+			defaultFilename = "account_" + account.getId() + ".csv";
+			transactions = this.helper.getTransactions(account);
 		}
+		System.out.println("Fetched " + transactions.size() + " transactions");
+		String fileName = getStringInput("Enter file name to save transactions to [enter for "
+				+ defaultFilename + "]:");
+		if (fileName.trim().equals("")) {
+			fileName = defaultFilename;
+		}
+		System.out.println("Exporting " + transactions.size()
+				+ " transactions to file : " + fileName + "...");
+		this.helper.exportTransactions(fileName, transactions);
+		System.out.println("...done.");
 	}
 
 	private void getAccountsMenu() throws ClearcheckbookException {
