@@ -131,12 +131,7 @@ public class ClearCheckBookHelper {
 	}
 
 	public List<TransactionDataType> importTransactions(
-			String transactionsFileName) throws ClearcheckbookException {
-		return this.fileHandler.importTransactions(transactionsFileName);
-	}
-
-	public List<TransactionDataType> importTransactions(
-			String transactionsFileName, FilePreprocessor preprocessor)
+			String transactionsFileName, FilePreProcessor preprocessor)
 			throws ClearcheckbookException {
 		return this.fileHandler.importTransactions(transactionsFileName,
 				preprocessor);

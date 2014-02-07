@@ -97,7 +97,8 @@ public class ClearCheckBookFileHandlerTest {
 	public void testImportTransactions() {
 		try {
 			List<TransactionDataType> transactions = this.fileHandler
-					.importTransactions(testTransactionFile);
+					.importTransactions(testTransactionFile,
+							new TransactionFilePreprocessor());
 			_logger.info("Read:" + transactions.size() + ": " + transactions);
 			for (Iterator<TransactionDataType> iterator = transactions
 					.iterator(); iterator.hasNext();) {
@@ -126,7 +127,7 @@ public class ClearCheckBookFileHandlerTest {
 			// "Date","Transaction type","Description","Paid out","Paid in","Balance"
 			// "21 Nov 2013","Transfer from","0275/636 848 557","","£120.00","£120.00"
 
-			FilePreprocessor processor = new NationwideFilePreprocessor();
+			FilePreProcessor processor = new NationwideFilePreprocessor();
 			List<TransactionDataType> transactions = this.fileHandler
 					.importTransactions(testNationwideTransactionFile,
 							processor);
@@ -154,9 +155,11 @@ public class ClearCheckBookFileHandlerTest {
 	public void testImportMiniTransactions() {
 		try {
 			List<TransactionDataType> expected = this.fileHandler
-					.importTransactions(testTransactionFile);
+					.importTransactions(testTransactionFile,
+							new TransactionFilePreprocessor());
 			List<TransactionDataType> transactions = this.fileHandler
-					.importTransactions(testMiniTransactionFile);
+					.importTransactions(testMiniTransactionFile,
+							new TransactionFilePreprocessor());
 			_logger.info("Read:" + transactions.size() + ": " + transactions);
 			for (Iterator<TransactionDataType> iterator = transactions
 					.iterator(); iterator.hasNext();) {

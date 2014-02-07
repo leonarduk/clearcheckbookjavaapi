@@ -8,7 +8,7 @@ import org.apache.log4j.Logger;
 
 import com.leonarduk.utils.DateUtils;
 
-public class AMEXFilePreprocessor extends FilePreprocessor {
+public class AMEXFilePreprocessor extends TransactionFilePreprocessor {
 
 	private static final Logger _logger = Logger
 			.getLogger(AMEXFilePreprocessor.class);

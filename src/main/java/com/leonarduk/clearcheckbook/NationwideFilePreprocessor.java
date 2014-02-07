@@ -8,7 +8,7 @@ import org.apache.log4j.Logger;
 
 import com.leonarduk.utils.DateUtils;
 
-public class NationwideFilePreprocessor extends FilePreprocessor {
+public class NationwideFilePreprocessor extends TransactionFilePreprocessor {
 
 	private static final Logger _logger = Logger
 			.getLogger(NationwideFilePreprocessor.class);

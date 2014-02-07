@@ -157,11 +157,11 @@ public class ClearCheckBookFileHandler {
 	 */
 	public <D extends AbstractDataType<?>> List<D> importFromFile(
 			String fileName, Class<D> c) throws ClearcheckbookException {
-		return importFromFile(fileName, c, new FilePreprocessor());
+		return importFromFile(fileName, c, new TransactionFilePreprocessor());
 	}
 
 	public <D extends AbstractDataType<?>> List<D> importFromFile(
-			String fileName, Class<D> class1, FilePreprocessor processor)
+			String fileName, Class<D> class1, FilePreProcessor processor)
 			throws ClearcheckbookException {
 
 		String separator = ",";
@@ -229,13 +229,8 @@ public class ClearCheckBookFileHandler {
 		return importFromFile(fileName, ReminderDataType.class);
 	}
 
-	public List<TransactionDataType> importTransactions(String fileName)
-			throws ClearcheckbookException {
-		return importTransactions(fileName, new FilePreprocessor());
-	}
-
 	public List<TransactionDataType> importTransactions(String fileName,
-			FilePreprocessor processor) throws ClearcheckbookException {
+			FilePreProcessor processor) throws ClearcheckbookException {
 		_logger.debug("importTransactions: " + fileName);
 		return importFromFile(fileName, TransactionDataType.class, processor);
 	}

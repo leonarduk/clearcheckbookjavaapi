@@ -153,8 +153,8 @@ public class ClearCheckBookClientTest {
 	public void testImportTransactions() {
 		try {
 			List<TransactionDataType> expected = this.client.getTransactions();
-			List<TransactionDataType> actual = this.client
-					.importTransactions(transactionsFileName);
+			List<TransactionDataType> actual = this.client.importTransactions(
+					transactionsFileName, new TransactionFilePreprocessor());
 			compareTransactionList(expected, actual);
 
 		} catch (ClearcheckbookException e) {
@@ -166,8 +166,8 @@ public class ClearCheckBookClientTest {
 	@Test
 	public void testBulkUpdate() {
 		try {
-			List<TransactionDataType> file = this.client
-					.importTransactions(transactionsFileName);
+			List<TransactionDataType> file = this.client.importTransactions(
+					transactionsFileName, new TransactionFilePreprocessor());
 			file.get(1).setDescription(
 					"updated " + DateUtils.getNowyyyyMMddHHmm());
 			this.client.processTransactions(file);

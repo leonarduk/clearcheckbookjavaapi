@@ -26,6 +26,8 @@ import com.leonarduk.utils.Config;
  */
 public class ClearCheckBookCLI {
 
+	private static final String ALL_TRANSACTIONS_CSV = "all_transactions.csv";
+
 	private static final String ACCOUNTS_CSV = "accounts.csv";
 
 	private static final Logger _logger = Logger
@@ -149,7 +151,7 @@ public class ClearCheckBookCLI {
 	private String getDefaultFileName(AccountDataType account) {
 		String defaultFilename;
 		if (null == account) {
-			defaultFilename = "all_transactions.csv";
+			defaultFilename = ALL_TRANSACTIONS_CSV;
 		} else {
 			defaultFilename = "account_" + account.getId() + ".csv";
 		}
@@ -252,11 +254,16 @@ public class ClearCheckBookCLI {
 	private void importTransactions() throws ClearcheckbookException {
 		System.out.println("Choose which account to import to");
 		AccountDataType account = chooseAccount("no account specified");
+		Long id = 0L;
+		if (null != account) {
+			id = account.getId();
+		}
 		String fileName = getFilename(getDefaultFileName(account));
 
 		List<TransactionDataType> transactions = helper.importTransactions(
-				fileName, new FilePreprocessor());
+				fileName, new TransactionFilePreprocessor(id));
 		this.helper.processTransactions(transactions);
+		System.out.println("Imported " + transactions.size() + " transactions");
 	}
 
 	private void listAccounts() throws ClearcheckbookException {
