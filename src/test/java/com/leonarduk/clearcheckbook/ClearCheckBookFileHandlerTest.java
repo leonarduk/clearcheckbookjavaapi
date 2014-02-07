@@ -1,6 +1,8 @@
 package com.leonarduk.clearcheckbook;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,7 +18,7 @@ import org.junit.Test;
 
 import com.leonarduk.clearcheckbook.dto.CategoryDataType;
 import com.leonarduk.clearcheckbook.dto.TransactionDataType;
-import com.leonarduk.clearcheckbook.dto.TransactionDataType.Type;
+import com.leonarduk.clearcheckbook.file.ClearCheckBookFileHandler;
 import com.leonarduk.clearcheckbook.file.FilePreProcessor;
 import com.leonarduk.clearcheckbook.file.NationwideFilePreprocessor;
 import com.leonarduk.clearcheckbook.file.TransactionFilePreprocessor;
