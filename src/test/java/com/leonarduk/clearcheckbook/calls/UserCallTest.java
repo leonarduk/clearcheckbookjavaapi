@@ -21,6 +21,7 @@ public class UserCallTest {
 
 	@Before
 	public void setUp() throws Exception {
+		this.username = ClearCheckBookConnectionTest.userName;
 		this.call = new UserCall(
 				ClearCheckBookConnectionTest.getTestConnection());
 	}
@@ -30,7 +31,7 @@ public class UserCallTest {
 		UserDataType user;
 		try {
 			user = this.call.get();
-			_logger.info("get:" + user);
+			_logger.info("get:" + username + " vs " + user);
 			assertTrue(username + " vs " + user.getUsername(),
 					username.equals(user.getUsername()));
 		} catch (ClearcheckbookException e) {

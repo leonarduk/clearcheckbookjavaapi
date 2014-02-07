@@ -12,12 +12,12 @@ import org.junit.Test;
 import com.leonarduk.clearcheckbook.dto.CategoryDataType;
 
 public class ClearCheckBookConnectionTest {
+	public static String userName = "unittest_luk";
 
 	private static final Logger _logger = Logger
 			.getLogger(ClearCheckBookConnectionTest.class);
 
 	public static ClearCheckBookConnection getTestConnection() {
-		String userName = "unittest_luk";
 		String password = "unittest_luk";
 		return new ClearCheckBookConnection(userName, password);
 
