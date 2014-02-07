@@ -5,6 +5,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import com.leonarduk.clearcheckbook.ClearcheckbookException;
+import com.leonarduk.clearcheckbook.dto.AccountDataType.Fields;
 import com.leonarduk.clearcheckbook.dto.AccountDataType.Type;
 
 /**
@@ -24,7 +25,7 @@ public class LimitDataType extends AbstractDataType<LimitDataType> {
 	private static final Logger _logger = Logger.getLogger(LimitDataType.class);
 
 	public enum Fields {
-		ID, NAME, AMOUNT, ACCOUNT_ID, CATEGORY_ID, SPENT, ROLLOVER, RESET_DAY, TRANSFER, DEPOSIT, DURATION, START_DATE, THIS_START_DATE, THIS_END_DATE, ORIGINAL_LIMIT
+		ID, NAME, AMOUNT, ACCOUNT_ID, CATEGORY_ID, SPENT, ROLLOVER, RESET_DAY, TRANSFER, DEPOSIT, DURATION, START_DATE, THIS_START_DATE, THIS_END_DATE, ORIGINAL_LIMIT, LIMIT_AMOUNT
 	}
 
 	@Override
@@ -63,14 +64,14 @@ public class LimitDataType extends AbstractDataType<LimitDataType> {
 
 	public LimitDataType(Map<String, String> map) {
 		super(map);
+		setStart_date(getStart_date());
 	}
 
 	@Override
 	protected Enum<?>[] getEditFields() {
-		return new Fields[] { Fields.ACCOUNT_ID, Fields.CATEGORY_ID,
-				Fields.AMOUNT, Fields.DURATION, Fields.RESET_DAY,
-				Fields.START_DATE, Fields.ROLLOVER, Fields.TRANSFER,
-				Fields.DEPOSIT };
+		return new Fields[] { Fields.ID, Fields.AMOUNT, Fields.DURATION,
+				Fields.RESET_DAY, Fields.START_DATE, Fields.ROLLOVER,
+				Fields.TRANSFER, Fields.DEPOSIT };
 	}
 
 	@Override
@@ -120,7 +121,11 @@ public class LimitDataType extends AbstractDataType<LimitDataType> {
 	}
 
 	public Integer getAmount() {
-		return getIntegerValue(Fields.AMOUNT);
+		Integer limit = getIntegerValue(Fields.AMOUNT);
+		if (null == limit) {
+			limit = getIntegerValue(Fields.LIMIT_AMOUNT);
+		}
+		return limit;
 	}
 
 	public void setAmount(int amount) {
@@ -148,7 +153,19 @@ public class LimitDataType extends AbstractDataType<LimitDataType> {
 	}
 
 	public String getStart_date() {
-		return getValue(Fields.START_DATE);
+		String startDate = getValue(Fields.START_DATE);
+		if (null == startDate) {
+			startDate = getValue(Fields.THIS_START_DATE);
+		}
+		if (null != startDate) {
+			return startDate.substring(0, 10);
+		}
+		return null;
+	}
+
+	public String getEnd_date() {
+		String startDate = getValue(Fields.THIS_END_DATE);
+		return startDate;
 	}
 
 	public void setStart_date(String start_date) {

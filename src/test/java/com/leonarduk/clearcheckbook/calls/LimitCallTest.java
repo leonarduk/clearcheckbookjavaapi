@@ -83,25 +83,31 @@ public class LimitCallTest {
 			}
 			original = all.get(0);
 
-			long accountId = original.getAccountId();
-			long categoryId = original.getCategoryId();
-			int amount = 342;
-			Duration duration = original.getDuration();
-			int reset_day = original.getReset_day();
-			String start_date = original.getStart_date();
-			Boolean rollover = original.getRollover();
-			Boolean transfer = original.getTransfer();
-			Boolean deposit = original.getDeposit();
-
-			LimitDataType input = LimitDataType.create(accountId, categoryId,
-					amount, duration, reset_day, start_date, rollover,
-					transfer, deposit);
+			LimitDataType input = createTestLimitFromOriginal(original);
 			String id = this.call.insert(input);
 			_logger.info("inserted " + id + ":" + input);
 		} catch (ClearcheckbookException e) {
 			_logger.fatal("failed to create limit", e);
 			fail("Failed to create limit");
 		}
+	}
+
+	private LimitDataType createTestLimitFromOriginal(LimitDataType original)
+			throws ClearcheckbookException {
+		long accountId = original.getAccountId();
+		long categoryId = original.getCategoryId();
+		int amount = 342;
+		Duration duration = original.getDuration();
+		int reset_day = original.getReset_day();
+		String start_date = original.getStart_date();
+		Boolean rollover = original.getRollover();
+		Boolean transfer = original.getTransfer();
+		Boolean deposit = original.getDeposit();
+
+		LimitDataType input = LimitDataType.create(accountId, categoryId,
+				amount, duration, reset_day, start_date, rollover, transfer,
+				deposit);
+		return input;
 	}
 
 	@Test
@@ -113,10 +119,14 @@ public class LimitCallTest {
 			}
 
 			LimitDataType limit = limits.get(1);
+			LimitDataType input = createTestLimitFromOriginal(limit);
+			_logger.info("Test fail");
+			boolean edited = this.call.edit(input);
+			assertTrue(!edited);
 			Integer oldAmount = limit.getAmount();
-			limit.setAmount(100);
+			limit.setAmount(100 + oldAmount);
 			_logger.info("Going to edit '" + oldAmount + "' to " + limit);
-			boolean edited = this.call.edit(limit);
+			edited = this.call.edit(limit);
 			assertTrue("Failed to edit limit " + limit, edited);
 			_logger.info("Edited " + limit);
 		} catch (ClearcheckbookException e) {
