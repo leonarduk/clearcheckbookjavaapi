@@ -9,6 +9,7 @@ import com.leonarduk.clearcheckbook.ClearcheckbookException;
 import com.leonarduk.clearcheckbook.dto.AbstractDataType;
 import com.leonarduk.clearcheckbook.dto.AccountDataType;
 import com.leonarduk.clearcheckbook.dto.ParsedNameValuePair;
+import com.leonarduk.clearcheckbook.dto.TransactionDataType;
 
 public class AccountCall extends AbstractCall<AccountDataType> {
 
@@ -23,6 +24,12 @@ public class AccountCall extends AbstractCall<AccountDataType> {
 
 	public AccountCall(ClearCheckBookConnection connection) {
 		super(connection, AccountDataType.class);
+	}
+
+	@Override
+	public void bulkProcess(List<AccountDataType> dataTypeList)
+			throws ClearcheckbookException {
+		super.bulkProcess(dataTypeList);
 	}
 
 	/**

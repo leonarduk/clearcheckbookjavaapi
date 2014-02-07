@@ -36,64 +36,6 @@ public class ClearCheckBookFileHandler {
 	/**
 	 * 
 	 * @param fileName
-	 * @param categories
-	 * @return
-	 * @throws ClearcheckbookException
-	 */
-	public File exportCategories(String fileName,
-			List<CategoryDataType> categories) throws ClearcheckbookException {
-		_logger.debug("exportCategories: " + fileName + " " + categories);
-		Enum<?>[] headers = CategoryDataType.Fields.values();
-		return exportToFile(fileName, headers, categories);
-	}
-
-	/**
-	 * 
-	 * @param fileName
-	 * @param transactions
-	 * @return
-	 * @throws ClearcheckbookException
-	 */
-	public File exportTransactions(String fileName,
-			List<TransactionDataType> transactions)
-			throws ClearcheckbookException {
-		_logger.debug("exportTransactions: " + fileName + " " + transactions);
-		Enum<?>[] headers = TransactionDataType.getFileFields();
-		return exportToFile(fileName, headers, transactions);
-	}
-
-	public List<CategoryDataType> importCategories(String fileName)
-			throws ClearcheckbookException {
-		_logger.debug("importTransactions: " + fileName);
-		return importFromFile(fileName, CategoryDataType.class);
-	}
-
-	public List<LimitDataType> importLimits(String fileName)
-			throws ClearcheckbookException {
-		_logger.debug("importTransactions: " + fileName);
-		return importFromFile(fileName, LimitDataType.class);
-	}
-
-	public List<ReminderDataType> importReminders(String fileName)
-			throws ClearcheckbookException {
-		_logger.debug("importTransactions: " + fileName);
-		return importFromFile(fileName, ReminderDataType.class);
-	}
-
-	public List<TransactionDataType> importTransactions(String fileName)
-			throws ClearcheckbookException {
-		return importTransactions(fileName, new FilePreprocessor());
-	}
-
-	public List<TransactionDataType> importTransactions(String fileName,
-			FilePreprocessor processor) throws ClearcheckbookException {
-		_logger.debug("importTransactions: " + fileName);
-		return importFromFile(fileName, TransactionDataType.class, processor);
-	}
-
-	/**
-	 * 
-	 * @param fileName
 	 * @param accounts
 	 * @return
 	 * @throws ClearcheckbookException
@@ -103,6 +45,20 @@ public class ClearCheckBookFileHandler {
 		_logger.debug("exportAccounts: " + fileName + " " + accounts);
 		Enum<?>[] headers = AccountDataType.Fields.values();
 		return exportToFile(fileName, headers, accounts);
+	}
+
+	/**
+	 * 
+	 * @param fileName
+	 * @param categories
+	 * @return
+	 * @throws ClearcheckbookException
+	 */
+	public File exportCategories(String fileName,
+			List<CategoryDataType> categories) throws ClearcheckbookException {
+		_logger.debug("exportCategories: " + fileName + " " + categories);
+		Enum<?>[] headers = CategoryDataType.Fields.values();
+		return exportToFile(fileName, headers, categories);
 	}
 
 	/**
@@ -131,6 +87,66 @@ public class ClearCheckBookFileHandler {
 		_logger.debug("exportReminders: " + fileName + " " + reminders);
 		Enum<?>[] headers = ReminderDataType.Fields.values();
 		return exportToFile(fileName, headers, reminders);
+	}
+
+	/**
+	 * 
+	 * @param fileName
+	 * @param headers
+	 * @param dataTypes
+	 * @return
+	 * @throws ClearcheckbookException
+	 */
+	private File exportToFile(String fileName, Enum<?>[] headers,
+			List<? extends AbstractDataType> dataTypes)
+			throws ClearcheckbookException {
+		PrintWriter writer;
+		try {
+			File file = new File(fileName);
+			writer = new PrintWriter(file, "UTF-8");
+			String separator = "\",\"";
+			writer.println("\"" + Joiner.on(separator).join(headers) + "\"");
+			for (Iterator<? extends AbstractDataType> iterator = dataTypes
+					.iterator(); iterator.hasNext();) {
+				AbstractDataType<?> dataType = iterator.next();
+				writer.println("\""
+						+ Joiner.on(separator).join(dataType.getValues())
+						+ "\"");
+			}
+			writer.close();
+			return file;
+		} catch (FileNotFoundException | UnsupportedEncodingException e) {
+			throw new ClearcheckbookException(
+					"Failed to export to " + fileName, e);
+		}
+
+	}
+
+	/**
+	 * 
+	 * @param fileName
+	 * @param transactions
+	 * @return
+	 * @throws ClearcheckbookException
+	 */
+	public File exportTransactions(String fileName,
+			List<TransactionDataType> transactions)
+			throws ClearcheckbookException {
+		_logger.debug("exportTransactions: " + fileName + " " + transactions);
+		Enum<?>[] headers = TransactionDataType.getFileFields();
+		return exportToFile(fileName, headers, transactions);
+	}
+
+	public List<AccountDataType> importAccounts(String fileName)
+			throws ClearcheckbookException {
+		_logger.debug("importTransactions: " + fileName);
+		return importFromFile(fileName, AccountDataType.class);
+	}
+
+	public List<CategoryDataType> importCategories(String fileName)
+			throws ClearcheckbookException {
+		_logger.debug("importTransactions: " + fileName);
+		return importFromFile(fileName, CategoryDataType.class);
 	}
 
 	/**
@@ -201,37 +217,27 @@ public class ClearCheckBookFileHandler {
 		}
 	}
 
-	/**
-	 * 
-	 * @param fileName
-	 * @param headers
-	 * @param dataTypes
-	 * @return
-	 * @throws ClearcheckbookException
-	 */
-	private File exportToFile(String fileName, Enum<?>[] headers,
-			List<? extends AbstractDataType> dataTypes)
+	public List<LimitDataType> importLimits(String fileName)
 			throws ClearcheckbookException {
-		PrintWriter writer;
-		try {
-			File file = new File(fileName);
-			writer = new PrintWriter(file, "UTF-8");
-			String separator = "\",\"";
-			writer.println("\"" + Joiner.on(separator).join(headers) + "\"");
-			for (Iterator<? extends AbstractDataType> iterator = dataTypes
-					.iterator(); iterator.hasNext();) {
-				AbstractDataType<?> dataType = iterator.next();
-				writer.println("\""
-						+ Joiner.on(separator).join(dataType.getValues())
-						+ "\"");
-			}
-			writer.close();
-			return file;
-		} catch (FileNotFoundException | UnsupportedEncodingException e) {
-			throw new ClearcheckbookException(
-					"Failed to export to " + fileName, e);
-		}
+		_logger.debug("importTransactions: " + fileName);
+		return importFromFile(fileName, LimitDataType.class);
+	}
 
+	public List<ReminderDataType> importReminders(String fileName)
+			throws ClearcheckbookException {
+		_logger.debug("importTransactions: " + fileName);
+		return importFromFile(fileName, ReminderDataType.class);
+	}
+
+	public List<TransactionDataType> importTransactions(String fileName)
+			throws ClearcheckbookException {
+		return importTransactions(fileName, new FilePreprocessor());
+	}
+
+	public List<TransactionDataType> importTransactions(String fileName,
+			FilePreprocessor processor) throws ClearcheckbookException {
+		_logger.debug("importTransactions: " + fileName);
+		return importFromFile(fileName, TransactionDataType.class, processor);
 	}
 
 }

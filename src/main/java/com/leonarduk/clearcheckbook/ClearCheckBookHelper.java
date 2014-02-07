@@ -35,13 +35,39 @@ public class ClearCheckBookHelper {
 	private ClearCheckBookConnection connection;
 	private ClearCheckBookFileHandler fileHandler;
 
+	private Map<Long, AccountDataType> accountsMap = null;
+
 	public ClearCheckBookHelper(String userName, String password) {
 
 		this.connection = new ClearCheckBookConnection(userName, password);
 		this.fileHandler = new ClearCheckBookFileHandler();
 	}
 
-	private Map<Long, AccountDataType> accountsMap = null;
+	public File exportAccounts(String fileName, List<AccountDataType> accounts)
+			throws ClearcheckbookException {
+		return this.fileHandler.exportAccounts(fileName, accounts);
+	}
+
+	public File exportCategories(String fileName,
+			List<CategoryDataType> categories) throws ClearcheckbookException {
+		return this.fileHandler.exportCategories(fileName, categories);
+	}
+
+	public File exportLimits(String fileName, List<LimitDataType> limits)
+			throws ClearcheckbookException {
+		return this.fileHandler.exportLimits(fileName, limits);
+	}
+
+	public File exportReminders(String fileName,
+			List<ReminderDataType> reminders) throws ClearcheckbookException {
+		return this.fileHandler.exportReminders(fileName, reminders);
+	}
+
+	public File exportTransactions(String fileName,
+			List<TransactionDataType> transactions)
+			throws ClearcheckbookException {
+		return this.fileHandler.exportTransactions(fileName, transactions);
+	}
 
 	/**
 	 * fetch accounts from memory cache if fetched already.
@@ -74,17 +100,9 @@ public class ClearCheckBookHelper {
 		return accountsMap;
 	}
 
-	/**
-	 * API extension to compare the provided account id with the list of ids for
-	 * this user.
-	 * 
-	 * @param accountId
-	 * @return
-	 * @throws ClearcheckbookException
-	 */
-	public boolean isAccountIdValid(Long accountId)
+	public List<CategoryDataType> getCategories()
 			throws ClearcheckbookException {
-		return getAccountsMap().containsKey(accountId);
+		return this.connection.category().getAll();
 	}
 
 	public List<LimitDataType> getLimits() throws ClearcheckbookException {
@@ -95,45 +113,21 @@ public class ClearCheckBookHelper {
 		return this.connection.reminder().getAll();
 	}
 
-	public List<TransactionDataType> getTransactions(AccountDataType account)
-			throws ClearcheckbookException {
-		return this.connection.transaction().getAll(account);
-	}
-
 	public List<TransactionDataType> getTransactions()
 			throws ClearcheckbookException {
 		return this.connection.transaction().getAll();
 	}
 
-	public List<CategoryDataType> getCategories()
+	public List<TransactionDataType> getTransactions(AccountDataType account)
 			throws ClearcheckbookException {
-		return this.connection.category().getAll();
+		return this.connection.transaction().getAll(account);
 	}
 
-	public File exportAccounts(String fileName, List<AccountDataType> accounts)
+	public List<AccountDataType> importAccounts(String fileName)
 			throws ClearcheckbookException {
-		return this.fileHandler.exportAccounts(fileName, accounts);
-	}
-
-	public File exportCategories(String fileName,
-			List<CategoryDataType> categories) throws ClearcheckbookException {
-		return this.fileHandler.exportCategories(fileName, categories);
-	}
-
-	public File exportLimits(String fileName, List<LimitDataType> limits)
-			throws ClearcheckbookException {
-		return this.fileHandler.exportLimits(fileName, limits);
-	}
-
-	public File exportReminders(String fileName,
-			List<ReminderDataType> reminders) throws ClearcheckbookException {
-		return this.fileHandler.exportReminders(fileName, reminders);
-	}
-
-	public File exportTransactions(String fileName,
-			List<TransactionDataType> transactions)
-			throws ClearcheckbookException {
-		return this.fileHandler.exportTransactions(fileName, transactions);
+		// remove the cache
+		this.accountsMap = null;
+		return this.fileHandler.importAccounts(fileName);
 	}
 
 	public List<TransactionDataType> importTransactions(
@@ -148,10 +142,27 @@ public class ClearCheckBookHelper {
 				preprocessor);
 	}
 
+	/**
+	 * API extension to compare the provided account id with the list of ids for
+	 * this user.
+	 * 
+	 * @param accountId
+	 * @return
+	 * @throws ClearcheckbookException
+	 */
+	public boolean isAccountIdValid(Long accountId)
+			throws ClearcheckbookException {
+		return getAccountsMap().containsKey(accountId);
+	}
+
 	public void processTransactions(List<TransactionDataType> dataTypeList)
 			throws ClearcheckbookException {
 		this.connection.transaction().bulkProcess(dataTypeList);
 		;
 
+	}
+
+	public void processAccounts(List<AccountDataType> accounts) throws ClearcheckbookException {
+		this.connection.account().bulkProcess(accounts);
 	}
 }

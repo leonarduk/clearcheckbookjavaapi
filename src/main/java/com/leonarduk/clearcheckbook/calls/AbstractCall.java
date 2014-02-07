@@ -131,11 +131,16 @@ abstract public class AbstractCall<U extends AbstractDataType<?>> {
 	protected List<U> getAll(ParsedNameValuePair... parameters)
 			throws ClearcheckbookException {
 		List<U> returnedList = new ArrayList<>();
+		String jsonString = "FAILED";
 		try {
-			String jsonString = this.getConnection().getPage(getPluralUrl(),
+			jsonString = this.getConnection().getPage(getPluralUrl(),
 					parameters);
 			_logger.debug("get: " + jsonString);
 
+			// No values returned
+			if (jsonString.equals("")) {
+				return returnedList;
+			}
 			ObjectMapper mapper = new ObjectMapper();
 
 			// convert JSON string to Map
@@ -155,7 +160,8 @@ abstract public class AbstractCall<U extends AbstractDataType<?>> {
 			_logger.warn("No values returned");
 			return returnedList;
 		} catch (IOException e) {
-			_logger.error("getAll : Failed to bring back values", e);
+			_logger.error("getAll : Failed to bring back values [" + jsonString
+					+ "]", e);
 			throw new ClearcheckbookException(
 					"getAll : Failed to bring back values", e);
 		}
@@ -255,7 +261,7 @@ abstract public class AbstractCall<U extends AbstractDataType<?>> {
 					dataType.getEditParameters());
 			_logger.debug("returned: " + returnString);
 			boolean ok = Boolean.valueOf(returnString);
-			_logger.info("insert : edited " + ok);
+			_logger.info("edit : edited " + ok);
 			return ok;
 		} catch (IOException e) {
 			throw new ClearcheckbookException("Failed to create "
