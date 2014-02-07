@@ -7,8 +7,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({ AccountCallTest.class, CategoryCallTest.class,
 		LimitCallTest.class, ParsedNameValuePairTest.class,
-		PremiumCallTest.class, ReportCallTest.class, TransactionCallTest.class,
-		UserCallTest.class })
+		PremiumCallTest.class, ReminderDataTypeTest.class,
+		ReportCallTest.class, TransactionCallTest.class, UserCallTest.class })
 public class APITests {
 
 }

@@ -21,7 +21,7 @@ import com.leonarduk.clearcheckbook.ClearcheckbookException;
 public class ReminderDataType extends AbstractDataType<ReminderDataType> {
 
 	public enum Fields {
-		ID, TITLE, START_DATE, END_DATE, NOTIFY, NOTIFY_TIME, REPEAT, REPEAT_EVERY_NUM, REPEAT_EVERY, FLOATS, FLOATS_EVERY_NUM, FLOATS_EVERY, TRANS_AMOUNT, TRANS_DESCRIPTION, TRANS_TRANSACTION_TYPE, TRANS_ACCOUNT_ID, TRANS_CATEGORY_ID, TRANS_TRANSFERTOACCOUNT, TRANS_CHECK_NUM, TRANS_MEMO, TRANS_PAYEE, START_YEAR, OCCUR_FLOATING, EMAIL, EMAILDAYS, START_MONTH, START_DAY, END_YEAR, END_MONTH, END_DAY, OCCUR_ONCE, OCCUR_REPEATING, TRANS_ACCOUNTFROM, TRANS_ACCOUNTTO;
+		ID, TITLE, START_DATE, END_DATE, NOTIFY, NOTIFY_TIME, REPEAT, REPEAT_EVERY_NUM, REPEAT_EVERY, FLOATS, FLOATS_EVERY_NUM, FLOATS_EVERY, TRANS_AMOUNT, TRANS_DESCRIPTION, TRANS_TRANSACTION_TYPE, TRANS_ACCOUNT_ID, TRANS_CATEGORY_ID, TRANS_TRANSFERTOACCOUNT, TRANS_CHECK_NUM, TRANS_MEMO, TRANS_PAYEE, START_YEAR, OCCUR_FLOATING, EMAIL, EMAILDAYS, START_MONTH, START_DAY, END_YEAR, END_MONTH, END_DAY, OCCUR_ONCE, OCCUR_REPEATING, TRANS_ACCOUNTFROM, TRANS_ACCOUNTTO, REMINDER_ID, TRANSACTION;
 	}
 
 	@Override
@@ -204,17 +204,15 @@ public class ReminderDataType extends AbstractDataType<ReminderDataType> {
 			throws ClearcheckbookException {
 		boolean jive = false;
 		String date = null;
-		TransactionDataType transactionDataType = TransactionDataType
-				.create(date,
-						getDoubleValue(Fields.TRANS_AMOUNT),
-						getLongValue(Fields.TRANS_ACCOUNT_ID),
-						getLongValue(Fields.TRANS_CATEGORY_ID),
-						getValue(Fields.TRANS_DESCRIPTION), jive,
-						getLongValue(Fields.TRANS_ACCOUNTFROM),
-						getLongValue(Fields.TRANS_ACCOUNTTO),
-						getValue(Fields.TRANS_CHECK_NUM),
-						getValue(Fields.TRANS_MEMO),
-						getValue(Fields.TRANS_PAYEE));
+		TransactionDataType transactionDataType = TransactionDataType.create(
+				date, getDoubleValue(Fields.TRANS_AMOUNT),
+				getLongValue(Fields.TRANS_ACCOUNT_ID),
+				getLongValue(Fields.TRANS_CATEGORY_ID),
+				getValue(Fields.TRANS_DESCRIPTION), jive,
+				getLongValue(Fields.TRANS_ACCOUNTFROM),
+				getLongValue(Fields.TRANS_ACCOUNTTO),
+				getValue(Fields.TRANS_CHECK_NUM), getValue(Fields.TRANS_MEMO),
+				getValue(Fields.TRANS_PAYEE));
 
 		return transactionDataType;
 	}
@@ -240,5 +238,29 @@ public class ReminderDataType extends AbstractDataType<ReminderDataType> {
 		setValue(Fields.TRANS_CHECK_NUM, transactionDataType.getCheckNum());
 		setValue(Fields.TRANS_MEMO, transactionDataType.getMemo());
 		setValue(Fields.TRANS_PAYEE, transactionDataType.getPayee());
+	}
+
+	public boolean getOccur_once() {
+		return getBooleanValue(Fields.OCCUR_ONCE);
+	}
+
+	public boolean getOccur_repeating() {
+		return getBooleanValue(Fields.OCCUR_REPEATING);
+	}
+
+	public boolean getOccur_floating() {
+		return getBooleanValue(Fields.OCCUR_FLOATING);
+	}
+	@Override
+	protected Enum<?>[] getEditFields() {
+		return new Enum[] {Fields.REMINDER_ID,
+Fields.TITLE,			Fields.EMAIL,	Fields.EMAILDAYS,Fields.START_YEAR,
+Fields.START_MONTH, Fields.START_DAY,Fields.END_YEAR,Fields.END_MONTH,Fields.END_DATE,
+Fields.OCCUR_ONCE, Fields.OCCUR_REPEATING, Fields.OCCUR_FLOATING,Fields.REPEAT_EVERY,Fields.REPEAT_EVERY_NUM,
+Fields.FLOATS_EVERY,Fields.FLOATS_EVERY_NUM,Fields.TRANSACTION,
+Fields.TRANS_AMOUNT,Fields.TRANS_DESCRIPTION,Fields.TRANS_PAYEE,Fields.TRANS_MEMO,
+Fields.TRANS_CHECK_NUM,Fields.TRANS_ACCOUNT_ID,Fields.TRANS_CATEGORY_ID,Fields.TRANS_TRANSACTION_TYPE,
+Fields.TRANS_ACCOUNTFROM,Fields.TRANS_ACCOUNTTO
+		};
 	}
 }

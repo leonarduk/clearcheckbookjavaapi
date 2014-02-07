@@ -7,7 +7,6 @@ import org.apache.log4j.Logger;
 
 import com.leonarduk.clearcheckbook.ClearCheckBookConnection;
 import com.leonarduk.clearcheckbook.ClearcheckbookException;
-import com.leonarduk.clearcheckbook.dto.AbstractDataType;
 import com.leonarduk.clearcheckbook.dto.LimitDataType;
 import com.leonarduk.clearcheckbook.dto.ParsedNameValuePair;
 

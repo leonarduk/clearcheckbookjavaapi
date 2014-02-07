@@ -290,12 +290,6 @@ abstract public class AbstractCall<U extends AbstractDataType<?>> {
 		}
 	}
 
-	/**
-	 * 
-	 */
-	protected void deleteAll() {
-		throw new RuntimeException("not implemented");
-	}
 
 	/**
 	 * @return the connection
