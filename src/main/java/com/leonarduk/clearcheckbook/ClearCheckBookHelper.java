@@ -14,6 +14,7 @@ import com.leonarduk.clearcheckbook.dto.CategoryDataType;
 import com.leonarduk.clearcheckbook.dto.LimitDataType;
 import com.leonarduk.clearcheckbook.dto.ReminderDataType;
 import com.leonarduk.clearcheckbook.dto.TransactionDataType;
+import com.leonarduk.clearcheckbook.file.FilePreProcessor;
 
 /**
  * A class to hold helper methods around the API. This adds caching to the

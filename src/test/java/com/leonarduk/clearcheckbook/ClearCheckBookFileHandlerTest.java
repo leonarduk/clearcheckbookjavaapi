@@ -17,6 +17,9 @@ import org.junit.Test;
 import com.leonarduk.clearcheckbook.dto.CategoryDataType;
 import com.leonarduk.clearcheckbook.dto.TransactionDataType;
 import com.leonarduk.clearcheckbook.dto.TransactionDataType.Type;
+import com.leonarduk.clearcheckbook.file.FilePreProcessor;
+import com.leonarduk.clearcheckbook.file.NationwideFilePreprocessor;
+import com.leonarduk.clearcheckbook.file.TransactionFilePreprocessor;
 import com.leonarduk.utils.DateUtils;
 
 public class ClearCheckBookFileHandlerTest {

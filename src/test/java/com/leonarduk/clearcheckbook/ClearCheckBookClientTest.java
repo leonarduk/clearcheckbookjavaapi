@@ -19,6 +19,8 @@ import com.leonarduk.clearcheckbook.dto.CategoryDataType;
 import com.leonarduk.clearcheckbook.dto.LimitDataType;
 import com.leonarduk.clearcheckbook.dto.ReminderDataType;
 import com.leonarduk.clearcheckbook.dto.TransactionDataType;
+import com.leonarduk.clearcheckbook.file.NationwideFilePreprocessor;
+import com.leonarduk.clearcheckbook.file.TransactionFilePreprocessor;
 import com.leonarduk.utils.DateUtils;
 
 public class ClearCheckBookClientTest {

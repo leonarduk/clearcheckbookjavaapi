@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 
 import com.leonarduk.clearcheckbook.dto.AccountDataType;
 import com.leonarduk.clearcheckbook.dto.TransactionDataType;
+import com.leonarduk.clearcheckbook.file.TransactionFilePreprocessor;
 import com.leonarduk.utils.Config;
 
 /**
