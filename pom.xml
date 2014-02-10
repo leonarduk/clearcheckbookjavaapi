@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.leonarduk.clearcheckbook</groupId>
 	<artifactId>clearcheckbookapi</artifactId>
-	<version>0.2-SNAPSHOT</version>
+	<version>0.2</version>
 	<properties>
 		<maven.test.failure.ignore>true</maven.test.failure.ignore>
 		<java.version>1.7</java.version>
