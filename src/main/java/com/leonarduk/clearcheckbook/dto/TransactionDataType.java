@@ -167,6 +167,9 @@ public class TransactionDataType extends AbstractDataType<TransactionDataType> {
 		super();
 	}
 
+	public TransactionDataType(TransactionDataType original){
+		super(original);
+	}
 	public TransactionDataType(Map<String, String> map)
 			throws ClearcheckbookException {
 		super(map);
@@ -288,6 +291,10 @@ public class TransactionDataType extends AbstractDataType<TransactionDataType> {
 
 	public void setTransactionType(Type transactionType) {
 		setValue(Fields.TRANSACTION_TYPE, transactionType);
+	}
+
+	public void markToBeDeleted() {
+		setValue(Fields.ID, -1 * getId());
 	}
 
 }

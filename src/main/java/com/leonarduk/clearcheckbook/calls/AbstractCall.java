@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -194,11 +195,13 @@ abstract public class AbstractCall<U extends AbstractDataType<?>> {
 	/**
 	 * Helper wrapper function to iterate over a list of items to
 	 * insert/edit/delete calling the relevant method on each.
+	 * @return 
 	 * 
 	 * @throws ClearcheckbookException
 	 */
-	protected void bulkProcess(List<U> dataTypeList)
+	protected List<String> bulkProcess(List<U> dataTypeList)
 			throws ClearcheckbookException {
+		List<String> returnStatusList = new LinkedList<>();
 		for (Iterator<U> iterator = dataTypeList.iterator(); iterator.hasNext();) {
 			U u = iterator.next();
 			String id = u.getIdParameter().getValue();
@@ -206,17 +209,30 @@ abstract public class AbstractCall<U extends AbstractDataType<?>> {
 			// Inserts
 			if ("".equals(id) || u.getId() == 0) {
 				_logger.info("insert: " + u);
-				insert(u);
+				id = insert(u);
+				returnStatusList.add("Inserted " + id);
 			}
 			// deletes
 			else if (u.getId() < 0) {
 				_logger.info("delete: " + u);
-				delete(AbstractDataType.getIdParameter(-1 * u.getId()));
+				boolean status = delete(AbstractDataType.getIdParameter(-1
+						* u.getId()));
+				if (status) {
+					returnStatusList.add("Deleted " + id);
+				} else {
+					returnStatusList.add("Failed to delete " + id);
+				}
 			} else {
 				_logger.info("edit: " + u);
-				edit(u);
+				boolean status = edit(u);
+				if (status) {
+					returnStatusList.add("Edited " + id);
+				} else {
+					returnStatusList.add("Failed to edit " + id);
+				}
 			}
 		}
+		return returnStatusList;
 	}
 
 	/**
@@ -289,7 +305,6 @@ abstract public class AbstractCall<U extends AbstractDataType<?>> {
 					+ getUrlSuffix() + " id: " + id.getValue(), e);
 		}
 	}
-
 
 	/**
 	 * @return the connection

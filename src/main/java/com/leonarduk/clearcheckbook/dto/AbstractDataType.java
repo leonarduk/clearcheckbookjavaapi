@@ -18,6 +18,13 @@ abstract public class AbstractDataType<U extends AbstractDataType<?>> {
 			.getLogger(AbstractDataType.class);
 
 	/**
+	 * @return the fieldsMap
+	 */
+	protected Map<String, String> getFieldsMap() {
+		return fieldsMap;
+	}
+
+	/**
 	 * Helper method for use in get method.
 	 * 
 	 * @param id
@@ -48,8 +55,12 @@ abstract public class AbstractDataType<U extends AbstractDataType<?>> {
 		this.fieldsMap = map;
 	}
 
+	public AbstractDataType(U original) {
+		this(original.getFieldsMap());
+	}
+
 	protected void addField(Enum<?> field, String value) {
-		this.fieldsMap.put(field.name().toLowerCase(), value);
+		this.getFieldsMap().put(field.name().toLowerCase(), value);
 	}
 
 	@Override
@@ -169,7 +180,7 @@ abstract public class AbstractDataType<U extends AbstractDataType<?>> {
 	}
 
 	protected String getValue(String key) {
-		String value = this.fieldsMap.get(key);
+		String value = this.getFieldsMap().get(key);
 		_logger.debug("getValue : " + key + "=" + value);
 		return value;
 	}
@@ -201,15 +212,15 @@ abstract public class AbstractDataType<U extends AbstractDataType<?>> {
 
 	protected void setValue(Enum<?> field, Object value) {
 		if (null == value || value.equals("")) {
-			this.fieldsMap.put(field.name().toLowerCase(), null);
+			this.getFieldsMap().put(field.name().toLowerCase(), null);
 		} else {
-			this.fieldsMap.put(field.name().toLowerCase(), value.toString());
+			this.getFieldsMap().put(field.name().toLowerCase(), value.toString());
 		}
 	}
 
 	@Override
 	public String toString() {
-		return "AbstractDataType [fieldsMap=" + fieldsMap + "]";
+		return "AbstractDataType [fieldsMap=" + getFieldsMap() + "]";
 	}
 
 }

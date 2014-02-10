@@ -27,9 +27,9 @@ public class AccountCall extends AbstractCall<AccountDataType> {
 	}
 
 	@Override
-	public void bulkProcess(List<AccountDataType> dataTypeList)
+	public List<String> bulkProcess(List<AccountDataType> dataTypeList)
 			throws ClearcheckbookException {
-		super.bulkProcess(dataTypeList);
+	return	super.bulkProcess(dataTypeList);
 	}
 
 	/**

@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -168,14 +169,22 @@ public class ClearCheckBookClientTest {
 	@Test
 	public void testBulkUpdate() {
 		try {
-			List<TransactionDataType> file = this.client.importTransactions(
-					transactionsFileName, new TransactionFilePreprocessor());
-			file.get(1).setDescription(
-					"updated " + DateUtils.getNowyyyyMMddHHmm());
-			this.client.processTransactions(file);
-			List<TransactionDataType> after = this.client.getTransactions();
-			compareTransactionList(file, after);
-
+			List<TransactionDataType> original = this.client.getTransactions();
+			List<TransactionDataType> changeList = new LinkedList<>(original);
+			TransactionDataType editType = new TransactionDataType(
+					changeList.get(1));
+			editType.setDescription("updated " + DateUtils.getNowyyyyMMddHHmm());
+			TransactionDataType deleteOne = new TransactionDataType(
+					original.get(2));
+			deleteOne.markToBeDeleted();
+			changeList.set(0, editType);
+			changeList.set(1, deleteOne);
+			List<String> returnStatus = this.client.processTransactions(
+					original, this.client.getTransactions());
+			_logger.info(returnStatus);
+			assertEquals(2, returnStatus.size());
+			assertTrue(returnStatus.get(0).contains("Edited"));
+			assertTrue(returnStatus.get(1).contains("Deleted"));
 		} catch (ClearcheckbookException e) {
 			_logger.fatal("Failed to testExportTransactions", e);
 			fail();

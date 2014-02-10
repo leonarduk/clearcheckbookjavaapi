@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -152,14 +153,25 @@ public class ClearCheckBookHelper {
 		return getAccountsMap().containsKey(accountId);
 	}
 
-	public void processTransactions(List<TransactionDataType> dataTypeList)
+	public List<String> processTransactions(
+			List<TransactionDataType> dataTypeList)
 			throws ClearcheckbookException {
-		this.connection.transaction().bulkProcess(dataTypeList);
-		;
-
+		return this.connection.transaction().bulkProcess(dataTypeList);
 	}
 
-	public void processAccounts(List<AccountDataType> accounts) throws ClearcheckbookException {
+	public List<String> processTransactions(List<TransactionDataType> modified,
+	List<TransactionDataType> original) throws ClearcheckbookException {
+		List<TransactionDataType> processList = new LinkedList<>();
+		for (TransactionDataType transcationToProcess : modified) {
+			if(!original.contains(transcationToProcess)) {
+				processList.add(transcationToProcess);
+			}
+		}
+		return this.connection.transaction().bulkProcess(processList);
+	}
+
+	public void processAccounts(List<AccountDataType> accounts)
+			throws ClearcheckbookException {
 		this.connection.account().bulkProcess(accounts);
 	}
 }
