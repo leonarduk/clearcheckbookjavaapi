@@ -199,9 +199,12 @@ public class ClearCheckBookClientTest {
 					new NationwideFilePreprocessor());
 			file.get(1).setDescription(
 					"updated " + DateUtils.getNowyyyyMMddHHmm());
-			this.client.processTransactions(file);
-			List<TransactionDataType> after = this.client.getTransactions();
-			compareTransactionList(file, after);
+			List<String> results = this.client.processTransactions(file);
+			assertEquals(3, results.size());
+			for (String result : results) {
+			assertTrue(result.contains("Inserted"));	
+			}
+			_logger.info(results);
 
 		} catch (ClearcheckbookException e) {
 			_logger.fatal("Failed to testExportTransactions", e);
