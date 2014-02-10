@@ -264,10 +264,12 @@ public class ReminderCall extends AbstractCall<ReminderDataType> {
 	 * Returned Values: <br>
 	 * Value Description <br>
 	 * true / false Returns true on a successful edit or false/null on fail.
+	 * NB - this appears to change the id so you cannot do edit (id) then get(id) as the id will change
 	 */
 	@Override
-	public boolean edit(ReminderDataType input) throws ClearcheckbookException {
-		return super.edit(input);
+	public boolean edit(ReminderDataType dataType)
+			throws ClearcheckbookException {
+		return super.edit(dataType);
 	}
 
 	/**

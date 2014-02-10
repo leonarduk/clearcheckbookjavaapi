@@ -98,10 +98,22 @@ public class ClearCheckBookConnection {
 	 */
 	public String getPage(String url, ParsedNameValuePair... parameters)
 			throws IOException {
-		_logger.debug("URL:" + getFullUrl(url));
+		_logger.debug("URL:" + getFullUrl(url) + parameters);
 		String page = HtmlUnitUtils.getPageText(getFullUrl(url), "GET",
 				userName, password, parameters);
 		return page;
+	}
+
+	private String addGetParameters(String url,
+			ParsedNameValuePair... parameters) {
+		url += "?";
+		if (null != parameters[0]) {
+			for (int i = 0; i < parameters.length; i++) {
+				url += parameters[i].getName() + "=" + parameters[i].getValue()
+						+ "&";
+			}
+		}
+		return url;
 	}
 
 	/**
@@ -140,11 +152,7 @@ public class ClearCheckBookConnection {
 	 */
 	public String putPage(String url, ParsedNameValuePair... parameters)
 			throws IOException {
-		url += "?";
-		for (int i = 0; i < parameters.length; i++) {
-			url += parameters[i].getName() + "=" + parameters[i].getValue()
-					+ "&";
-		}
+		url = addGetParameters(url, parameters);
 		String fullUrl = getFullUrl(url);
 
 		_logger.debug("URL:" + fullUrl);

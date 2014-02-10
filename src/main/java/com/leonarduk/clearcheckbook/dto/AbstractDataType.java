@@ -1,5 +1,7 @@
 package com.leonarduk.clearcheckbook.dto;
 
+import java.awt.List;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -72,9 +74,11 @@ abstract public class AbstractDataType<U extends AbstractDataType<?>> {
 		@SuppressWarnings("unchecked")
 		U that = (U) obj;
 		Enum<?>[] fields = getFields();
+		ArrayList<Enum> ignore = getFieldsToIgnoreInEqualsMethod();
 		for (int i = 0; i < fields.length; i++) {
-			if (!getNonNullValue(fields[i]).equals(
-					that.getNonNullValue(fields[i]))) {
+			if (!ignore.contains(fields[i])
+					&& !getNonNullValue(fields[i]).equals(
+							that.getNonNullValue(fields[i]))) {
 				_logger.info(fields[i].name() + " don't match. This:"
 						+ getNonNullValue(fields[i]) + " vs That:"
 						+ that.getNonNullValue(fields[i]));
@@ -82,6 +86,11 @@ abstract public class AbstractDataType<U extends AbstractDataType<?>> {
 			}
 		}
 		return true;
+	}
+
+	@SuppressWarnings("rawtypes")
+	protected ArrayList<Enum> getFieldsToIgnoreInEqualsMethod() {
+		return new ArrayList<Enum>();
 	}
 
 	protected Boolean getBooleanValue(Enum<?> field) {
@@ -214,7 +223,8 @@ abstract public class AbstractDataType<U extends AbstractDataType<?>> {
 		if (null == value || value.equals("")) {
 			this.getFieldsMap().put(field.name().toLowerCase(), null);
 		} else {
-			this.getFieldsMap().put(field.name().toLowerCase(), value.toString());
+			this.getFieldsMap().put(field.name().toLowerCase(),
+					value.toString());
 		}
 	}
 

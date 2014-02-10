@@ -73,10 +73,10 @@ abstract public class AbstractCall<U extends AbstractDataType<?>> {
 			U dataType = getCore(jsonString);
 			if (null == dataType.getIdParameter().getValue()) {
 				throw new ClearcheckbookException("Could not get "
-						+ getUrlSuffix());
+						+ getUrlSuffix() + " for id " + id.getValue());
 			}
 			return dataType;
-		} catch (IOException e) {
+		} catch (IOException | ClearcheckbookException e) {
 			throw new ClearcheckbookException("Failed to get " + getUrlSuffix()
 					+ " id: " + id.getValue(), e);
 		}
@@ -103,7 +103,7 @@ abstract public class AbstractCall<U extends AbstractDataType<?>> {
 	 */
 	private U getCore(String jsonString) throws ClearcheckbookException,
 			JsonParseException, JsonMappingException, IOException {
-		if (jsonString.equals("null")) {
+		if (jsonString.equals("null") || jsonString.trim().equals("")) {
 			throw new ClearcheckbookException("Failed to get " + getUrlSuffix());
 		}
 		_logger.debug("getCore: " + jsonString);
@@ -195,7 +195,8 @@ abstract public class AbstractCall<U extends AbstractDataType<?>> {
 	/**
 	 * Helper wrapper function to iterate over a list of items to
 	 * insert/edit/delete calling the relevant method on each.
-	 * @return 
+	 * 
+	 * @return
 	 * 
 	 * @throws ClearcheckbookException
 	 */

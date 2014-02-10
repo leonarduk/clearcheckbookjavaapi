@@ -70,17 +70,16 @@ public class ReminderDataTypeTest {
 		try {
 			ReminderDataType original = this.call.getAll().get(0);
 
-			input = ReminderDataType.create(original.getTitle(), "InsertTest"
-					+ DateUtils.getNowyyyyMMddHHmm(), original.getEmailDays(),
-					original.getStart_year(), original.getStart_month(),
-					original.getStart_day(), original.getEnd_year(),
-					original.getEnd_month(), original.getEnd_day(),
-					original.getOccur_once(), original.getOccur_repeating(),
+			input = ReminderDataType.create(original.getTitle(), true,
+					original.getEmailDays(), original.getStart_year(),
+					original.getStart_month(), original.getStart_day(),
+					original.getEnd_year(), original.getEnd_month(),
+					original.getEnd_day(), original.getOccur_once(),
+					original.getOccur_repeating(),
 					original.getOccur_floating(), original.getRepeat_every(),
 					original.getRepeat_evey_num(),
 					original.getFloat_every_num(), original.getFloat_every(),
 					original.getTransactionDataType());
-
 
 			String id = this.call.insert(input);
 			_logger.info("inserted " + id + ":" + input);
@@ -94,13 +93,19 @@ public class ReminderDataTypeTest {
 	public void testEditReminderDataType() {
 		try {
 			List<ReminderDataType> reminderDataTypes = this.call.getAll();
-			ReminderDataType reminderDataType = reminderDataTypes.get(1);
+			ReminderDataType editReminder = reminderDataTypes.get(0);
 
-			reminderDataType.setEmail("EditTest"
+			editReminder.setEmail(true);
+			editReminder.setTitle("TestReminder"
 					+ DateUtils.getNowyyyyMMddHHmm());
-			boolean edited = this.call.edit(reminderDataType);
-			assertTrue("Failed to edit reminder " + reminderDataType, edited);
-			_logger.info("Edited " + reminderDataType);
+
+			boolean edited = this.call.edit(editReminder);
+			assertTrue("Failed to edit reminder " + editReminder, edited);
+			_logger.info("Edited " + editReminder);
+
+			// NB - cannot call get(id) on the id of editReminder as for some
+			// reason CCB will change this value when you do an edit. They must
+			// be doing a delete and insert behind the scenes.
 		} catch (ClearcheckbookException e) {
 			_logger.fatal("Failed to get Reminders list needed to get id", e);
 			fail();

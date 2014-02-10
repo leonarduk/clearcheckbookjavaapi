@@ -1,5 +1,7 @@
 package com.leonarduk.clearcheckbook.dto;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -31,6 +33,11 @@ public class ReminderDataType extends AbstractDataType<ReminderDataType> {
 
 	public ReminderDataType(Map<String, String> map) {
 		super(map);
+		setValue(Fields.ID, getId());
+		setEnd_Date(getEnd_date());
+		setStart_day(getStart_day());
+		setStart_month(getStart_month());
+		setStart_year(getStart_year());
 	}
 
 	private ReminderDataType() {
@@ -52,17 +59,47 @@ public class ReminderDataType extends AbstractDataType<ReminderDataType> {
 				Fields.TRANS_CHECK_NUM, Fields.TRANS_MEMO, Fields.TRANS_PAYEE };
 	}
 
-	public static ReminderDataType create(String title, String email,
-			int emailDays, int start_year, int start_month, int start_day,
-			int end_year, int end_month, int end_day, boolean occur_once,
-			boolean occur_repeating, boolean occur_floating, int repeat_every,
-			int repeat_evey_num, int float_every_num, int float_every,
-			TransactionDataType transactionDataType) {
+	public static ReminderDataType create(String title, Boolean email,
+			Integer emailDays, Integer start_year, String start_month,
+			String start_day, Integer end_year, Integer end_month,
+			Integer end_day, Boolean occur_once, Boolean occur_repeating,
+			Boolean occur_floating, Integer repeat_every,
+			Integer repeat_evey_num, Integer float_every_num,
+			Integer float_every, TransactionDataType transactionDataType)
+			throws ClearcheckbookException {
 		ReminderDataType reminderDataType = new ReminderDataType();
-
+		reminderDataType.setTitle(title);
+		reminderDataType.setEmail(email);
+		reminderDataType.setEmailDays(emailDays);
+		reminderDataType.setStart_date(start_year + "-" + start_month + "-"
+				+ start_day);
+		reminderDataType
+				.setEnd_Date(end_year + "-" + end_month + "-" + end_day);
+		reminderDataType.setOccur_once(occur_once);
+		reminderDataType.setOccur_repeating(occur_repeating);
+		reminderDataType.setOccur_floating(occur_floating);
+		reminderDataType.setFloat_every(float_every);
+		reminderDataType.setFloat_every_num(float_every_num);
+		reminderDataType.setTransactionDataType(transactionDataType);
 		_logger.debug("createUserDataType: " + reminderDataType);
 
 		return reminderDataType;
+	}
+
+	private void setStart_date(String string) {
+		setValue(Fields.START_DATE, string);
+	}
+
+	/**
+	 * since the getall method uses reminder_id not id, need to fix the data
+	 */
+	@Override
+	public ParsedNameValuePair getIdParameter() {
+		String id = getValue(Fields.ID);
+		if (id == null) {
+			id = getValue(Fields.REMINDER_ID);
+		}
+		return new ParsedNameValuePair(Fields.ID.name().toLowerCase(), id);
 	}
 
 	public String getTitle() {
@@ -73,124 +110,152 @@ public class ReminderDataType extends AbstractDataType<ReminderDataType> {
 		setValue(Fields.TITLE, title);
 	}
 
-	public String getEmail() {
-		return getValue(Fields.EMAIL);
+	public String getEnd_date() {
+		String nonNullValue = getNonNullValue(Fields.END_DATE);
+		if (nonNullValue.length() > 10) {
+			return nonNullValue.substring(0, 10);
+		}
+		return nonNullValue;
 	}
 
-	public void setEmail(String email) {
+	public void setEnd_Date(String date) {
+		setValue(Fields.END_DATE, date);
+	}
+
+	public Boolean getEmail() {
+		return getBooleanValue(Fields.EMAIL);
+	}
+
+	public void setEmail(Boolean email) {
 		setValue(Fields.EMAIL, email);
 	}
 
-	public int getEmailDays() {
+	public Integer getEmailDays() {
 		return getIntegerValue(Fields.EMAILDAYS);
 
 	}
 
-	public void setEmailDays(int emailDays) {
+	public void setEmailDays(Integer emailDays) {
 		setValue(Fields.EMAILDAYS, emailDays);
 	}
 
-	public int getStart_year() {
-		return getIntegerValue(Fields.START_YEAR);
+	public String getStart_date() {
+		return getValue(Fields.START_DATE);
 	}
 
-	public void setStart_year(int start_year) {
+	public Integer getStart_year() {
+		String date = getStart_date();
+		if (null == date) {
+			return null;
+		}
+		return Integer.valueOf(date.substring(0, 4));
+	}
+
+	public void setStart_year(Integer start_year) {
 		setValue(Fields.START_YEAR, start_year);
 	}
 
-	public int getStart_month() {
-		return getIntegerValue(Fields.START_MONTH);
+	public String getStart_month() {
+		String date = getStart_date();
+		if (null == date) {
+			return null;
+		}
+		return date.substring(5, 7);
 	}
 
-	public void setStart_month(int start_month) {
-		setValue(Fields.START_YEAR, start_month);
+	public void setStart_month(String string) {
+		setValue(Fields.START_MONTH, string);
 	}
 
-	public int getStart_day() {
-		return getIntegerValue(Fields.START_DAY);
+	public String getStart_day() {
+		String date = getStart_date();
+		if (null == date) {
+			return null;
+		}
+		return date.substring(8, 10);
 	}
 
-	public void setStart_day(int start_day) {
-		setValue(Fields.START_DAY, start_day);
+	public void setStart_day(String string) {
+		setValue(Fields.START_DAY, string);
 	}
 
-	public int getEnd_year() {
+	public Integer getEnd_year() {
 		return getIntegerValue(Fields.END_YEAR);
 	}
 
-	public void setEnd_year(int end_year) {
+	public void setEnd_year(Integer end_year) {
 		setValue(Fields.END_YEAR, end_year);
 	}
 
-	public int getEnd_month() {
+	public Integer getEnd_month() {
 		return getIntegerValue(Fields.END_MONTH);
 	}
 
-	public void setEnd_month(int end_month) {
+	public void setEnd_month(Integer end_month) {
 		setValue(Fields.END_MONTH, end_month);
 	}
 
-	public int getEnd_day() {
+	public Integer getEnd_day() {
 		return getIntegerValue(Fields.END_DAY);
 	}
 
-	public void setEnd_day(int end_day) {
+	public void setEnd_day(Integer end_day) {
 		setValue(Fields.END_DAY, end_day);
 	}
 
-	public boolean isOccur_once() {
+	public Boolean isOccur_once() {
 		return getBooleanValue(Fields.OCCUR_ONCE);
 	}
 
-	public void setOccur_once(boolean occur_once) {
+	public void setOccur_once(Boolean occur_once) {
 		setValue(Fields.OCCUR_ONCE, occur_once);
 	}
 
-	public boolean isOccur_repeating() {
+	public Boolean isOccur_repeating() {
 		return getBooleanValue(Fields.OCCUR_REPEATING);
 	}
 
-	public void setOccur_repeating(boolean occur_repeating) {
+	public void setOccur_repeating(Boolean occur_repeating) {
 		setValue(Fields.OCCUR_REPEATING, occur_repeating);
 	}
 
-	public boolean isOccur_floating() {
+	public Boolean isOccur_floating() {
 		return getBooleanValue(Fields.OCCUR_FLOATING);
 	}
 
-	public void setOccur_floating(boolean occur_floating) {
+	public void setOccur_floating(Boolean occur_floating) {
 		setValue(Fields.OCCUR_FLOATING, occur_floating);
 	}
 
-	public int getRepeat_every() {
+	public Integer getRepeat_every() {
 		return getIntegerValue(Fields.REPEAT_EVERY);
 	}
 
-	public void setRepeat_every(int repeat_every) {
+	public void setRepeat_every(Integer repeat_every) {
 		setValue(Fields.REPEAT_EVERY, repeat_every);
 	}
 
-	public int getRepeat_evey_num() {
+	public Integer getRepeat_evey_num() {
 		return getIntegerValue(Fields.REPEAT_EVERY_NUM);
 	}
 
-	public void setRepeat_evey_num(int repeat_evey_num) {
+	public void setRepeat_evey_num(Integer repeat_evey_num) {
 		setValue(Fields.REPEAT_EVERY_NUM, repeat_evey_num);
 	}
 
-	public int getFloat_every_num() {
+	public Integer getFloat_every_num() {
 		return getIntegerValue(Fields.FLOATS_EVERY_NUM);
 	}
 
-	public void setFloat_every_num(int float_every_num) {
+	public void setFloat_every_num(Integer float_every_num) {
 		setValue(Fields.FLOATS_EVERY_NUM, float_every_num);
 	}
 
-	public int getFloat_every() {
+	public Integer getFloat_every() {
 		return getIntegerValue(Fields.FLOATS_EVERY);
 	}
 
-	public void setFloat_every(int float_every) {
+	public void setFloat_every(Integer float_every) {
 		setValue(Fields.FLOATS_EVERY, float_every);
 	}
 
@@ -202,7 +267,7 @@ public class ReminderDataType extends AbstractDataType<ReminderDataType> {
 	 */
 	public TransactionDataType getTransactionDataType()
 			throws ClearcheckbookException {
-		boolean jive = false;
+		Boolean jive = false;
 		String date = null;
 		TransactionDataType transactionDataType = TransactionDataType.create(
 				date, getDoubleValue(Fields.TRANS_AMOUNT),
@@ -240,27 +305,42 @@ public class ReminderDataType extends AbstractDataType<ReminderDataType> {
 		setValue(Fields.TRANS_PAYEE, transactionDataType.getPayee());
 	}
 
-	public boolean getOccur_once() {
+	public Boolean getOccur_once() {
 		return getBooleanValue(Fields.OCCUR_ONCE);
 	}
 
-	public boolean getOccur_repeating() {
+	public Boolean getOccur_repeating() {
 		return getBooleanValue(Fields.OCCUR_REPEATING);
 	}
 
-	public boolean getOccur_floating() {
+	public Boolean getOccur_floating() {
 		return getBooleanValue(Fields.OCCUR_FLOATING);
 	}
+
 	@Override
 	protected Enum<?>[] getEditFields() {
-		return new Enum[] {Fields.REMINDER_ID,
-Fields.TITLE,			Fields.EMAIL,	Fields.EMAILDAYS,Fields.START_YEAR,
-Fields.START_MONTH, Fields.START_DAY,Fields.END_YEAR,Fields.END_MONTH,Fields.END_DATE,
-Fields.OCCUR_ONCE, Fields.OCCUR_REPEATING, Fields.OCCUR_FLOATING,Fields.REPEAT_EVERY,Fields.REPEAT_EVERY_NUM,
-Fields.FLOATS_EVERY,Fields.FLOATS_EVERY_NUM,Fields.TRANSACTION,
-Fields.TRANS_AMOUNT,Fields.TRANS_DESCRIPTION,Fields.TRANS_PAYEE,Fields.TRANS_MEMO,
-Fields.TRANS_CHECK_NUM,Fields.TRANS_ACCOUNT_ID,Fields.TRANS_CATEGORY_ID,Fields.TRANS_TRANSACTION_TYPE,
-Fields.TRANS_ACCOUNTFROM,Fields.TRANS_ACCOUNTTO
-		};
+		return new Enum[] { Fields.ID, Fields.TITLE, Fields.EMAIL,
+				Fields.EMAILDAYS, Fields.START_YEAR, Fields.START_MONTH,
+				Fields.START_DAY, Fields.END_YEAR, Fields.END_MONTH,
+				Fields.END_DATE, Fields.OCCUR_ONCE, Fields.OCCUR_REPEATING,
+				Fields.OCCUR_FLOATING, Fields.REPEAT_EVERY,
+				Fields.REPEAT_EVERY_NUM, Fields.FLOATS_EVERY,
+				Fields.FLOATS_EVERY_NUM, Fields.TRANSACTION,
+				Fields.TRANS_AMOUNT, Fields.TRANS_DESCRIPTION,
+				Fields.TRANS_PAYEE, Fields.TRANS_MEMO, Fields.TRANS_CHECK_NUM,
+				Fields.TRANS_ACCOUNT_ID, Fields.TRANS_CATEGORY_ID,
+				Fields.TRANS_TRANSACTION_TYPE, Fields.TRANS_ACCOUNTFROM,
+				Fields.TRANS_ACCOUNTTO };
+	}
+
+	/**
+	 * There are some issues with Reminder data: reminder_id is used instead of
+	 * id in get all. Email not given by get or getall
+	 */
+	@SuppressWarnings("rawtypes")
+	@Override
+	protected ArrayList<Enum> getFieldsToIgnoreInEqualsMethod() {
+		return new ArrayList<Enum>(Arrays.asList(new Enum[] { Fields.EMAIL,
+				Fields.REMINDER_ID }));
 	}
 }

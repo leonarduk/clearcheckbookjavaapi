@@ -11,7 +11,6 @@ import com.leonarduk.clearcheckbook.dto.AbstractDataType;
 import com.leonarduk.clearcheckbook.dto.AccountDataType;
 import com.leonarduk.clearcheckbook.dto.ParsedNameValuePair;
 import com.leonarduk.clearcheckbook.dto.TransactionDataType;
-import com.leonarduk.clearcheckbook.dto.AbstractDataType.ControlField;
 
 public class TransactionCall extends AbstractCall<TransactionDataType> {
 
