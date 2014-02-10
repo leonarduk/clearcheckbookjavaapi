@@ -11,6 +11,9 @@ import org.apache.log4j.Logger;
 
 import com.leonarduk.clearcheckbook.dto.AccountDataType;
 import com.leonarduk.clearcheckbook.dto.TransactionDataType;
+import com.leonarduk.clearcheckbook.file.AMEXFilePreprocessor;
+import com.leonarduk.clearcheckbook.file.FilePreProcessor;
+import com.leonarduk.clearcheckbook.file.NationwideFilePreprocessor;
 import com.leonarduk.clearcheckbook.file.TransactionFilePreprocessor;
 import com.leonarduk.utils.Config;
 
@@ -86,6 +89,26 @@ public class ClearCheckBookCLI {
 			account = accounts.get(option - 1);
 		}
 		return account;
+	}
+
+	private FilePreProcessor chooseFileProcessor(Long id)
+			throws ClearcheckbookException {
+		String[] processors = new String[] { "Default",
+				AMEXFilePreprocessor.class.getName(),
+				NationwideFilePreprocessor.class.getName() };
+		for (int i = 0; i < processors.length; i++) {
+			System.out.println((i) + " " + processors[i]);
+		}
+		int option = getIntegerInput("Choose fileProcessor :",
+				processors.length);
+		switch (option) {
+		case 1:
+			return new AMEXFilePreprocessor(id);
+		case 2:
+			return new NationwideFilePreprocessor(id);
+		default:
+			return new TransactionFilePreprocessor(id);
+		}
 	}
 
 	private void exportAccounts() throws ClearcheckbookException {
@@ -261,8 +284,10 @@ public class ClearCheckBookCLI {
 		}
 		String fileName = getFilename(getDefaultFileName(account));
 
+		FilePreProcessor preprocessor = chooseFileProcessor(id);
+
 		List<TransactionDataType> transactions = helper.importTransactions(
-				fileName, new TransactionFilePreprocessor(id));
+				fileName, preprocessor);
 		this.helper.processTransactions(transactions);
 		System.out.println("Imported " + transactions.size() + " transactions");
 	}

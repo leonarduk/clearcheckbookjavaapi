@@ -174,16 +174,8 @@ public class ClearCheckBookFileHandler {
 			for (int i = 0; i < processor.getRowsToSkip(); i++) {
 				br.readLine();
 			}
-
-			// Read header
-			List<String> headerFields = new LinkedList<>();
 			String line = br.readLine();
-			Iterable<String> columnNames = Splitter.on(separator).trimResults()
-					.split(line);
-			for (String columnn : columnNames) {
-
-				headerFields.add(columnn.replace("\"", ""));
-			}
+			List<String> headerFields = processor.processHeaderRow(separator, line);
 
 			// first data line
 			line = br.readLine();

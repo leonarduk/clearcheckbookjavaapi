@@ -1,12 +1,16 @@
 package com.leonarduk.clearcheckbook.file;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 
 import com.leonarduk.clearcheckbook.ClearcheckbookException;
+import com.leonarduk.clearcheckbook.dto.TransactionDataType;
 import com.leonarduk.utils.DateUtils;
 
 public class AMEXFilePreprocessor extends TransactionFilePreprocessor {
@@ -21,9 +25,8 @@ public class AMEXFilePreprocessor extends TransactionFilePreprocessor {
 		super(0);
 	}
 
-	@Override
-	protected String getCheckNum(Map<String, String> fieldsMap) {
-		return "";
+	public AMEXFilePreprocessor(long accountId) {
+		super(0, accountId);
 	}
 
 	@Override
@@ -33,7 +36,7 @@ public class AMEXFilePreprocessor extends TransactionFilePreprocessor {
 		_logger.debug("getDate:" + dateString + ":" + fieldsMap);
 		Date date;
 		try {
-			date = DateUtils.getDate(dateString, "dd MMM yyyy");
+			date = DateUtils.getDate(dateString, "dd/MM/yyyy");
 		} catch (ParseException e) {
 			throw new ClearcheckbookException("Failed to parse date: "
 					+ dateString, e);
@@ -42,30 +45,33 @@ public class AMEXFilePreprocessor extends TransactionFilePreprocessor {
 	}
 
 	@Override
-	protected String getMemo(Map<String, String> fieldsMap) {
-		return "Balance: " + getDouble(fieldsMap.get("balance"));
+	protected String getAmount(Map<String, String> fieldsMap) {
+		return String.valueOf(-1
+				* Double.valueOf(fieldsMap
+						.get(TransactionDataType.Fields.AMOUNT.name()
+								.toLowerCase())));
 	}
+
+	@Override
+	public List<String> processHeaderRow(String separator, String line)
+			throws IOException {
+		// Read header
+		List<String> headerFields = new LinkedList<>();
+		// 21/01/2014,"Reference: AT140220038000010303608"," 56.76",
+		// "TESCO STORES 2934 NEW MALDEN"," Process Date 22/01/2014",
+
+		headerFields.add(TransactionDataType.Fields.DATE.name());
+		headerFields.add(TransactionDataType.Fields.CHECK_NUM.name());
+		headerFields.add(TransactionDataType.Fields.AMOUNT.name());
+		headerFields.add(TransactionDataType.Fields.DESCRIPTION.name());
+		headerFields.add(TransactionDataType.Fields.MEMO.name());
+		headerFields.add("IGNORE");
+
+		return headerFields;
+	}
+	
 	@Override
 	protected String getPayee(Map<String, String> fieldsMap) {
-		return fieldsMap.get("description");
-	}
-
-	@Override
-	protected String getDesription(Map<String, String> fieldsMap) {
-		return fieldsMap.get("transaction type") + " "
-				+ fieldsMap.get("description");
-	}
-
-	@Override
-	protected String getAmount(Map<String, String> fieldsMap) {
-		String credit = fieldsMap.get("paid in");
-		String debit = fieldsMap.get("paid out");
-		double amount = 0;
-		if (credit.equals("")) {
-			amount = -1 * getDouble(debit);
-		} else {
-			amount = getDouble(credit);
-		}
-		return String.valueOf(amount);
+		return super.getDesription(fieldsMap);
 	}
 }

@@ -1,5 +1,7 @@
 package com.leonarduk.clearcheckbook.file;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import com.leonarduk.clearcheckbook.ClearcheckbookException;
@@ -17,5 +19,8 @@ public interface FilePreProcessor {
 	 */
 	public abstract Map<String, String> processRow(Map<String, String> fieldsMap)
 			throws ClearcheckbookException;
+
+	public List<String> processHeaderRow(String separator, String line)
+			throws IOException;
 
 }

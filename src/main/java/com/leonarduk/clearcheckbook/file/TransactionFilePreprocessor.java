@@ -1,7 +1,11 @@
 package com.leonarduk.clearcheckbook.file;
 
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
+import com.google.common.base.Splitter;
 import com.leonarduk.clearcheckbook.ClearcheckbookException;
 import com.leonarduk.clearcheckbook.dto.TransactionDataType;
 
@@ -34,6 +38,21 @@ public class TransactionFilePreprocessor implements FilePreProcessor {
 		this.defaultAccountId = accountId;
 		this.rowsToSkip = rowsToSkip;
 	}
+
+	@Override
+	public List<String> processHeaderRow(String separator, String line)
+			throws IOException {
+		// Read header
+		List<String> headerFields = new LinkedList<>();
+		Iterable<String> columnNames = Splitter.on(separator).trimResults()
+				.split(line);
+		for (String columnn : columnNames) {
+
+			headerFields.add(columnn.replace("\"", ""));
+		}
+		return headerFields;
+	}
+
 
 	/* (non-Javadoc)
 	 * @see com.leonarduk.clearcheckbook.FilePreProcessor#processRow(java.util.Map)

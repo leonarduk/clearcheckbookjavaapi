@@ -30,6 +30,10 @@ public class NationwideFilePreprocessor extends TransactionFilePreprocessor {
 		super(4);
 	}
 
+	public NationwideFilePreprocessor(Long id) {
+		super(4,id);
+	}
+
 	@Override
 	protected String getCheckNum(Map<String, String> fieldsMap) {
 		return "";
