@@ -96,19 +96,20 @@ public class TransactionCallTest {
 			String memo = original.getMemo();
 			String payee = original.getPayee();
 
+			
 			input = TransactionDataType.create(date, amount, accountId,
 					categoryId, description, jive, fromAccountId, toAccountId,
 					checkNum, memo, payee);
 
 			input.setDate(DateUtils.getTodaysDateyyyyMMdd());
-			input.setAmount(1000);
+			input.setAmount(1000.0);
 			input.setCheckNum("1234");
 			input.setMemo("New transaction");
 			input.setPayee("Tesco");
 
 			String id = this.call.insert(input);
 			_logger.info("inserted " + id + ":" + input);
-		} catch (ClearcheckbookException e) {
+		} catch (ClearcheckbookException |NullPointerException e) {
 			_logger.fatal("failed to create transaction ", e);
 			fail("Failed to create transaction " + input);
 		}

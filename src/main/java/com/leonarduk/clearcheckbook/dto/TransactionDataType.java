@@ -128,9 +128,9 @@ public class TransactionDataType extends AbstractDataType<TransactionDataType> {
 		return create;
 	}
 
-	public static TransactionDataType create(String date, double amount,
-			long accountId, long categoryId, String description, boolean jive,
-			long fromAccountId, long toAccountId, String checkNum, String memo,
+	public static TransactionDataType create(String date, Double amount,
+			Long accountId, Long categoryId, String description, Boolean jive,
+			Long fromAccountId, Long toAccountId, String checkNum, String memo,
 			String payee) {
 		TransactionDataType transactionDataType = new TransactionDataType();
 		transactionDataType.setDate(date);
@@ -242,15 +242,15 @@ public class TransactionDataType extends AbstractDataType<TransactionDataType> {
 		return Type.fromString(getValue(Fields.TRANSACTION_TYPE));
 	}
 
-	public void setAccountId(long string) {
+	public void setAccountId(Long string) {
 		setValue(Fields.ACCOUNT_ID, string);
 	}
 
-	public void setAmount(double amount) {
+	public void setAmount(Double amount) {
 		setValue(Fields.AMOUNT, amount);
 	}
 
-	public void setCategoryId(long string) {
+	public void setCategoryId(Long string) {
 		setValue(Fields.CATEGORY_ID, string);
 	}
 
@@ -266,11 +266,11 @@ public class TransactionDataType extends AbstractDataType<TransactionDataType> {
 		setValue(Fields.DESCRIPTION, string);
 	}
 
-	public void setFromAccountId(long fromAccountId) {
+	public void setFromAccountId(Long fromAccountId) {
 		setValue(NonoutputFields.FROM_ACCOUNT_ID, fromAccountId);
 	}
 
-	public void setJive(boolean jive) {
+	public void setJive(Boolean jive) {
 		setValue(Fields.JIVE, jive);
 	}
 
@@ -282,7 +282,7 @@ public class TransactionDataType extends AbstractDataType<TransactionDataType> {
 		setValue(Fields.PAYEE, valString);
 	}
 
-	public void setToAccountId(long toAccountId) {
+	public void setToAccountId(Long toAccountId) {
 		setValue(NonoutputFields.TO_ACCOUNT_ID, toAccountId);
 	}
 

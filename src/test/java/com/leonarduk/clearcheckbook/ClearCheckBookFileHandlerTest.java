@@ -142,7 +142,7 @@ public class ClearCheckBookFileHandlerTest {
 				System.out.println(iterator.next());
 
 			}
-			TransactionDataType[] expected = createTestTransactions();
+			TransactionDataType[] expected = getTestNationwideTransactions();
 			assertEquals("Wrong number of transactions: " + transactions.size()
 					+ " vs " + expected.length, expected.length,
 					transactions.size());
@@ -227,6 +227,32 @@ public class ClearCheckBookFileHandlerTest {
 						fromAccountId, toAccountId, checkNum, memo, payee) };
 
 		return transactions;
+	}
+
+	private TransactionDataType[] getTestNationwideTransactions() {
+		Long accountId = 0L;
+		Long categoryId = null;
+		Long fromAccountId = null;
+		Long toAccountId = null;
+		TransactionDataType[] transactions = new TransactionDataType[] {
+				// "21 Nov 2013","Transfer from","0275/636 848 557","","�120.00","�120.00"
+				TransactionDataType.create("2013-11-21", 120.0, accountId,
+						categoryId, "Transfer from 0275/777 999 888", false,
+						fromAccountId, toAccountId, "", "Balance: 120.0",
+						"Transfer from 0275/777 999 888"),
+				// "25 Nov 2013","Transfer from","07-10-40 54817554 Credit 24 November 2013","",
+				// "�3300.00","�3420.00"
+				TransactionDataType.create("2013-11-25", 3300.0, accountId,
+						categoryId, "Transfer from 11-11-11 12345678 Credit 24 November 2013", false,
+						fromAccountId, toAccountId, "", "Balance: 3420.0",
+						"Transfer from 11-11-11 12345678 Credit 24 November 2013"),
+				// "25 Nov 2013","Transfer from","0275/636 848 557 Credit 24 November 2013","","		�300.00","�3720.00"
+				TransactionDataType.create("2013-11-25", 300.0, accountId,
+						categoryId, "Transfer from 0275/777 999 888 Credit 24 November 2013", false,
+						fromAccountId, toAccountId, "", "Balance: 3720.0",
+						"Transfer from 0275/777 999 888 Credit 24 November 2013") };
+		return transactions;
+
 	}
 
 }
