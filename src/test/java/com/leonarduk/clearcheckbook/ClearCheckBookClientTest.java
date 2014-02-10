@@ -35,6 +35,7 @@ public class ClearCheckBookClientTest {
 	private final String remindersFileName = "clientReminders.csv";
 	private final String transactionsFileName = "clientTransactions.csv";
 	private String transactionsNationwideFileName = "src/main/resources/nationwide.csv";
+	private String transactionstestFileName = "src/main/resources/filehandler_transactions.csv";
 
 	@Before
 	public void setUp() throws Exception {
@@ -155,10 +156,9 @@ public class ClearCheckBookClientTest {
 	@Test
 	public void testImportTransactions() {
 		try {
-			List<TransactionDataType> expected = this.client.getTransactions();
 			List<TransactionDataType> actual = this.client.importTransactions(
-					transactionsFileName, new TransactionFilePreprocessor());
-			compareTransactionList(expected, actual);
+					transactionstestFileName, new TransactionFilePreprocessor());
+			assertEquals(2, actual.size());
 
 		} catch (ClearcheckbookException e) {
 			_logger.fatal("Failed to testExportTransactions", e);
@@ -202,7 +202,7 @@ public class ClearCheckBookClientTest {
 			List<String> results = this.client.processTransactions(file);
 			assertEquals(3, results.size());
 			for (String result : results) {
-			assertTrue(result.contains("Inserted"));	
+				assertTrue(result.contains("Inserted"));
 			}
 			_logger.info(results);
 
