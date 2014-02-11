@@ -1,0 +1,9 @@
+What is ClearCheckBookJavaApi?
+
+  A Java library to access the HTTP developer API for Clearcheckbook.com, the money management website. 
+  
+  https://www.clearcheckbook.com/developer/api
+
+  Uses HtmlUnit to do the connection.
+
+  Written by Steve Leonard
