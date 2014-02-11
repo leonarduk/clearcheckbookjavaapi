@@ -172,9 +172,10 @@
 			<id>clearcheckbookjavaapi.sourceforge.net</id>
 			<url>sftp://leonarduk,clearcheckbookjavaapi@web.sourceforge.net:/home/project-web/clearcheckbookjavaapi/htdocs</url>
 		</site>
-		<repository>
-			<id></id>
-			<url></url>
-		</repository>
+ <repository>
+			<id>clearcheckbookjavaapi.sourceforge.net</id>
+        <name>SourceForge shell repo</name>
+	<url>sftp://leonarduk,clearcheckbookjavaapi@web.sourceforge.net:/home/project-web/clearcheckbookjavaapi/htdocs/maven</url>
+    </repository>
 	</distributionManagement>
 </project>
