@@ -31,6 +31,7 @@
 		<maven-javadoc-plugin.version>2.9.1</maven-javadoc-plugin.version>
 		<maven-pmd-plugin.version>3.0.1</maven-pmd-plugin.version>
 		<maven-surefire-plugin.version>2.16</maven-surefire-plugin.version>
+		<maven-changes-plugin.version>2.9</maven-changes-plugin.version>
 	</properties>
 	<dependencies>
 		<!-- For connecting to websites -->
@@ -107,6 +108,20 @@
 					<nohelp>true</nohelp>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-changes-plugin</artifactId>
+				<version>${maven-changes-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>check-changes</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>changes-check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 	<reporting>
@@ -128,10 +143,9 @@
 			</plugin>
 			<!-- show closed tickets per release -->
 			<plugin>
-				<groupId>org.neo4j.build.plugins</groupId>
-				<artifactId>changes-maven-plugin</artifactId>
-				<version>${changes-maven-plugin.version}</version>
-				<inherited>false</inherited>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-changes-plugin</artifactId>
+				<version>${maven-changes-plugin.version}</version>
 				<reportSets>
 					<reportSet>
 						<reports>
@@ -139,9 +153,6 @@
 						</reports>
 					</reportSet>
 				</reportSets>
-				<configuration>
-					<issueLinkTemplate>https://sourceforge.net/p/clearcheckbookjavaapi/tickets/%ISSUE%</issueLinkTemplate>
-				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -197,8 +208,7 @@
 		</mailingList>
 	</mailingLists>
 	<issueManagement>
-		<system>sourceforge
-	</system>
+		<system>SourceForge2</system>
 		<url>https://sourceforge.net/p/clearcheckbookjavaapi/tickets/</url>
 	</issueManagement>
 	<organization>
@@ -229,7 +239,7 @@
 		</developer>
 	</developers>
 	<scm>
-		<connection>scm:svn:https://clearcheckbookjavaapi.svn.sourceforge.net/svnroot/clearcheckbookjavaapi/trunk</connection>
+		<connection>scm:svn:https://svn.code.sf.net/p/clearcheckbookjavaapi/code/trunk</connection>
 		<developerConnection>scm:svn:https://clearcheckbookjavaapi.svn.sourceforge.net/svnroot/clearcheckbookjavaapi/trunk/</developerConnection>
 		<url>http://clearcheckbookjavaapi.svn.sourceforge.net/viewvc/clearcheckbookjavaapi/trunk</url>
 	</scm>
