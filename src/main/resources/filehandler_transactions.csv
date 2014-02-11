@@ -1,0 +1,3 @@
+"ID","DATE","AMOUNT","DESCRIPTION","CHECK_NUM","MEMO","PAYEE","ACCOUNT_ID","CATEGORY_ID","JIVE","SPECIALSTATUS","PARENT","RELATED_TRANSFER","INITIAL_BALANCE"
+"123","20140210","10.0","deposit some cash","","test","Boss","101","123","false","","","",""
+"124","20140210","-1000.0","deposit some cash","","test","Boss","101","123","false","","","",""
