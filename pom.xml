@@ -11,33 +11,27 @@
 		<maven.test.failure.ignore>true</maven.test.failure.ignore>
 		<maven.test.skip>true</maven.test.skip>
 		<java.version>1.7</java.version>
-		<!-- dependencies checked at http://mvnrepository.com/ 2014-02-11 -->
+		<!-- dependencies checked at http://search.maven.org/ 2014-02-11 -->
 		<htmlunit.version>2.13</htmlunit.version>
 		<log4j.version>1.2.17</log4j.version>
 		<jackson-mapper-asl.version>1.9.13</jackson-mapper-asl.version>
-		<guava-version>15.0</guava-version>
-		<junit-version>4.11</junit-version>
+		<guava.version>15.0</guava.version>
+		<junit.version>4.11</junit.version>
+		<maven.verion>2.2.1</maven.verion>
 		<!-- Plugins -->
-		<maven-plugin-api.version>3.1.1</maven-plugin-api.version>
 		<maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
-		<maven-site-plugin.version>${maven-plugin-api.version}</maven-site-plugin.version>
+		<maven-site-plugin.version>3.3</maven-site-plugin.version>
 		<maven-javadoc-plugin.version>2.9.1</maven-javadoc-plugin.version>
 		<maven-surefire-plugin.version>2.16</maven-surefire-plugin.version>
 		<maven-project-info-reports-plugin.version>2.7</maven-project-info-reports-plugin.version>
+		<changes-maven-plugin.version>0.2</changes-maven-plugin.version>
+		<taglist-maven-plugin.version>2.4</taglist-maven-plugin.version>
+		<maven-changelog-plugin.version>2.2</maven-changelog-plugin.version>
+		<maven-clover-plugin.version>3.2.0</maven-clover-plugin.version>
+		<maven-javadoc-plugin.version>2.9.1</maven-javadoc-plugin.version>
+		<maven-pmd-plugin.version>3.0.1</maven-pmd-plugin.version>
+		<maven-surefire-plugin.version>2.16</maven-surefire-plugin.version>
 	</properties>
-	<repositories>
-		<repository>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>always</updatePolicy>
-				<checksumPolicy>fail</checksumPolicy>
-			</releases>
-			<id>Maven</id>
-			<name>Maven</name>
-			<url>http://repo1.maven.org/maven2/</url>
-			<layout>default</layout>
-		</repository>
-	</repositories>
 	<dependencies>
 		<!-- For connecting to websites -->
 		<dependency>
@@ -61,13 +55,13 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>${guava-version}</version>
+			<version>${guava.version}</version>
 		</dependency>
 		<!-- For test -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>${junit-version}</version>
+			<version>${junit.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -128,13 +122,15 @@
 				<version>${maven-site-plugin.version}</version>
 			</plugin>
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>changelog-maven-plugin</artifactId>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-changelog-plugin</artifactId>
+				<version>${maven-changelog-plugin.version}</version>
 			</plugin>
 			<!-- show closed tickets per release -->
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
+				<groupId>org.neo4j.build.plugins</groupId>
 				<artifactId>changes-maven-plugin</artifactId>
+				<version>${changes-maven-plugin.version}</version>
 				<inherited>false</inherited>
 				<reportSets>
 					<reportSet>
@@ -148,25 +144,35 @@
 				</configuration>
 			</plugin>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${maven-surefire-plugin.version}</version>
 			</plugin>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>${maven-javadoc-plugin.version}</version>
 			</plugin>
 			<plugin>
+				<!-- 2005 -->
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>jxr-maven-plugin</artifactId>
 			</plugin>
 			<plugin>
+				<!-- 2009 -->
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>taglist-maven-plugin</artifactId>
+				<version>${taglist-maven-plugin.version}</version>
 			</plugin>
 			<plugin>
-				<artifactId>maven-clover-plugin</artifactId>
+				<groupId>com.atlassian.maven.plugins</groupId>
+				<artifactId>maven-clover2-plugin</artifactId>
+				<version>${maven-clover-plugin.version}</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-pmd-plugin</artifactId>
+				<version>${maven-pmd-plugin.version}</version>
 				<configuration>
 					<targetjdk>${java.version}</targetjdk>
 					<format>xml</format>
