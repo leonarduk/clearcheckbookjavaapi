@@ -6,14 +6,38 @@
 		<author email="sourceforge@leonarduk.com">Stephen Leonard</author>
 	</properties>
 	<body>
-		<release version="0.2" date="2014-02-10" description="Basic command line client.">
-			<action type="add">Created simple command line client</action>
-			<action type="add">Created file utils class to import and export between files</action>
+		<release version="Release 0.2" date="2014-02-10" description="Basic command line client.">
+			<action type="add" dev="Stephen Leonard" issue="3">Export
+				transactions to file
+			</action>
+			<action type="add" dev="Stephen Leonard" issue="5">CLI tool to
+				choose files to import to CCB
+			</action>
+			<action type="add" dev="Stephen Leonard" issue="10">Only send
+				updates to website where data changed
+			</action>
+			<action type="add" dev="Stephen Leonard" issue="12">add all
+				comments from website docs to javadoc
+			</action>
+			<action type="add" dev="Stephen Leonard" issue="15">Ability in CLI
+				to import different transaction file formats
+			</action>
+			<action type="add" dev="Stephen Leonard" issue="17">split svn code
+				into trunk and branches
+			</action>
+			<action type="add" dev="Stephen Leonard" issue="18">Update maven
+				site config for the generated website
+			</action>
 			<action type="fix">Fixed all unit tests</action>
 		</release>
-		<release version="0.1" date="2014-02-04" description="First cut. No client, just implementation of API.">
+		<release version="Release 0.1" date="2014-02-04"
+			description="First cut. No client, just implementation of API.">
 			<action type="add">Implemented most of the API</action>
 			<action type="add">Created Maven repository</action>
+			<action type="add" dev="Stephen Leonard" issue="2">Move user name
+				and password to new ClearCheckBookConnection class</action>
+			<action type="add" dev="Stephen Leonard" issue="1">Complete the
+				ReminderDataType class and unit test</action>
 		</release>
 	</body>
 </document>

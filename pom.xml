@@ -2,6 +2,206 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<name>ClearCheckBookJavaApi</name>
+	<version>0.3-SNAPSHOT</version>
+	<url>https://sourceforge.net/projects/clearcheckbookjavaapi</url>
+	<description>A Java library to access the HTTP developer API for Clearcheckbook.com, the money management website.</description>
+	<groupId>com.leonarduk.clearcheckbook</groupId>
+	<artifactId>clearcheckbookapi</artifactId>
+	<properties>
+		<maven.test.failure.ignore>true</maven.test.failure.ignore>
+		<maven.test.skip>true</maven.test.skip>
+		<java.version>1.7</java.version>
+		<!-- dependencies checked at http://mvnrepository.com/ 2014-02-11 -->
+		<htmlunit.version>2.13</htmlunit.version>
+		<log4j.version>1.2.17</log4j.version>
+		<jackson-mapper-asl.version>1.9.13</jackson-mapper-asl.version>
+		<guava-version>15.0</guava-version>
+		<junit-version>4.11</junit-version>
+		<!-- Plugins -->
+		<maven-plugin-api.version>3.1.1</maven-plugin-api.version>
+		<maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
+		<maven-site-plugin.version>${maven-plugin-api.version}</maven-site-plugin.version>
+		<maven-javadoc-plugin.version>2.9.1</maven-javadoc-plugin.version>
+		<maven-surefire-plugin.version>2.16</maven-surefire-plugin.version>
+		<maven-project-info-reports-plugin.version>2.7</maven-project-info-reports-plugin.version>
+	</properties>
+	<repositories>
+		<repository>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+				<checksumPolicy>fail</checksumPolicy>
+			</releases>
+			<id>Maven</id>
+			<name>Maven</name>
+			<url>http://repo1.maven.org/maven2/</url>
+			<layout>default</layout>
+		</repository>
+	</repositories>
+	<dependencies>
+		<!-- For connecting to websites -->
+		<dependency>
+			<groupId>net.sourceforge.htmlunit</groupId>
+			<artifactId>htmlunit</artifactId>
+			<version>${htmlunit.version}</version>
+		</dependency>
+		<!-- For Logger -->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>${log4j.version}</version>
+		</dependency>
+		<!-- For mapping JSON to classes -->
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>${jackson-mapper-asl.version}</version>
+		</dependency>
+		<!-- Various utils - currently using String utils like Joiner -->
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>${guava-version}</version>
+		</dependency>
+		<!-- For test -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit-version}</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<!-- To create an executable jar -->
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>com.leonarduk.clearcheckbook.ClearCheckBookClient</mainClass>
+						</manifest>
+					</archive>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+				</configuration>
+			</plugin>
+			<!-- for compiling code in Maven -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven-compiler-plugin.version}</version>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+				</configuration>
+			</plugin>
+			<!-- For running tests with Maven -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${maven-surefire-plugin.version}</version>
+			</plugin>
+			<!-- For generating javadoc for website -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>${maven-javadoc-plugin.version}</version>
+				<configuration>
+					<show>private</show>
+					<nohelp>true</nohelp>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>${maven-project-info-reports-plugin.version}</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>${maven-site-plugin.version}</version>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>changelog-maven-plugin</artifactId>
+			</plugin>
+			<!-- show closed tickets per release -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>changes-maven-plugin</artifactId>
+				<inherited>false</inherited>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>changes-report</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+				<configuration>
+					<issueLinkTemplate>https://sourceforge.net/p/clearcheckbookjavaapi/tickets/%ISSUE%</issueLinkTemplate>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<artifactId>maven-javadoc-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>jxr-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>taglist-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<artifactId>maven-clover-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<configuration>
+					<targetjdk>${java.version}</targetjdk>
+					<format>xml</format>
+					<linkXref>true</linkXref>
+					<sourceEncoding>utf-8</sourceEncoding>
+					<minimumTokens>100</minimumTokens>
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
+	<distributionManagement>
+		<site>
+			<id>clearcheckbookjavaapi.sourceforge.net</id>
+			<url>sftp://leonarduk,clearcheckbookjavaapi@web.sourceforge.net:/home/project-web/clearcheckbookjavaapi/htdocs</url>
+		</site>
+		<repository>
+			<id>clearcheckbookjavaapi.sourceforge.net</id>
+			<name>SourceForge shell repo</name>
+			<url>sftp://leonarduk,clearcheckbookjavaapi@web.sourceforge.net:/home/project-web/clearcheckbookjavaapi/htdocs/maven</url>
+		</repository>
+	</distributionManagement>
+	<mailingLists>
+		<mailingList>
+			<name>JWebUnit Development Mailing list</name>
+			<subscribe>https://lists.sourceforge.net/lists/listinfo/clearcheckbookjavaapi-updates</subscribe>
+			<unsubscribe>https://lists.sourceforge.net/lists/listinfo/clearcheckbookjavaapi-updates</unsubscribe>
+			<archive>https://sourceforge.net/p/clearcheckbookjavaapi/mailman/clearcheckbookjavaapi-updates</archive>
+			<post>jwebunit-development@lists.sourceforge.net</post>
+		</mailingList>
+	</mailingLists>
+	<issueManagement>
+		<system>sourceforge
+	</system>
+		<url>https://sourceforge.net/p/clearcheckbookjavaapi/tickets/</url>
+	</issueManagement>
 	<organization>
 		<name>Leonard UK Ltd</name>
 		<url>http://leonarduk.com</url>
@@ -13,15 +213,6 @@
 			<url>http://www.spdx.org/licenses/GPL-3.0+</url>
 		</license>
 	</licenses>
-	<url>https://sourceforge.net/projects/clearcheckbookjavaapi</url>
-	<description>A Java library to access the HTTP developer API for Clearcheckbook.com, the money management website.</description>
-	<groupId>com.leonarduk.clearcheckbook</groupId>
-	<artifactId>clearcheckbookapi</artifactId>
-	<issueManagement>
-		<system>sourceforge
-	</system>
-		<url>https://sourceforge.net/p/clearcheckbookjavaapi/tickets</url>
-	</issueManagement>
 	<developers>
 		<developer>
 			<id>leonarduk</id>
@@ -42,140 +233,5 @@
 		<connection>scm:svn:https://clearcheckbookjavaapi.svn.sourceforge.net/svnroot/clearcheckbookjavaapi/trunk</connection>
 		<developerConnection>scm:svn:https://clearcheckbookjavaapi.svn.sourceforge.net/svnroot/clearcheckbookjavaapi/trunk/</developerConnection>
 		<url>http://clearcheckbookjavaapi.svn.sourceforge.net/viewvc/clearcheckbookjavaapi/trunk</url>
-		<!-- <connection>scm:svn:https://svn.code.sf.net/p/clearcheckbookjavaapi/code</connection> 
-			<url>https://sourceforge.net/p/clearcheckbookjavaapi/code/HEAD/tree/</url> -->
 	</scm>
-	<version>0.2</version>
-	<properties>
-		<maven.test.failure.ignore>true</maven.test.failure.ignore>
-		<java.version>1.7</java.version>
-		<maven.test.skip>true</maven.test.skip>
-	</properties>
-	<dependencies>
-		<dependency>
-			<groupId>net.sourceforge.htmlunit</groupId>
-			<artifactId>htmlunit</artifactId>
-			<version>2.13</version>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.16</version>
-		</dependency>
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-mapper-asl</artifactId>
-			<version>1.9.13</version>
-		</dependency>
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>12.0</version>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.11</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.joda</groupId>
-			<artifactId>joda-money</artifactId>
-			<version>0.9</version>
-		</dependency>
-	</dependencies>
-
-	<build>
-		<sourceDirectory>src/main/java</sourceDirectory>
-		<testSourceDirectory>src/test/java</testSourceDirectory>
-		<plugins>
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifest>
-							<mainClass>com.leonarduk.clearcheckbook.ClearCheckBookClient</mainClass>
-						</manifest>
-					</archive>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.5</version>
-				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.16</version>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.9.1</version>
-				<configuration>
-					<show>private</show>
-					<nohelp>true</nohelp>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-	<reporting>
-		<plugins>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>taglist-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>changelog-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>changes-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<artifactId>maven-surefire-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<artifactId>maven-javadoc-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>jxr-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<artifactId>maven-clover-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-pmd-plugin</artifactId>
-				<configuration>
-					<targetjdk>1.7</targetjdk>
-					<format>xml</format>
-					<linkXref>true</linkXref>
-					<sourceEncoding>utf-8</sourceEncoding>
-					<minimumTokens>100</minimumTokens>
-				</configuration>
-			</plugin>
-		</plugins>
-	</reporting>
-	<distributionManagement>
-		<site>
-			<id>clearcheckbookjavaapi.sourceforge.net</id>
-			<url>sftp://leonarduk,clearcheckbookjavaapi@web.sourceforge.net:/home/project-web/clearcheckbookjavaapi/htdocs</url>
-		</site>
- <repository>
-			<id>clearcheckbookjavaapi.sourceforge.net</id>
-        <name>SourceForge shell repo</name>
-	<url>sftp://leonarduk,clearcheckbookjavaapi@web.sourceforge.net:/home/project-web/clearcheckbookjavaapi/htdocs/maven</url>
-    </repository>
-	</distributionManagement>
 </project>

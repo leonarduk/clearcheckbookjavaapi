@@ -61,7 +61,7 @@ abstract public class AbstractCall<U extends AbstractDataType<?>> {
 	 * Calls the "get" method from the API that brings back the item by id
 	 * 
 	 * @param id
-	 * @return
+	 * @return {@link U extends AbstractDataType}
 	 * @throws IOException
 	 * @throws ClearcheckbookException
 	 */
@@ -82,6 +82,11 @@ abstract public class AbstractCall<U extends AbstractDataType<?>> {
 		}
 	}
 
+	/**
+	 * 
+	 * @return {@link U extends AbstractDataType}
+	 * @throws ClearcheckbookException
+	 */
 	protected U get() throws ClearcheckbookException {
 		try {
 			String jsonString = this.getConnection().getPage(getUrlSuffix());
@@ -95,7 +100,7 @@ abstract public class AbstractCall<U extends AbstractDataType<?>> {
 	/**
 	 * 
 	 * @param jsonString
-	 * @return
+	 * @return {@link U extends AbstractDataType}
 	 * @throws ClearcheckbookException
 	 * @throws IOException
 	 * @throws JsonMappingException
@@ -122,13 +127,21 @@ abstract public class AbstractCall<U extends AbstractDataType<?>> {
 	 * 
 	 * @param parameters
 	 * 
-	 * @return
+	 * @return {@link List }<{@link U extends AbstractDataType}>
 	 * @throws ClearcheckbookException
 	 */
 	protected List<U> getAll() throws ClearcheckbookException {
 		return getAll((ParsedNameValuePair) null);
 	}
 
+	/**
+	 * Calls the "get" method from the API that brings back all the values
+	 * 
+	 * @param parameters
+	 * 
+	 * @return {@link List }<{@link U extends AbstractDataType}>
+	 * @throws ClearcheckbookException
+	 */
 	protected List<U> getAll(ParsedNameValuePair... parameters)
 			throws ClearcheckbookException {
 		List<U> returnedList = new ArrayList<>();
@@ -173,7 +186,7 @@ abstract public class AbstractCall<U extends AbstractDataType<?>> {
 	 * Helper class to create instance of this.dataTypeClass
 	 * 
 	 * @param map
-	 * @return
+	 * @return {@link U extends AbstractDataType}
 	 * @throws ClearcheckbookException
 	 */
 	private U createDataTypeInstance(HashMap<String, String> map,
@@ -196,8 +209,7 @@ abstract public class AbstractCall<U extends AbstractDataType<?>> {
 	 * Helper wrapper function to iterate over a list of items to
 	 * insert/edit/delete calling the relevant method on each.
 	 * 
-	 * @return
-	 * 
+	 * @return {@link List}<{@link String}>
 	 * @throws ClearcheckbookException
 	 */
 	protected List<String> bulkProcess(List<U> dataTypeList)
@@ -239,8 +251,7 @@ abstract public class AbstractCall<U extends AbstractDataType<?>> {
 	/**
 	 * 
 	 * @param input
-	 * @return
-	 * @return if successful, returns the id, else throws exception
+	 * @return String if successful, returns the id, else throws exception
 	 * @throws ClearcheckbookException
 	 */
 	protected String insert(U input) throws ClearcheckbookException {
@@ -266,7 +277,7 @@ abstract public class AbstractCall<U extends AbstractDataType<?>> {
 	/**
 	 * 
 	 * @param input
-	 * @return
+	 * @return boolean - true means edit was successful
 	 * @throws ClearcheckbookException
 	 */
 	protected boolean edit(U input) throws ClearcheckbookException {
@@ -289,7 +300,7 @@ abstract public class AbstractCall<U extends AbstractDataType<?>> {
 	/**
 	 * 
 	 * @param input
-	 * @return
+	 * @return boolean - true means delete was successful
 	 * @throws ClearcheckbookException
 	 */
 	protected boolean delete(ParsedNameValuePair id)
