@@ -13,7 +13,7 @@
 			<url>http://www.spdx.org/licenses/GPL-3.0+</url>
 		</license>
 	</licenses>
-	<url>http://clearcheckbookjavaapi.sourceforge.net/</url>
+	<url>https://sourceforge.net/projects/clearcheckbookjavaapi</url>
 	<description>A Java library to access the HTTP developer API for Clearcheckbook.com, the money management website.</description>
 	<groupId>com.leonarduk.clearcheckbook</groupId>
 	<artifactId>clearcheckbookapi</artifactId>
@@ -39,8 +39,11 @@
 		</developer>
 	</developers>
 	<scm>
-		<connection>scm:svn:https://svn.code.sf.net/p/clearcheckbookjavaapi/code</connection>
-		<url>https://sourceforge.net/p/clearcheckbookjavaapi/code/HEAD/tree/</url>
+		<connection>scm:svn:https://clearcheckbookjavaapi.svn.sourceforge.net/svnroot/clearcheckbookjavaapi/trunk</connection>
+		<developerConnection>scm:svn:https://clearcheckbookjavaapi.svn.sourceforge.net/svnroot/clearcheckbookjavaapi/trunk/</developerConnection>
+		<url>http://clearcheckbookjavaapi.svn.sourceforge.net/viewvc/clearcheckbookjavaapi/trunk</url>
+		<!-- <connection>scm:svn:https://svn.code.sf.net/p/clearcheckbookjavaapi/code</connection> 
+			<url>https://sourceforge.net/p/clearcheckbookjavaapi/code/HEAD/tree/</url> -->
 	</scm>
 	<version>0.2</version>
 	<properties>
@@ -169,5 +172,9 @@
 			<id>clearcheckbookjavaapi.sourceforge.net</id>
 			<url>sftp://leonarduk,clearcheckbookjavaapi@web.sourceforge.net:/home/project-web/clearcheckbookjavaapi/htdocs</url>
 		</site>
+		<repository>
+			<id></id>
+			<url></url>
+		</repository>
 	</distributionManagement>
 </project>
