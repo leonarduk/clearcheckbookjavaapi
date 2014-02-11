@@ -39,7 +39,7 @@
 		</developer>
 	</developers>
 	<scm>
-	<connection>scm:svn:https://svn.code.sf.net/p/clearcheckbookjavaapi/code</connection>
+		<connection>scm:svn:https://svn.code.sf.net/p/clearcheckbookjavaapi/code</connection>
 		<url>https://sourceforge.net/p/clearcheckbookjavaapi/code/HEAD/tree/</url>
 	</scm>
 	<version>0.2</version>
@@ -126,10 +126,10 @@
 	</build>
 	<reporting>
 		<plugins>
-		   <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>taglist-maven-plugin</artifactId>
-      </plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>taglist-maven-plugin</artifactId>
+			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>changelog-maven-plugin</artifactId>
@@ -164,4 +164,10 @@
 			</plugin>
 		</plugins>
 	</reporting>
+	<distributionManagement>
+		<site>
+			<id>clearcheckbookjavaapi.sourceforge.net</id>
+			<url>sftp://leonarduk,clearcheckbookjavaapi@web.sourceforge.net:/home/project-web/clearcheckbookjavaapi/htdocs</url>
+		</site>
+	</distributionManagement>
 </project>
