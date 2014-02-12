@@ -9,9 +9,9 @@ import com.leonarduk.clearcheckbook.ClearcheckbookException;
 import com.leonarduk.clearcheckbook.dto.AbstractDataType;
 import com.leonarduk.clearcheckbook.dto.AccountDataType;
 import com.leonarduk.clearcheckbook.dto.ParsedNameValuePair;
-import com.leonarduk.clearcheckbook.dto.TransactionDataType;
 
-public class AccountCall extends AbstractCall<AccountDataType> {
+public class AccountCall extends AbstractCall<AccountDataType> implements
+		BulkProcessable<AccountDataType> {
 
 	private static final Logger _logger = Logger.getLogger(AccountCall.class);
 
@@ -29,7 +29,12 @@ public class AccountCall extends AbstractCall<AccountDataType> {
 	@Override
 	public List<String> bulkProcess(List<AccountDataType> dataTypeList)
 			throws ClearcheckbookException {
-	return	super.bulkProcess(dataTypeList);
+		return super.bulkProcess(dataTypeList);
+	}
+
+	public String process(AccountDataType dataType)
+			throws ClearcheckbookException {
+		return super.process(dataType);
 	}
 
 	/**

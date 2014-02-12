@@ -1,15 +1,15 @@
 package com.leonarduk.clearcheckbook;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.http.util.Asserts;
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,7 +41,8 @@ public class ClearCheckBookClientTest {
 	public void setUp() throws Exception {
 		String user = "unittest_luk";
 		String password = "unittest_luk";
-		client = new ClearCheckBookHelper(user, password);
+		int numberOfConnections = 20;
+		client = new ClearCheckBookHelper(user, password, numberOfConnections);
 	}
 
 	@Test
@@ -156,8 +157,9 @@ public class ClearCheckBookClientTest {
 	@Test
 	public void testImportTransactions() {
 		try {
-			List<TransactionDataType> actual = this.client.importTransactions(
-					transactionstestFileName, new TransactionFilePreprocessor());
+			List<TransactionDataType> actual = this.client
+					.importTransactions(transactionstestFileName,
+							new TransactionFilePreprocessor());
 			assertEquals(2, actual.size());
 
 		} catch (ClearcheckbookException e) {
@@ -192,6 +194,43 @@ public class ClearCheckBookClientTest {
 	}
 
 	@Test
+	public void testBulkUpdateInParallel() {
+		try {
+			List<TransactionDataType> original = this.client.getTransactions();
+			List<TransactionDataType> changeList = new LinkedList<>(original);
+			TransactionDataType editType = new TransactionDataType(
+					changeList.get(1));
+			// this needs to be different from the testBulkUpdate()
+			// setDescription call
+			editType.setDescription("parallel update "
+					+ DateUtils.getNowyyyyMMddHHmm());
+			TransactionDataType deleteOne = new TransactionDataType(
+					original.get(2));
+			deleteOne.markToBeDeleted();
+			changeList.set(0, editType);
+			changeList.set(1, deleteOne);
+			List<String> returnStatus = this.client
+					.processTransactionsInParallel(original,
+							this.client.getTransactions());
+			_logger.info(returnStatus);
+			assertEquals("Returned " + returnStatus, 2, returnStatus.size());
+			if (returnStatus.get(0).contains("Edited")) {
+				assertTrue(returnStatus.get(1).contains("Deleted"));
+
+			} else if (returnStatus.get(1).contains("Edited")) {
+				assertTrue(returnStatus.get(0).contains("Deleted"));
+
+			} else {
+				fail("Results not as expected");
+			}
+
+		} catch (ClearcheckbookException e) {
+			_logger.fatal("Failed to testExportTransactions", e);
+			fail();
+		}
+	}
+
+	@Test
 	public void testBulkUpdateNationwide() {
 		try {
 			List<TransactionDataType> file = this.client.importTransactions(
@@ -200,6 +239,28 @@ public class ClearCheckBookClientTest {
 			file.get(1).setDescription(
 					"updated " + DateUtils.getNowyyyyMMddHHmm());
 			List<String> results = this.client.processTransactions(file);
+			assertEquals(3, results.size());
+			for (String result : results) {
+				assertTrue(result.contains("Inserted"));
+			}
+			_logger.info(results);
+
+		} catch (ClearcheckbookException e) {
+			_logger.fatal("Failed to testExportTransactions", e);
+			fail();
+		}
+	}
+
+	@Test
+	public void testBulkUpdateNationwideInParallel() {
+		try {
+			List<TransactionDataType> file = this.client.importTransactions(
+					transactionsNationwideFileName,
+					new NationwideFilePreprocessor());
+			file.get(1).setDescription(
+					"updated " + DateUtils.getNowyyyyMMddHHmm());
+			List<String> results = this.client
+					.processTransactionsInParallel(file);
 			assertEquals(3, results.size());
 			for (String result : results) {
 				assertTrue(result.contains("Inserted"));

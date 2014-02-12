@@ -1,6 +1,5 @@
 package com.leonarduk.clearcheckbook.dto;
 
-import java.awt.List;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -76,12 +75,14 @@ abstract public class AbstractDataType<U extends AbstractDataType<?>> {
 		Enum<?>[] fields = getFields();
 		ArrayList<Enum> ignore = getFieldsToIgnoreInEqualsMethod();
 		for (int i = 0; i < fields.length; i++) {
+			String thisValue = getNonNullValue(fields[i]);
+			String thatValue = that.getNonNullValue(fields[i]);
 			if (!ignore.contains(fields[i])
-					&& !getNonNullValue(fields[i]).equals(
-							that.getNonNullValue(fields[i]))) {
+					&& !thisValue.equals(
+							thatValue)) {
 				_logger.info(fields[i].name() + " don't match. This:"
-						+ getNonNullValue(fields[i]) + " vs That:"
-						+ that.getNonNullValue(fields[i]));
+						+ thisValue + " vs That:"
+						+ thatValue);
 				return false;
 			}
 		}
