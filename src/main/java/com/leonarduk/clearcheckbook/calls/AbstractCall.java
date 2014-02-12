@@ -25,7 +25,7 @@ import com.leonarduk.clearcheckbook.dto.ParsedNameValuePair;
  * Methods are protected scope to be overriden by a public scope version in
  * concrete child class.
  * 
- * @param <U>
+ * @param <T>
  * 
  * @author Stephen Leonard
  * @since 29 Jan 2014
@@ -35,18 +35,16 @@ import com.leonarduk.clearcheckbook.dto.ParsedNameValuePair;
  * @version $Date:: $: Date of last commit
  * 
  */
-abstract public class AbstractCall<U extends AbstractDataType<?>> {
+abstract public class AbstractCall<T extends AbstractDataType<?>> {
 
 	private ClearCheckBookConnection connection;
 
-	@SuppressWarnings("rawtypes")
-	private Class<? extends AbstractDataType> dataTypeClass;
+	private Class<T> dataTypeClass;
 
 	private static final Logger _logger = Logger.getLogger(AbstractCall.class);
 
-	protected AbstractCall(
-			ClearCheckBookConnection connection,
-			@SuppressWarnings("rawtypes") Class<? extends AbstractDataType> dataTypeClass) {
+	protected AbstractCall(ClearCheckBookConnection connection,
+			Class<T> dataTypeClass) {
 		this.connection = connection;
 		this.dataTypeClass = dataTypeClass;
 	}
@@ -61,16 +59,16 @@ abstract public class AbstractCall<U extends AbstractDataType<?>> {
 	 * Calls the "get" method from the API that brings back the item by id
 	 * 
 	 * @param id
-	 * @return {@link U extends AbstractDataType}
+	 * @return {@link T extends AbstractDataType}
 	 * @throws IOException
 	 * @throws ClearcheckbookException
 	 */
-	protected U get(ParsedNameValuePair id) throws ClearcheckbookException {
+	protected T get(ParsedNameValuePair id) throws ClearcheckbookException {
 		try {
 			String jsonString = this.getConnection()
 					.getPage(getUrlSuffix(), id);
 
-			U dataType = getCore(jsonString);
+			T dataType = getCore(jsonString);
 			if (null == dataType.getIdParameter().getValue()) {
 				throw new ClearcheckbookException("Could not get "
 						+ getUrlSuffix() + " for id " + id.getValue());
@@ -84,10 +82,10 @@ abstract public class AbstractCall<U extends AbstractDataType<?>> {
 
 	/**
 	 * 
-	 * @return {@link U extends AbstractDataType}
+	 * @return {@link T extends AbstractDataType}
 	 * @throws ClearcheckbookException
 	 */
-	protected U get() throws ClearcheckbookException {
+	protected T get() throws ClearcheckbookException {
 		try {
 			String jsonString = this.getConnection().getPage(getUrlSuffix());
 			return getCore(jsonString);
@@ -100,13 +98,13 @@ abstract public class AbstractCall<U extends AbstractDataType<?>> {
 	/**
 	 * 
 	 * @param jsonString
-	 * @return {@link U extends AbstractDataType}
+	 * @return {@link T extends AbstractDataType}
 	 * @throws ClearcheckbookException
 	 * @throws IOException
 	 * @throws JsonMappingException
 	 * @throws JsonParseException
 	 */
-	private U getCore(String jsonString) throws ClearcheckbookException,
+	private T getCore(String jsonString) throws ClearcheckbookException,
 			JsonParseException, JsonMappingException, IOException {
 		if (jsonString.equals("null") || jsonString.trim().equals("")) {
 			throw new ClearcheckbookException("Failed to get " + getUrlSuffix());
@@ -118,7 +116,7 @@ abstract public class AbstractCall<U extends AbstractDataType<?>> {
 		HashMap<String, String> map = mapper.readValue(jsonString,
 				new TypeReference<HashMap<String, String>>() {
 				});
-		U dataType = createDataTypeInstance(map, this.dataTypeClass);
+		T dataType = createDataTypeInstance(map, this.dataTypeClass);
 		return dataType;
 	}
 
@@ -127,10 +125,10 @@ abstract public class AbstractCall<U extends AbstractDataType<?>> {
 	 * 
 	 * @param parameters
 	 * 
-	 * @return {@link List }<{@link U extends AbstractDataType}>
+	 * @return {@link List }<{@link T extends AbstractDataType}>
 	 * @throws ClearcheckbookException
 	 */
-	protected List<U> getAll() throws ClearcheckbookException {
+	protected List<T> getAll() throws ClearcheckbookException {
 		return getAll((ParsedNameValuePair) null);
 	}
 
@@ -139,12 +137,12 @@ abstract public class AbstractCall<U extends AbstractDataType<?>> {
 	 * 
 	 * @param parameters
 	 * 
-	 * @return {@link List }<{@link U extends AbstractDataType}>
+	 * @return {@link List }<{@link T extends AbstractDataType}>
 	 * @throws ClearcheckbookException
 	 */
-	protected List<U> getAll(ParsedNameValuePair... parameters)
+	protected List<T> getAll(ParsedNameValuePair... parameters)
 			throws ClearcheckbookException {
-		List<U> returnedList = new ArrayList<>();
+		List<T> returnedList = new ArrayList<>();
 		String jsonString = "FAILED";
 		try {
 			jsonString = this.getConnection().getPage(getPluralUrl(),
@@ -165,7 +163,7 @@ abstract public class AbstractCall<U extends AbstractDataType<?>> {
 			for (Iterator<HashMap<String, String>> iterator = list.iterator(); iterator
 					.hasNext();) {
 				HashMap<String, String> map = iterator.next();
-				U dataType = createDataTypeInstance(map, this.dataTypeClass);
+				T dataType = createDataTypeInstance(map, this.dataTypeClass);
 				returnedList.add(dataType);
 			}
 			_logger.debug("get: " + jsonString + " -> " + list + " -> "
@@ -186,14 +184,14 @@ abstract public class AbstractCall<U extends AbstractDataType<?>> {
 	 * Helper class to create instance of this.dataTypeClass
 	 * 
 	 * @param map
-	 * @return {@link U extends AbstractDataType}
+	 * @return {@link T extends AbstractDataType}
 	 * @throws ClearcheckbookException
 	 */
-	private U createDataTypeInstance(HashMap<String, String> map,
+	private T createDataTypeInstance(HashMap<String, String> map,
 			Class<?> classType) throws ClearcheckbookException {
 		try {
 			@SuppressWarnings("unchecked")
-			U dataType = (U) classType.getDeclaredConstructor(Map.class)
+			T dataType = (T) classType.getDeclaredConstructor(Map.class)
 					.newInstance(map);
 			return dataType;
 		} catch (InstantiationException | IllegalAccessException
@@ -212,40 +210,44 @@ abstract public class AbstractCall<U extends AbstractDataType<?>> {
 	 * @return {@link List}<{@link String}>
 	 * @throws ClearcheckbookException
 	 */
-	protected List<String> bulkProcess(List<U> dataTypeList)
+	protected List<String> bulkProcess(List<T> dataTypeList)
 			throws ClearcheckbookException {
 		List<String> returnStatusList = new LinkedList<>();
-		for (Iterator<U> iterator = dataTypeList.iterator(); iterator.hasNext();) {
-			U u = iterator.next();
-			String id = u.getIdParameter().getValue();
-
-			// Inserts
-			if ("".equals(id) || u.getId() == 0) {
-				_logger.info("insert: " + u);
-				id = insert(u);
-				returnStatusList.add("Inserted " + id);
-			}
-			// deletes
-			else if (u.getId() < 0) {
-				_logger.info("delete: " + u);
-				boolean status = delete(AbstractDataType.getIdParameter(-1
-						* u.getId()));
-				if (status) {
-					returnStatusList.add("Deleted " + id);
-				} else {
-					returnStatusList.add("Failed to delete " + id);
-				}
-			} else {
-				_logger.info("edit: " + u);
-				boolean status = edit(u);
-				if (status) {
-					returnStatusList.add("Edited " + id);
-				} else {
-					returnStatusList.add("Failed to edit " + id);
-				}
-			}
+		for (Iterator<T> iterator = dataTypeList.iterator(); iterator.hasNext();) {
+			returnStatusList.add(process(iterator.next()));
 		}
 		return returnStatusList;
+	}
+
+	protected String process(T dataType) throws ClearcheckbookException {
+		_logger.debug("process " + dataType);
+		String id = dataType.getIdParameter().getValue();
+
+		// Inserts
+		if ("".equals(id) || dataType.getId() == 0) {
+			_logger.info("insert: " + dataType);
+			id = insert(dataType);
+			return "Inserted " + id;
+		}
+		// deletes
+		else if (dataType.getId() < 0) {
+			_logger.info("delete: " + dataType);
+			boolean status = delete(AbstractDataType.getIdParameter(-1
+					* dataType.getId()));
+			if (status) {
+				return "Deleted " + id;
+			} else {
+				return "Failed to delete " + id;
+			}
+		} else {
+			_logger.info("edit: " + dataType);
+			boolean status = edit(dataType);
+			if (status) {
+				return "Edited " + id;
+			} else {
+				return "Failed to edit " + id;
+			}
+		}
 	}
 
 	/**
@@ -254,7 +256,7 @@ abstract public class AbstractCall<U extends AbstractDataType<?>> {
 	 * @return String if successful, returns the id, else throws exception
 	 * @throws ClearcheckbookException
 	 */
-	protected String insert(U input) throws ClearcheckbookException {
+	protected String insert(T input) throws ClearcheckbookException {
 		_logger.debug("insert: " + input);
 		AbstractDataType<?> dataType = (AbstractDataType<?>) input;
 		String returnString;
@@ -280,7 +282,7 @@ abstract public class AbstractCall<U extends AbstractDataType<?>> {
 	 * @return boolean - true means edit was successful
 	 * @throws ClearcheckbookException
 	 */
-	protected boolean edit(U input) throws ClearcheckbookException {
+	protected boolean edit(T input) throws ClearcheckbookException {
 		_logger.debug("edit: " + input);
 		AbstractDataType<?> dataType = (AbstractDataType<?>) input;
 		String returnString;

@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +16,9 @@ import com.leonarduk.clearcheckbook.dto.ReminderDataType;
 import com.leonarduk.clearcheckbook.dto.TransactionDataType;
 import com.leonarduk.clearcheckbook.file.ClearCheckBookFileHandler;
 import com.leonarduk.clearcheckbook.file.FilePreProcessor;
+import com.leonarduk.clearcheckbook.processor.ClearCheckBookTaskProcessor;
+import com.leonarduk.clearcheckbook.processor.ClearCheckBookTaskSerialProcessor;
+import com.leonarduk.clearcheckbook.processor.parallel.ClearCheckBookDataTypeParallelProcessor;
 
 /**
  * A class to hold helper methods around the API. This adds caching to the
@@ -39,9 +41,10 @@ public class ClearCheckBookHelper {
 	private ClearCheckBookFileHandler fileHandler;
 
 	private Map<Long, AccountDataType> accountsMap = null;
+	private int consumers;
 
-	public ClearCheckBookHelper(String userName, String password) {
-
+	public ClearCheckBookHelper(String userName, String password, int consumers) {
+		this.consumers = consumers;
 		this.connection = new ClearCheckBookConnection(userName, password);
 		this.fileHandler = new ClearCheckBookFileHandler();
 	}
@@ -154,20 +157,60 @@ public class ClearCheckBookHelper {
 	}
 
 	public List<String> processTransactions(
-			List<TransactionDataType> dataTypeList)
+			List<TransactionDataType> dataTypeList,
+			ClearCheckBookTaskProcessor<TransactionDataType> processor)
 			throws ClearcheckbookException {
-		return this.connection.transaction().bulkProcess(dataTypeList);
+		return processor.processQueue(dataTypeList);
 	}
 
 	public List<String> processTransactions(List<TransactionDataType> modified,
-	List<TransactionDataType> original) throws ClearcheckbookException {
-		List<TransactionDataType> processList = new LinkedList<>();
-		for (TransactionDataType transcationToProcess : modified) {
-			if(!original.contains(transcationToProcess)) {
-				processList.add(transcationToProcess);
-			}
-		}
-		return this.connection.transaction().bulkProcess(processList);
+			List<TransactionDataType> original) throws ClearcheckbookException {
+		return processTransactions(modified, original,
+				new ClearCheckBookTaskSerialProcessor<TransactionDataType>(
+						this.connection.transaction()));
+	}
+
+	public List<String> processTransactionsInParallel(
+			List<TransactionDataType> modified,
+			List<TransactionDataType> original) throws ClearcheckbookException {
+		List<TransactionDataType> processList = getChangesOnly(modified,
+				original);
+		return processTransactionsInParallel(processList);
+	}
+
+	public List<String> processTransactionsInParallel(
+			List<TransactionDataType> modified) throws ClearcheckbookException {
+		// limit number of consumers if we have small number of data to process
+		int queueSize = Math.min(100, modified.size());
+		int numberOfConsumers = Math.min(consumers, modified.size());
+		return processTransactions(
+				modified,
+				new ClearCheckBookDataTypeParallelProcessor<TransactionDataType>(
+						this.connection.transaction(), queueSize,
+						numberOfConsumers));
+	}
+
+	public List<String> processTransactions(List<TransactionDataType> modified)
+			throws ClearcheckbookException {
+		return processTransactions(modified,
+				new ClearCheckBookTaskSerialProcessor<TransactionDataType>(
+						this.connection.transaction()));
+	}
+
+	public List<String> processTransactions(List<TransactionDataType> modified,
+			List<TransactionDataType> original,
+			ClearCheckBookTaskProcessor<TransactionDataType> processor)
+			throws ClearcheckbookException {
+		List<TransactionDataType> processList = getChangesOnly(modified,
+				original);
+		return processTransactions(processList, processor);
+	}
+
+	protected List<TransactionDataType> getChangesOnly(
+			List<TransactionDataType> modified,
+			List<TransactionDataType> original) {
+		modified.removeAll(original);
+		return modified;
 	}
 
 	public void processAccounts(List<AccountDataType> accounts)

@@ -53,7 +53,10 @@ public class ClearCheckBookCLI {
 		String command = config
 				.getOptionalPropertyValue("clearcheckbook.command");
 
-		ClearCheckBookCLI cli = new ClearCheckBookCLI(userName, password);
+		int consumers = Integer.valueOf(config
+				.getMandatoryPropertyValue("clearcheckbook.concurrent.connections"));
+		ClearCheckBookCLI cli = new ClearCheckBookCLI(userName, password,
+				consumers);
 		if (null == command) {
 			// There is an option to quit, so iterate till then
 			while (true) {
@@ -67,8 +70,8 @@ public class ClearCheckBookCLI {
 
 	private Map<Long, AccountDataType> accountsMap = null;
 
-	public ClearCheckBookCLI(String userName, String password) {
-		helper = new ClearCheckBookHelper(userName, password);
+	public ClearCheckBookCLI(String userName, String password, int consumers) {
+		helper = new ClearCheckBookHelper(userName, password, consumers);
 		System.out.println("Clearcheckbook Tools - connecting as " + userName);
 	}
 
@@ -288,7 +291,7 @@ public class ClearCheckBookCLI {
 
 		List<TransactionDataType> transactions = helper.importTransactions(
 				fileName, preprocessor);
-		this.helper.processTransactions(transactions);
+		this.helper.processTransactionsInParallel(transactions);
 		System.out.println("Imported " + transactions.size() + " transactions");
 	}
 
