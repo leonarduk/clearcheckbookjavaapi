@@ -8,7 +8,10 @@
 	<body>
 		<release version="Release 0.3-SNAPSHOT" date="" description="Latest">
 			<action type="add" dev="Stephen Leonard" issue="20">Show changes
-				per release using maven changes plugin</action>
+				per release using maven changes plugin
+			</action>
+			<action type="add" dev="Stephen Leonard" issue="11">Use
+				multi-threading for bulk import</action>
 		</release>
 		<release version="Release 0.2" date="2014-02-10"
 			description="Basic command line client.">
