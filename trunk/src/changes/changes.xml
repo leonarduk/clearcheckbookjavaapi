@@ -6,7 +6,7 @@
 		<author email="sourceforge@leonarduk.com">Stephen Leonard</author>
 	</properties>
 	<body>
-		<release version="Release 0.3-SNAPSHOT" date="" description="Latest">
+		<release version="0.3" date="2015-03-22" description="update">
 			<action type="add" dev="Stephen Leonard" issue="20">Show changes
 				per release using maven changes plugin
 			</action>
