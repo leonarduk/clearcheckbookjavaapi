@@ -4,7 +4,8 @@
 	<name>ClearCheckBookJavaApi</name>
 	<version>0.3-SNAPSHOT</version>
 	<url>https://sourceforge.net/projects/clearcheckbookjavaapi</url>
-	<description>A Java library to access the HTTP developer API for Clearcheckbook.com, the money management website.</description>
+	<description>A Java library to access the HTTP developer API for
+		Clearcheckbook.com, the money management website.</description>
 	<groupId>com.leonarduk.clearcheckbook</groupId>
 	<artifactId>clearcheckbookapi</artifactId>
 	<properties>
@@ -14,6 +15,7 @@
 		<!-- dependencies checked at http://search.maven.org/ 2014-02-11 -->
 		<htmlunit.version>2.13</htmlunit.version>
 		<log4j.version>1.2.17</log4j.version>
+		<jacoco.version>0.7.6.201602180812</jacoco.version>
 		<jackson-mapper-asl.version>1.9.13</jackson-mapper-asl.version>
 		<guava.version>15.0</guava.version>
 		<junit.version>4.11</junit.version>
@@ -23,7 +25,8 @@
 		<maven-site-plugin.version>3.3</maven-site-plugin.version>
 		<maven-javadoc-plugin.version>2.9.1</maven-javadoc-plugin.version>
 		<maven-surefire-plugin.version>2.16</maven-surefire-plugin.version>
-		<maven-project-info-reports-plugin.version>2.7</maven-project-info-reports-plugin.version>
+		<maven-project-info-reports-plugin.version>2.7
+		</maven-project-info-reports-plugin.version>
 		<changes-maven-plugin.version>0.2</changes-maven-plugin.version>
 		<taglist-maven-plugin.version>2.4</taglist-maven-plugin.version>
 		<maven-changelog-plugin.version>2.2</maven-changelog-plugin.version>
@@ -65,6 +68,12 @@
 			<version>${junit.version}</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.jacoco</groupId>
+			<artifactId>jacoco-maven-plugin</artifactId>
+			<version>${jacoco.version}</version>
+			<type>maven-plugin</type>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -74,7 +83,8 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>com.leonarduk.clearcheckbook.ClearCheckBookClient</mainClass>
+							<mainClass>com.leonarduk.clearcheckbook.ClearCheckBookClient
+							</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>
@@ -122,6 +132,32 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>${jacoco.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<excludes>
+						<exclude>uk/co/sleonard/unison/gui/*.class</exclude>
+						<exclude>uk/co/sleonard/unison/gui/generated/*.class</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+
 		</plugins>
 	</build>
 	<reporting>
@@ -190,20 +226,25 @@
 	<distributionManagement>
 		<site>
 			<id>clearcheckbookjavaapi.sourceforge.net</id>
-			<url>sftp://leonarduk,clearcheckbookjavaapi@web.sourceforge.net:/home/project-web/clearcheckbookjavaapi/htdocs</url>
+			<url>sftp://leonarduk,clearcheckbookjavaapi@web.sourceforge.net:/home/project-web/clearcheckbookjavaapi/htdocs
+			</url>
 		</site>
 		<repository>
 			<id>clearcheckbookjavaapi.sourceforge.net</id>
 			<name>SourceForge shell repo</name>
-			<url>sftp://leonarduk,clearcheckbookjavaapi@web.sourceforge.net:/home/project-web/clearcheckbookjavaapi/htdocs/maven</url>
+			<url>sftp://leonarduk,clearcheckbookjavaapi@web.sourceforge.net:/home/project-web/clearcheckbookjavaapi/htdocs/maven
+			</url>
 		</repository>
 	</distributionManagement>
 	<mailingLists>
 		<mailingList>
 			<name>JWebUnit Development Mailing list</name>
-			<subscribe>https://lists.sourceforge.net/lists/listinfo/clearcheckbookjavaapi-updates</subscribe>
-			<unsubscribe>https://lists.sourceforge.net/lists/listinfo/clearcheckbookjavaapi-updates</unsubscribe>
-			<archive>https://sourceforge.net/p/clearcheckbookjavaapi/mailman/clearcheckbookjavaapi-updates</archive>
+			<subscribe>https://lists.sourceforge.net/lists/listinfo/clearcheckbookjavaapi-updates
+			</subscribe>
+			<unsubscribe>https://lists.sourceforge.net/lists/listinfo/clearcheckbookjavaapi-updates
+			</unsubscribe>
+			<archive>https://sourceforge.net/p/clearcheckbookjavaapi/mailman/clearcheckbookjavaapi-updates
+			</archive>
 			<post>jwebunit-development@lists.sourceforge.net</post>
 		</mailingList>
 	</mailingLists>
@@ -239,8 +280,11 @@
 		</developer>
 	</developers>
 	<scm>
-		<connection>scm:svn:https://svn.code.sf.net/p/clearcheckbookjavaapi/code/trunk</connection>
-		<developerConnection>scm:svn:https://clearcheckbookjavaapi.svn.sourceforge.net/svnroot/clearcheckbookjavaapi/trunk/</developerConnection>
-		<url>http://clearcheckbookjavaapi.svn.sourceforge.net/viewvc/clearcheckbookjavaapi/trunk</url>
+		<connection>scm:svn:https://svn.code.sf.net/p/clearcheckbookjavaapi/code/trunk
+		</connection>
+		<developerConnection>scm:svn:https://clearcheckbookjavaapi.svn.sourceforge.net/svnroot/clearcheckbookjavaapi/trunk/
+		</developerConnection>
+		<url>http://clearcheckbookjavaapi.svn.sourceforge.net/viewvc/clearcheckbookjavaapi/trunk
+		</url>
 	</scm>
 </project>
