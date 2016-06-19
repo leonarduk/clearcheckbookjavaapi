@@ -9,7 +9,7 @@
 	<artifactId>clearcheckbookapi</artifactId>
 	<properties>
 		<maven.test.failure.ignore>true</maven.test.failure.ignore>
-		<maven.test.skip>true</maven.test.skip>
+		<maven.test.skip>false</maven.test.skip>
 		<java.version>1.7</java.version>
 		<!-- dependencies checked at http://search.maven.org/ 2014-02-11 -->
 		<htmlunit.version>2.13</htmlunit.version>
