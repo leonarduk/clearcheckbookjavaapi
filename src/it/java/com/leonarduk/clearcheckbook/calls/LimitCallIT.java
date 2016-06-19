@@ -10,22 +10,22 @@ import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.leonarduk.clearcheckbook.ClearCheckBookConnectionTest;
+import com.leonarduk.clearcheckbook.ClearCheckBookConnectionIT;
 import com.leonarduk.clearcheckbook.ClearcheckbookException;
 import com.leonarduk.clearcheckbook.dto.AbstractDataType;
 import com.leonarduk.clearcheckbook.dto.LimitDataType;
 import com.leonarduk.clearcheckbook.dto.LimitDataType.Duration;
 import com.leonarduk.clearcheckbook.dto.ParsedNameValuePair;
 
-public class LimitCallTest {
+public class LimitCallIT {
 
-	private static final Logger _logger = Logger.getLogger(LimitCallTest.class);
+	private static final Logger _logger = Logger.getLogger(LimitCallIT.class);
 	private LimitCall call;
 
 	@Before
 	public void setUp() throws Exception {
 		this.call = new LimitCall(
-				ClearCheckBookConnectionTest.getTestConnection());
+				ClearCheckBookConnectionIT.getTestConnection());
 	}
 
 	@Test

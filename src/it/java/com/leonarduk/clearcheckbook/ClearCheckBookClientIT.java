@@ -24,10 +24,10 @@ import com.leonarduk.clearcheckbook.file.NationwideFilePreprocessor;
 import com.leonarduk.clearcheckbook.file.TransactionFilePreprocessor;
 import com.leonarduk.utils.DateUtils;
 
-public class ClearCheckBookClientTest {
+public class ClearCheckBookClientIT {
 
 	private static final Logger _logger = Logger
-			.getLogger(ClearCheckBookClientTest.class);
+			.getLogger(ClearCheckBookClientIT.class);
 	private ClearCheckBookHelper client;
 	private final String categoriesFileName = "clientCategories.csv";
 	private final String accountsFileName = "clientAccounts.csv";

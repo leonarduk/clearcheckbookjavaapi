@@ -9,22 +9,22 @@ import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.leonarduk.clearcheckbook.ClearCheckBookConnectionTest;
+import com.leonarduk.clearcheckbook.ClearCheckBookConnectionIT;
 import com.leonarduk.clearcheckbook.ClearcheckbookException;
 import com.leonarduk.clearcheckbook.dto.CategoryDataType;
 import com.leonarduk.clearcheckbook.dto.ParsedNameValuePair;
 import com.leonarduk.utils.DateUtils;
 
-public class CategoryCallTest {
+public class CategoryCallIT {
 
 	private static final Logger _logger = Logger
-			.getLogger(CategoryCallTest.class);
+			.getLogger(CategoryCallIT.class);
 	private CategoryCall call;
 
 	@Before
 	public void setUp() throws Exception {
 		this.call = new CategoryCall(
-				ClearCheckBookConnectionTest.getTestConnection());
+				ClearCheckBookConnectionIT.getTestConnection());
 	}
 
 	@Test

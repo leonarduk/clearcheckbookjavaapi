@@ -14,6 +14,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.leonarduk.clearcheckbook.dto.CategoryDataType;
@@ -156,6 +157,7 @@ public class ClearCheckBookFileHandlerTest {
 		}
 	}
 
+	@Ignore
 	@Test
 	public void testImportMiniTransactions() {
 		try {

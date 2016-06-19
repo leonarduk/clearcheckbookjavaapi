@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.leonarduk.clearcheckbook.ClearCheckBookConnectionTest;
+import com.leonarduk.clearcheckbook.ClearCheckBookConnectionIT;
 import com.leonarduk.clearcheckbook.ClearcheckbookException;
 import com.leonarduk.clearcheckbook.dto.AbstractDataType;
 import com.leonarduk.clearcheckbook.dto.AccountDataType;
@@ -18,16 +18,16 @@ import com.leonarduk.clearcheckbook.dto.AccountDataType.Type;
 import com.leonarduk.clearcheckbook.dto.ParsedNameValuePair;
 import com.leonarduk.utils.DateUtils;
 
-public class AccountCallTest {
+public class AccountCallIT {
 
 	private static final Logger _logger = Logger
-			.getLogger(AccountCallTest.class);
+			.getLogger(AccountCallIT.class);
 	private AccountCall call;
 
 	@Before
 	public void setUp() throws Exception {
 		this.call = new AccountCall(
-				ClearCheckBookConnectionTest.getTestConnection());
+				ClearCheckBookConnectionIT.getTestConnection());
 
 	}
 

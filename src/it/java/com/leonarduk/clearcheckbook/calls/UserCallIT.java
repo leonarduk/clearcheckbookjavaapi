@@ -7,23 +7,23 @@ import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.leonarduk.clearcheckbook.ClearCheckBookConnectionTest;
+import com.leonarduk.clearcheckbook.ClearCheckBookConnectionIT;
 import com.leonarduk.clearcheckbook.ClearcheckbookException;
 import com.leonarduk.clearcheckbook.dto.UserDataType;
 import com.leonarduk.utils.DateUtils;
 
-public class UserCallTest {
+public class UserCallIT {
 
-	private static final Logger _logger = Logger.getLogger(UserCallTest.class);
+	private static final Logger _logger = Logger.getLogger(UserCallIT.class);
 	private UserCall call;
 
 	private String username;
 
 	@Before
 	public void setUp() throws Exception {
-		this.username = ClearCheckBookConnectionTest.userName;
+		this.username = ClearCheckBookConnectionIT.userName;
 		this.call = new UserCall(
-				ClearCheckBookConnectionTest.getTestConnection());
+				ClearCheckBookConnectionIT.getTestConnection());
 	}
 
 	@Test

@@ -8,23 +8,23 @@ import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.leonarduk.clearcheckbook.ClearCheckBookConnectionTest;
+import com.leonarduk.clearcheckbook.ClearCheckBookConnectionIT;
 import com.leonarduk.clearcheckbook.ClearcheckbookException;
 import com.leonarduk.clearcheckbook.dto.AbstractDataType;
 import com.leonarduk.clearcheckbook.dto.ParsedNameValuePair;
 import com.leonarduk.clearcheckbook.dto.ReminderDataType;
 import com.leonarduk.utils.DateUtils;
 
-public class ReminderDataTypeTest {
+public class ReminderDataTypeIT {
 
 	private static final Logger _logger = Logger
-			.getLogger(ReminderDataTypeTest.class);
+			.getLogger(ReminderDataTypeIT.class);
 	private ReminderCall call;
 
 	@Before
 	public void setUp() throws Exception {
 		this.call = new ReminderCall(
-				ClearCheckBookConnectionTest.getTestConnection());
+				ClearCheckBookConnectionIT.getTestConnection());
 
 	}
 

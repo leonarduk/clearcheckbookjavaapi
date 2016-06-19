@@ -6,21 +6,21 @@ import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.leonarduk.clearcheckbook.ClearCheckBookConnectionTest;
+import com.leonarduk.clearcheckbook.ClearCheckBookConnectionIT;
 import com.leonarduk.clearcheckbook.ClearcheckbookException;
 import com.leonarduk.clearcheckbook.dto.PremiumDataType;
 
-public class PremiumCallTest {
+public class PremiumCallIT {
 
 	private static final Logger _logger = Logger
-			.getLogger(PremiumCallTest.class);
+			.getLogger(PremiumCallIT.class);
 
 	private PremiumCall call;
 
 	@Before
 	public void setUp() throws Exception {
 		this.call = new PremiumCall(
-				ClearCheckBookConnectionTest.getTestConnection());
+				ClearCheckBookConnectionIT.getTestConnection());
 
 	}
 

@@ -9,21 +9,21 @@ import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.leonarduk.clearcheckbook.ClearCheckBookConnectionTest;
+import com.leonarduk.clearcheckbook.ClearCheckBookConnectionIT;
 import com.leonarduk.clearcheckbook.ClearcheckbookException;
 import com.leonarduk.clearcheckbook.dto.ReportDataType;
 
-public class ReportCallTest {
+public class ReportCallIT {
 
 	private static final Logger _logger = Logger
-			.getLogger(ReportCallTest.class);
+			.getLogger(ReportCallIT.class);
 
 	private ReportCall call;
 
 	@Before
 	public void setUp() throws Exception {
 		this.call = new ReportCall(
-				ClearCheckBookConnectionTest.getTestConnection());
+				ClearCheckBookConnectionIT.getTestConnection());
 
 	}
 
