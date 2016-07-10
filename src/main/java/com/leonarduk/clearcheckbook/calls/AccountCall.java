@@ -141,6 +141,18 @@ public class AccountCall extends AbstractCall<AccountDataType>
 		return accountDataType;
 	}
 
+	public AccountDataType get(final String name) throws ClearcheckbookException {
+		final List<AccountDataType> accounts = this.getAll();
+		for (final AccountDataType accountDataType : accounts) {
+			if (accountDataType.getName().equals(name)) {
+				return accountDataType;
+			}
+		}
+		final String message = "Failed to find account " + name;
+		AccountCall._logger.warn(message);
+		throw new ClearcheckbookException(message);
+	}
+
 	/**
 	 * Returns an array of all accounts and account balances for this user. <br>
 	 * Method: get <br>
