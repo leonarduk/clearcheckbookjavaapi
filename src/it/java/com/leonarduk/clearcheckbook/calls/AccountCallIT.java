@@ -1,12 +1,15 @@
+/**
+ * AccountCallIT
+ *
+ * @author ${author}
+ * @since 10-Jul-2016
+ */
 package com.leonarduk.clearcheckbook.calls;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,15 +23,108 @@ import com.leonarduk.utils.DateUtils;
 
 public class AccountCallIT {
 
-	private static final Logger _logger = Logger
-			.getLogger(AccountCallIT.class);
-	private AccountCall call;
+	private static final Logger	_logger	= Logger.getLogger(AccountCallIT.class);
+	private AccountCall			call;
 
 	@Before
 	public void setUp() throws Exception {
-		this.call = new AccountCall(
-				ClearCheckBookConnectionIT.getTestConnection());
+		this.call = new AccountCall(ClearCheckBookConnectionIT.getTestConnection());
 
+	}
+
+	@Test
+	public void testAccountDataType() {
+		final String name = "Insert Test" + DateUtils.getNowyyyyMMddHHmm();
+		final Type type_id = AccountDataType.Type.CHECKING;
+		final double balanceString = 90;
+
+		final AccountDataType input = AccountDataType.create(name, type_id, balanceString);
+
+		input.getDeposit();
+		Assert.assertTrue("Name not set", name.equals(input.getName()));
+
+		final String newName = "new";
+		input.setName(newName);
+		Assert.assertTrue("Name not set: " + newName + " vs " + input.getName(),
+		        newName.equals(input.getName()));
+
+		final Type newtypeid = Type.UNKNOWN;
+		input.setTypeId(newtypeid);
+		try {
+			Assert.assertTrue("Type not set", newtypeid.equals(input.getTypeId()));
+		}
+		catch (final ClearcheckbookException e) {
+			AccountCallIT._logger.error(e);
+			Assert.fail();
+		}
+
+		// TODO test all the getters and setters
+	}
+
+	@Test
+	public void testDeleteAccountDataType() {
+		try {
+			final List<AccountDataType> accounts = this.call.getAll();
+			final AccountDataType accountDataType = accounts.get(accounts.size() - 1);
+			final ParsedNameValuePair idParameter = accountDataType.getIdParameter();
+			final boolean deleted = this.call.delete(idParameter);
+			Assert.assertTrue("Failed to delete account " + accountDataType, deleted);
+			AccountCallIT._logger.info("Deleted " + accountDataType);
+		}
+		catch (final ClearcheckbookException e) {
+			AccountCallIT._logger.fatal("Failed to get Accounts list needed to get id", e);
+			Assert.fail();
+		}
+	}
+
+	@Test
+	public void testEditAccountDataType() {
+		try {
+			final List<AccountDataType> accounts = this.call.getAll();
+			final AccountDataType account = accounts.get(1);
+			final String oldName = account.getName();
+			account.setName("EditTest" + DateUtils.getNowyyyyMMddHHmm());
+			AccountCallIT._logger.info("Going to edit '" + oldName + "' to " + account);
+			final boolean edited = this.call.edit(account);
+			Assert.assertTrue("Failed to edit account " + account, edited);
+			AccountCallIT._logger.info("Edited " + account);
+		}
+		catch (final ClearcheckbookException e) {
+			AccountCallIT._logger.fatal("Failed to get Accounts list needed to get id", e);
+			Assert.fail();
+		}
+	}
+
+	@Test
+	public void testGet() {
+		try {
+			final List<AccountDataType> accounts = this.call.getAll();
+			final AccountDataType accountDataType = accounts.get(0);
+
+			AccountCallIT._logger.info(accountDataType.getName() + " Current balance: "
+			        + accountDataType.getCurrentBalance());
+			final ParsedNameValuePair idParameter = accountDataType.getIdParameter();
+			final AccountDataType account = this.call.get(idParameter);
+			AccountCallIT._logger.info("get: " + account);
+			Assert.assertEquals(idParameter.getValue(), account.getIdParameter().getValue());
+
+			Assert.assertEquals(accountDataType.getId(),
+			        this.call.get(accountDataType.getName()).getId());
+		}
+		catch (final ClearcheckbookException e) {
+			AccountCallIT._logger.fatal("Failed to get Accounts list needed to get id", e);
+			Assert.fail();
+		}
+
+		final ParsedNameValuePair idParameter = AbstractDataType.getIdParameter(1);
+		AccountDataType account;
+		try {
+			account = this.call.get(idParameter);
+			AccountCallIT._logger.error("Should not get back " + account);
+			Assert.fail("Should not get this back");
+		}
+		catch (final ClearcheckbookException e) {
+		}
 	}
 
 	@Test
@@ -36,111 +132,27 @@ public class AccountCallIT {
 		List<AccountDataType> accounts;
 		try {
 			accounts = this.call.getAll();
-			_logger.info(accounts.size() + " account(s) : " + accounts);
-		} catch (ClearcheckbookException e) {
-			_logger.error("Failed to getAll", e);
-			fail();
+			AccountCallIT._logger.info(accounts.size() + " account(s) : " + accounts);
 		}
-	}
-
-	@Test
-	public void testGet() {
-		try {
-			List<AccountDataType> accounts = this.call.getAll();
-			ParsedNameValuePair idParameter = accounts.get(0).getIdParameter();
-			AccountDataType account = this.call.get(idParameter);
-			_logger.info("get: " + account);
-			assertEquals(idParameter.getValue(), account.getIdParameter()
-					.getValue());
-		} catch (ClearcheckbookException e) {
-			_logger.fatal("Failed to get Accounts list needed to get id", e);
-			fail();
-		}
-
-		ParsedNameValuePair idParameter = AbstractDataType.getIdParameter(1);
-		AccountDataType account;
-		try {
-			account = this.call.get(idParameter);
-			_logger.error("Should not get back " + account);
-			fail("Should not get this back");
-		} catch (ClearcheckbookException e) {
+		catch (final ClearcheckbookException e) {
+			AccountCallIT._logger.error("Failed to getAll", e);
+			Assert.fail();
 		}
 	}
 
 	@Test
 	public void testInsertAccountDataType() {
-		String name = "Insert Test" + DateUtils.getNowyyyyMMddHHmm();
-		Type type_id = AccountDataType.Type.CHECKING;
-		double balanceString = 90;
-		AccountDataType input = AccountDataType.create(name, type_id,
-				balanceString);
+		final String name = "Insert Test" + DateUtils.getNowyyyyMMddHHmm();
+		final Type type_id = AccountDataType.Type.CHECKING;
+		final double balanceString = 90;
+		final AccountDataType input = AccountDataType.create(name, type_id, balanceString);
 		try {
-			String id = this.call.insert(input);
-			_logger.info("inserted " + id + ":" + input);
-		} catch (ClearcheckbookException e) {
-			_logger.fatal("failed to create account", e);
-			fail("Failed to create account " + name);
+			final String id = this.call.insert(input);
+			AccountCallIT._logger.info("inserted " + id + ":" + input);
 		}
-	}
-
-	@Test
-	public void testEditAccountDataType() {
-		try {
-			List<AccountDataType> accounts = this.call.getAll();
-			AccountDataType account = accounts.get(1);
-			String oldName = account.getName();
-			account.setName("EditTest" + DateUtils.getNowyyyyMMddHHmm());
-			_logger.info("Going to edit '" + oldName + "' to " + account);
-			boolean edited = this.call.edit(account);
-			assertTrue("Failed to edit account " + account, edited);
-			_logger.info("Edited " + account);
-		} catch (ClearcheckbookException e) {
-			_logger.fatal("Failed to get Accounts list needed to get id", e);
-			fail();
+		catch (final ClearcheckbookException e) {
+			AccountCallIT._logger.fatal("failed to create account", e);
+			Assert.fail("Failed to create account " + name);
 		}
-	}
-
-	@Test
-	public void testDeleteAccountDataType() {
-		try {
-			List<AccountDataType> accounts = this.call.getAll();
-			AccountDataType accountDataType = accounts.get(accounts.size() - 1);
-			ParsedNameValuePair idParameter = accountDataType.getIdParameter();
-			boolean deleted = this.call.delete(idParameter);
-			assertTrue("Failed to delete account " + accountDataType, deleted);
-			_logger.info("Deleted " + accountDataType);
-		} catch (ClearcheckbookException e) {
-			_logger.fatal("Failed to get Accounts list needed to get id", e);
-			fail();
-		}
-	}
-
-	@Test
-	public void testAccountDataType() {
-		String name = "Insert Test" + DateUtils.getNowyyyyMMddHHmm();
-		Type type_id = AccountDataType.Type.CHECKING;
-		double balanceString = 90;
-
-		AccountDataType input = AccountDataType.create(name, type_id,
-				balanceString);
-
-		input.getDeposit();
-		assertTrue("Name not set", name.equals(input.getName()));
-
-		String newName = "new";
-		input.setName(newName);
-		assertTrue("Name not set: " + newName + " vs " + input.getName(),
-				newName.equals(input.getName()));
-
-		Type newtypeid = Type.UNKNOWN;
-		input.setTypeId(newtypeid);
-		try {
-			assertTrue("Type not set", newtypeid.equals(input.getTypeId()));
-		} catch (ClearcheckbookException e) {
-			_logger.error(e);
-			fail();
-		}
-
-		// TODO test all the getters and setters
 	}
 }

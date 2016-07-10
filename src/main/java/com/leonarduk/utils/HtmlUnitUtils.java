@@ -1,9 +1,14 @@
+/**
+ * HtmlUnitUtils
+ *
+ * @author ${author}
+ * @since 10-Jul-2016
+ */
 package com.leonarduk.utils;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.bind.DatatypeConverter;
@@ -21,15 +26,40 @@ import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.gargoylesoftware.htmlunit.util.NameValuePair;
 
+/**
+ * The Class HtmlUnitUtils.
+ */
 public class HtmlUnitUtils {
 
+	/** The Constant _logger. */
 	private static final Logger _logger = Logger.getLogger(HtmlUnitUtils.class);
 
-	public static HtmlForm getFormById(HtmlPage page, String id)
-			throws ElementNotFoundException {
-		List<HtmlForm> forms = page.getForms();
-		for (Iterator<HtmlForm> iterator = forms.iterator(); iterator.hasNext();) {
-			HtmlForm htmlForm = iterator.next();
+	/**
+	 * Base64 encode.
+	 *
+	 * @param stringToEncode
+	 *            the string to encode
+	 * @return the string
+	 */
+	private static String base64Encode(final String stringToEncode) {
+		return DatatypeConverter.printBase64Binary(stringToEncode.getBytes());
+	}
+
+	/**
+	 * Gets the form by id.
+	 *
+	 * @param page
+	 *            the page
+	 * @param id
+	 *            the id
+	 * @return the form by id
+	 * @throws ElementNotFoundException
+	 *             the element not found exception
+	 */
+	public static HtmlForm getFormById(final HtmlPage page, final String id)
+	        throws ElementNotFoundException {
+		final List<HtmlForm> forms = page.getForms();
+		for (final HtmlForm htmlForm : forms) {
 			if (htmlForm.getId().equals(id)) {
 				return htmlForm;
 			}
@@ -37,75 +67,165 @@ public class HtmlUnitUtils {
 		throw new ElementNotFoundException("Form", "id", id);
 	}
 
-	public static void setField(final HtmlForm form, String field, String value) {
-		final HtmlTextInput textField = form.getInputByName(field);
-		textField.setValueAttribute(value);
+	/**
+	 * Gets the page.
+	 *
+	 * @param url
+	 *            the url
+	 * @param method
+	 *            the method
+	 * @param parameters
+	 *            the parameters
+	 * @return the page
+	 * @throws FailingHttpStatusCodeException
+	 *             the failing http status code exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	public static HtmlPage getPage(final String url, final HttpMethod method,
+	        final NameValuePair... parameters) throws FailingHttpStatusCodeException, IOException {
+		return HtmlUnitUtils.getPage(url, method, null, null, parameters);
 	}
 
-	public static void setPasswordField(HtmlForm form, String field,
-			String value) {
-		final HtmlPasswordInput textField = form.getInputByName(field);
-		textField.setValueAttribute(value);
-	}
-
-	public static String getPageText(String url, String method,
-			NameValuePair... parameters) throws FailingHttpStatusCodeException,
-			IOException {
-		return getPage(url, HttpMethod.valueOf(HttpMethod.class, method),
-				parameters).asText();
-	}
-
-	public static String getPageText(String url, String method,
-			String userName, String password, NameValuePair... parameters)
-			throws FailingHttpStatusCodeException, IOException {
-		return getPage(url, HttpMethod.valueOf(HttpMethod.class, method),
-				userName, password, parameters).asText();
-	}
-
-	public static HtmlPage getPage(String url, HttpMethod method,
-			String userName, String password, NameValuePair... parameters)
-			throws FailingHttpStatusCodeException, IOException {
-		_logger.info("getPage : " + url + " " + method.name());
+	/**
+	 * Gets the page.
+	 *
+	 * @param url
+	 *            the url
+	 * @param method
+	 *            the method
+	 * @param userName
+	 *            the user name
+	 * @param password
+	 *            the password
+	 * @param parameters
+	 *            the parameters
+	 * @return the page
+	 * @throws FailingHttpStatusCodeException
+	 *             the failing http status code exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	public static HtmlPage getPage(final String url, final HttpMethod method, final String userName,
+	        final String password, final NameValuePair... parameters)
+	                throws FailingHttpStatusCodeException, IOException {
+		HtmlUnitUtils._logger.info("getPage : " + url + " " + method.name());
 		final WebClient webClient = new WebClient();
 
 		if (null != userName) {
-			_logger.info("Setting username to " + userName);
-			setCredentials(webClient, userName, password);
-		} else {
-			_logger.info("Clearing cookies");
+			HtmlUnitUtils._logger.info("Setting username to " + userName);
+			HtmlUnitUtils.setCredentials(webClient, userName, password);
+		}
+		else {
+			HtmlUnitUtils._logger.info("Clearing cookies");
 			webClient.getCookieManager().clearCookies();
 		}
 		// Instead of requesting the page directly we create a
 		// WebRequestSettings object
-		WebRequest requestSettings = new WebRequest(new URL(url), method);
+		final WebRequest requestSettings = new WebRequest(new URL(url), method);
 
-		if (null != parameters && parameters.length > 0
-				&& parameters[0] != null) {
+		if ((null != parameters) && (parameters.length > 0) && (parameters[0] != null)) {
 			// Then we set the request parameters
 			requestSettings.setRequestParameters(Arrays.asList(parameters));
 		}
 
 		// Finally, we can get the page
-		HtmlPage page = webClient.getPage(requestSettings);
+		final HtmlPage page = webClient.getPage(requestSettings);
 		return page;
 	}
 
-	public static HtmlPage getPage(String url, HttpMethod method,
-			NameValuePair... parameters) throws FailingHttpStatusCodeException,
-			IOException {
-		return getPage(url, method, null, null, parameters);
+	/**
+	 * Gets the page text.
+	 *
+	 * @param url
+	 *            the url
+	 * @param method
+	 *            the method
+	 * @param parameters
+	 *            the parameters
+	 * @return the page text
+	 * @throws FailingHttpStatusCodeException
+	 *             the failing http status code exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	public static String getPageText(final String url, final String method,
+	        final NameValuePair... parameters) throws FailingHttpStatusCodeException, IOException {
+		return HtmlUnitUtils.getPage(url, Enum.valueOf(HttpMethod.class, method), parameters)
+		        .asText();
 	}
 
-	
-	private static void setCredentials(WebClient webClient, String username,
-			String password) {
-		String base64encodedUsernameAndPassword = base64Encode(username + ":"
-				+ password);
-		webClient.addRequestHeader("Authorization", "Basic "
-				+ base64encodedUsernameAndPassword);
+	/**
+	 * Gets the page text.
+	 *
+	 * @param url
+	 *            the url
+	 * @param method
+	 *            the method
+	 * @param userName
+	 *            the user name
+	 * @param password
+	 *            the password
+	 * @param parameters
+	 *            the parameters
+	 * @return the page text
+	 * @throws FailingHttpStatusCodeException
+	 *             the failing http status code exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	public static String getPageText(final String url, final String method, final String userName,
+	        final String password, final NameValuePair... parameters)
+	                throws FailingHttpStatusCodeException, IOException {
+		return HtmlUnitUtils.getPage(url, Enum.valueOf(HttpMethod.class, method), userName,
+		        password, parameters).asText();
 	}
 
-	private static String base64Encode(String stringToEncode) {
-		return DatatypeConverter.printBase64Binary(stringToEncode.getBytes());
+	/**
+	 * Sets the credentials.
+	 *
+	 * @param webClient
+	 *            the web client
+	 * @param username
+	 *            the username
+	 * @param password
+	 *            the password
+	 */
+	private static void setCredentials(final WebClient webClient, final String username,
+	        final String password) {
+		final String base64encodedUsernameAndPassword = HtmlUnitUtils
+		        .base64Encode(username + ":" + password);
+		webClient.addRequestHeader("Authorization", "Basic " + base64encodedUsernameAndPassword);
+	}
+
+	/**
+	 * Sets the field.
+	 *
+	 * @param form
+	 *            the form
+	 * @param field
+	 *            the field
+	 * @param value
+	 *            the value
+	 */
+	public static void setField(final HtmlForm form, final String field, final String value) {
+		final HtmlTextInput textField = form.getInputByName(field);
+		textField.setValueAttribute(value);
+	}
+
+	/**
+	 * Sets the password field.
+	 *
+	 * @param form
+	 *            the form
+	 * @param field
+	 *            the field
+	 * @param value
+	 *            the value
+	 */
+	public static void setPasswordField(final HtmlForm form, final String field,
+	        final String value) {
+		final HtmlPasswordInput textField = form.getInputByName(field);
+		textField.setValueAttribute(value);
 	}
 }

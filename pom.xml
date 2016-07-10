@@ -2,16 +2,17 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<name>ClearCheckBookJavaApi</name>
-	<version>0.3-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<url>https://sourceforge.net/projects/clearcheckbookjavaapi</url>
 	<description>A Java library to access the HTTP developer API for
-		Clearcheckbook.com, the money management website.</description>
-	<groupId>com.leonarduk.clearcheckbook</groupId>
+		Clearcheckbook.com, the money management website.
+	</description>
+	<groupId>com.leonarduk</groupId>
 	<artifactId>clearcheckbookapi</artifactId>
 	<properties>
 		<maven.test.failure.ignore>true</maven.test.failure.ignore>
 		<maven.test.skip>false</maven.test.skip>
-		<java.version>1.7</java.version>
+		<java.version>1.8</java.version>
 		<!-- dependencies checked at http://search.maven.org/ 2014-02-11 -->
 		<htmlunit.version>2.13</htmlunit.version>
 		<log4j.version>1.2.17</log4j.version>
@@ -36,6 +37,12 @@
 		<maven-surefire-plugin.version>2.16</maven-surefire-plugin.version>
 		<maven-changes-plugin.version>2.9</maven-changes-plugin.version>
 	</properties>
+	<repositories>
+		<repository>
+			<id>central.maven.org</id>
+			<url>http://central.maven.org/maven2/</url>
+		</repository>
+	</repositories>
 	<dependencies>
 		<!-- For connecting to websites -->
 		<dependency>
@@ -92,6 +99,34 @@
 					</descriptorRefs>
 				</configuration>
 			</plugin>
+			<plugin>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<version>2.9</version>
+				<configuration>
+					<downloadSources>true</downloadSources>
+					<downloadJavadocs>true</downloadJavadocs>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.sonatype.plugins</groupId>
+				<artifactId>nexus-staging-maven-plugin</artifactId>
+				<version>1.6.3</version>
+				<extensions>true</extensions>
+				<configuration>
+					<serverId>ossrh</serverId>
+					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+					<autoReleaseAfterClose>true</autoReleaseAfterClose>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<version>2.9</version>
+				<configuration>
+					<downloadSources>true</downloadSources>
+					<downloadJavadocs>true</downloadJavadocs>
+				</configuration>
+			</plugin>
+
 			<!-- for compiling code in Maven -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -157,7 +192,32 @@
 					</excludes>
 				</configuration>
 			</plugin>
-
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.2.1</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9.1</version>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 	<reporting>
@@ -229,10 +289,13 @@
 			<url>sftp://leonarduk,clearcheckbookjavaapi@web.sourceforge.net:/home/project-web/clearcheckbookjavaapi/htdocs
 			</url>
 		</site>
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
 		<repository>
-			<id>clearcheckbookjavaapi.sourceforge.net</id>
-			<name>SourceForge shell repo</name>
-			<url>sftp://leonarduk,clearcheckbookjavaapi@web.sourceforge.net:/home/project-web/clearcheckbookjavaapi/htdocs/maven
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/
 			</url>
 		</repository>
 	</distributionManagement>
@@ -263,11 +326,34 @@
 			<url>http://www.spdx.org/licenses/GPL-3.0+</url>
 		</license>
 	</licenses>
+	<profiles>
+		<profile>
+			<id>release</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>1.1</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 	<developers>
 		<developer>
 			<id>leonarduk</id>
 			<name>Stephen Leonard</name>
-			<email>sourceforge@leonarduk.com</email>
+			<email>github@leonarduk.com</email>
 			<roles>
 				<role>Project Manager</role>
 				<role>Architect</role>
@@ -280,11 +366,10 @@
 		</developer>
 	</developers>
 	<scm>
-		<connection>scm:svn:https://svn.code.sf.net/p/clearcheckbookjavaapi/code/trunk
+		<connection>scm:git:git@github.com:leonarduk/clearcheckbookapi.git
 		</connection>
-		<developerConnection>scm:svn:https://clearcheckbookjavaapi.svn.sourceforge.net/svnroot/clearcheckbookjavaapi/trunk/
+		<developerConnection>scm:git:git@github.com:leonarduk/clearcheckbookapi.git
 		</developerConnection>
-		<url>http://clearcheckbookjavaapi.svn.sourceforge.net/viewvc/clearcheckbookjavaapi/trunk
-		</url>
+		<url>git@github.com:leonarduk/clearcheckbookapi.git</url>
 	</scm>
 </project>

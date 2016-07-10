@@ -6,34 +6,38 @@
 		<author email="sourceforge@leonarduk.com">Stephen Leonard</author>
 	</properties>
 	<body>
+		<release version="1.0.0" date="2016-07-10" description="update">
+			<action type="add" dev="Stephen Leonard" issue="#2">Publish to Maven Central
+			</action>
+		</release>
 		<release version="0.3" date="2015-03-22" description="update">
-			<action type="add" dev="Stephen Leonard" issue="20">Show changes
+			<action type="add" dev="Stephen Leonard" issue="SF-20">Show changes
 				per release using maven changes plugin
 			</action>
-			<action type="add" dev="Stephen Leonard" issue="11">Use
+			<action type="add" dev="Stephen Leonard" issue="SF-11">Use
 				multi-threading for bulk import</action>
 		</release>
 		<release version="Release 0.2" date="2014-02-10"
 			description="Basic command line client.">
-			<action type="add" dev="Stephen Leonard" issue="3">Export
+			<action type="add" dev="Stephen Leonard" issue="SF-3">Export
 				transactions to file
 			</action>
-			<action type="add" dev="Stephen Leonard" issue="5">CLI tool to
+			<action type="add" dev="Stephen Leonard" issue="SF-5">CLI tool to
 				choose files to import to CCB
 			</action>
-			<action type="add" dev="Stephen Leonard" issue="10">Only send
+			<action type="add" dev="Stephen Leonard" issue="SF-10">Only send
 				updates to website where data changed
 			</action>
-			<action type="add" dev="Stephen Leonard" issue="12">add all
+			<action type="add" dev="Stephen Leonard" issue="SF-12">add all
 				comments from website docs to javadoc
 			</action>
-			<action type="add" dev="Stephen Leonard" issue="15">Ability in CLI
+			<action type="add" dev="Stephen Leonard" issue="SF-15">Ability in CLI
 				to import different transaction file formats
 			</action>
-			<action type="add" dev="Stephen Leonard" issue="17">split svn code
+			<action type="add" dev="Stephen Leonard" issue="SF-17">split svn code
 				into trunk and branches
 			</action>
-			<action type="add" dev="Stephen Leonard" issue="18">Update maven
+			<action type="add" dev="Stephen Leonard" issue="SF-18">Update maven
 				site config for the generated website
 			</action>
 			<action type="fix" dev="Stephen Leonard">Fixed all unit tests</action>
@@ -42,10 +46,10 @@
 			description="First cut. No client, just implementation of API.">
 			<action type="add" dev="Stephen Leonard">Implemented most of the API</action>
 			<action type="add" dev="Stephen Leonard">Created Maven repository</action>
-			<action type="add" dev="Stephen Leonard" issue="2">Move user name
+			<action type="add" dev="Stephen Leonard" issue="SF-2">Move user name
 				and password to new ClearCheckBookConnection class
 			</action>
-			<action type="add" dev="Stephen Leonard" issue="1">Complete the
+			<action type="add" dev="Stephen Leonard" issue="SF-1">Complete the
 				ReminderDataType class and unit test
 			</action>
 		</release>

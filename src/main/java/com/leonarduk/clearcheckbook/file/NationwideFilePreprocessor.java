@@ -1,3 +1,9 @@
+/**
+ * NationwideFilePreprocessor
+ *
+ * @author ${author}
+ * @since 10-Jul-2016
+ */
 package com.leonarduk.clearcheckbook.file;
 
 import java.text.ParseException;
@@ -9,10 +15,13 @@ import org.apache.log4j.Logger;
 import com.leonarduk.clearcheckbook.ClearcheckbookException;
 import com.leonarduk.utils.DateUtils;
 
+/**
+ * The Class NationwideFilePreprocessor.
+ */
 public class NationwideFilePreprocessor extends TransactionFilePreprocessor {
 
-	private static final Logger _logger = Logger
-			.getLogger(NationwideFilePreprocessor.class);
+	/** The Constant _logger. */
+	private static final Logger _logger = Logger.getLogger(NationwideFilePreprocessor.class);
 
 	/**
 	 * "Account Name:","Smart Junior ISA ****07843" <BR>
@@ -30,56 +39,92 @@ public class NationwideFilePreprocessor extends TransactionFilePreprocessor {
 		super(4);
 	}
 
-	public NationwideFilePreprocessor(Long id) {
-		super(4,id);
+	/**
+	 * Instantiates a new nationwide file preprocessor.
+	 *
+	 * @param id
+	 *            the id
+	 */
+	public NationwideFilePreprocessor(final Long id) {
+		super(4, id);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.leonarduk.clearcheckbook.file.TransactionFilePreprocessor#getAmount(java.util.Map)
+	 */
 	@Override
-	protected String getCheckNum(Map<String, String> fieldsMap) {
+	protected String getAmount(final Map<String, String> fieldsMap) {
+		final String credit = fieldsMap.get("paid in");
+		final String debit = fieldsMap.get("paid out");
+		double amount = 0;
+		if (credit.equals("")) {
+			amount = -1 * this.getDouble(debit);
+		}
+		else {
+			amount = this.getDouble(credit);
+		}
+		return String.valueOf(amount);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.leonarduk.clearcheckbook.file.TransactionFilePreprocessor#getCheckNum(java.util.Map)
+	 */
+	@Override
+	protected String getCheckNum(final Map<String, String> fieldsMap) {
 		return "";
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.leonarduk.clearcheckbook.file.TransactionFilePreprocessor#getDate(java.util.Map)
+	 */
 	@Override
-	protected String getDate(Map<String, String> fieldsMap)
-			throws ClearcheckbookException {
-		String dateString = fieldsMap.get("date");
-		_logger.debug("getDate:" + dateString + ":" + fieldsMap);
+	protected String getDate(final Map<String, String> fieldsMap) throws ClearcheckbookException {
+		final String dateString = fieldsMap.get("date");
+		NationwideFilePreprocessor._logger.debug("getDate:" + dateString + ":" + fieldsMap);
 		Date date;
 		try {
 			date = DateUtils.getDate(dateString, "dd MMM yyyy");
-		} catch (ParseException e) {
-			throw new ClearcheckbookException("Failed to parse date: "
-					+ dateString, e);
+		}
+		catch (final ParseException e) {
+			throw new ClearcheckbookException("Failed to parse date: " + dateString, e);
 		}
 		return DateUtils.getFormattedDate("yyyy-MM-dd", date);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.leonarduk.clearcheckbook.file.TransactionFilePreprocessor#getDesription(java.util.Map)
+	 */
 	@Override
-	protected String getMemo(Map<String, String> fieldsMap) {
-		return "Balance: " + getDouble(fieldsMap.get("balance"));
+	protected String getDesription(final Map<String, String> fieldsMap) {
+		return fieldsMap.get("transaction type") + " " + fieldsMap.get("description");
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.leonarduk.clearcheckbook.file.TransactionFilePreprocessor#getMemo(java.util.Map)
+	 */
 	@Override
-	protected String getPayee(Map<String, String> fieldsMap) {
+	protected String getMemo(final Map<String, String> fieldsMap) {
+		return "Balance: " + this.getDouble(fieldsMap.get("balance"));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.leonarduk.clearcheckbook.file.TransactionFilePreprocessor#getPayee(java.util.Map)
+	 */
+	@Override
+	protected String getPayee(final Map<String, String> fieldsMap) {
 		return fieldsMap.get("description");
-	}
-
-	@Override
-	protected String getDesription(Map<String, String> fieldsMap) {
-		return fieldsMap.get("transaction type") + " "
-				+ fieldsMap.get("description");
-	}
-
-	@Override
-	protected String getAmount(Map<String, String> fieldsMap) {
-		String credit = fieldsMap.get("paid in");
-		String debit = fieldsMap.get("paid out");
-		double amount = 0;
-		if (credit.equals("")) {
-			amount = -1 * getDouble(debit);
-		} else {
-			amount = getDouble(credit);
-		}
-		return String.valueOf(amount);
 	}
 }

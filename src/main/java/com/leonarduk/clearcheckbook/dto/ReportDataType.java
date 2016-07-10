@@ -1,52 +1,102 @@
+/**
+ * ReportDataType
+ *
+ * @author ${author}
+ * @since 10-Jul-2016
+ */
 package com.leonarduk.clearcheckbook.dto;
 
 import java.util.Map;
 
 /**
- * 
- * 
- * 
+ * The Class ReportDataType.
+ *
  * @author Stephen Leonard
  * @since 28 Jan 2014
- * 
- * @version $Author:: $: Author of last commit
- * @version $Rev:: $: Revision of last commit
- * @version $Date:: $: Date of last commit
- * 
  */
 public class ReportDataType extends AbstractDataType<ReminderDataType> {
 
-	public enum Fields {
-		TYPE, MONTHS, BGCOLOR, HEIGHT, WIDTH, LABEL, URL
+	/**
+	 * Instantiates a new report data type.
+	 *
+	 * @param map
+	 *            the map
+	 */
+	public ReportDataType(final Map<String, String> map) {
+		super(map);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.leonarduk.clearcheckbook.dto.AbstractDataType#getFields()
+	 */
 	@Override
 	protected Enum<?>[] getFields() {
 		return Fields.values();
 	}
 
-	public enum Type {
-		PIE, LINE
-	}
-
-	public ReportDataType(Map<String, String> map) {
-		super(map);
-	}
-
+	/**
+	 * Gets the label.
+	 *
+	 * @return the label
+	 */
 	public String getLabel() {
-		return getValue(Fields.LABEL);
+		return this.getValue(Fields.LABEL);
 	}
 
+	/**
+	 * Gets the url.
+	 *
+	 * @return the url
+	 */
 	public String getUrl() {
-		return getValue(Fields.URL);
+		return this.getValue(Fields.URL);
 	}
 
-	public void setLabel(String label) {
-		setValue(Fields.LABEL, label);
+	/**
+	 * Sets the label.
+	 *
+	 * @param label
+	 *            the new label
+	 */
+	public void setLabel(final String label) {
+		this.setValue(Fields.LABEL, label);
 	}
 
-	public void setUrl(String url) {
-		setValue(Fields.URL, url);
+	/**
+	 * Sets the url.
+	 *
+	 * @param url
+	 *            the new url
+	 */
+	public void setUrl(final String url) {
+		this.setValue(Fields.URL, url);
+	}
+
+	/**
+	 * The Enum Fields.
+	 */
+	public enum Fields {
+
+		/** The type. */
+		TYPE, /** The months. */
+		MONTHS, /** The bgcolor. */
+		BGCOLOR, /** The height. */
+		HEIGHT, /** The width. */
+		WIDTH, /** The label. */
+		LABEL, /** The url. */
+		URL
+	}
+
+	/**
+	 * The Enum Type.
+	 */
+	public enum Type {
+
+		/** The pie. */
+		PIE, /** The line. */
+		LINE
 	}
 
 }
