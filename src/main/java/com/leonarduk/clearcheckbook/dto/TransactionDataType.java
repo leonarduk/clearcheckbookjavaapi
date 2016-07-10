@@ -6,6 +6,7 @@
  */
 package com.leonarduk.clearcheckbook.dto;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,7 +23,6 @@ import com.leonarduk.clearcheckbook.ClearcheckbookException;
  * @since 28 Jan 2014
  */
 public class TransactionDataType extends AbstractDataType<TransactionDataType> {
-
 	/** The Constant _logger. */
 	private static final Logger _logger = Logger.getLogger(TransactionDataType.class);
 
@@ -56,8 +56,8 @@ public class TransactionDataType extends AbstractDataType<TransactionDataType> {
 	 * @return the transaction data type
 	 */
 	public static TransactionDataType create(final Long id, final String date, final double amount,
-	        final long accountId, final long categoryId, final String description,
-	        final boolean jive, final long fromAccountId, final long toAccountId,
+	        final Long accountId, final Long categoryId, final String description,
+	        final boolean jive, final Long fromAccountId, final Long toAccountId,
 	        final String checkNum, final String memo, final String payee) {
 		final TransactionDataType create = TransactionDataType.create(date, amount, accountId,
 		        categoryId, description, jive, fromAccountId, toAccountId, checkNum, memo, payee);
@@ -249,6 +249,14 @@ public class TransactionDataType extends AbstractDataType<TransactionDataType> {
 	@Override
 	protected Enum<?>[] getFields() {
 		return Fields.values();
+	}
+
+	@SuppressWarnings("rawtypes")
+	@Override
+	protected ArrayList<Enum> getFieldsToIgnoreInEqualsMethod() {
+		final ArrayList<Enum> fields = new ArrayList<>();
+		fields.add(TransactionDataType.Fields.ID);
+		return fields;
 	}
 
 	/**

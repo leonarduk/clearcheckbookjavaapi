@@ -50,7 +50,7 @@ abstract public class AbstractDataType<U extends AbstractDataType<?>> {
 	public static ParsedNameValuePair getLimitParameter(final int limit) {
 		return new ParsedNameValuePair(ControlField.LIMIT.name().toLowerCase(),
 		        String.valueOf(limit));
-	};
+	}
 
 	/**
 	 * Gets the page parameter.
@@ -68,7 +68,7 @@ abstract public class AbstractDataType<U extends AbstractDataType<?>> {
 	 * Instantiates a new abstract data type.
 	 */
 	protected AbstractDataType() {
-		this.fieldsMap = new HashMap<String, String>();
+		this.fieldsMap = new HashMap<>();
 	}
 
 	/**
@@ -105,7 +105,7 @@ abstract public class AbstractDataType<U extends AbstractDataType<?>> {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -117,6 +117,7 @@ abstract public class AbstractDataType<U extends AbstractDataType<?>> {
 		@SuppressWarnings("unchecked")
 		final U that = (U) obj;
 		final Enum<?>[] fields = this.getFields();
+		@SuppressWarnings("rawtypes")
 		final ArrayList<Enum> ignore = this.getFieldsToIgnoreInEqualsMethod();
 		for (int i = 0; i < fields.length; i++) {
 			final String thisValue = this.getNonNullValue(fields[i]);
@@ -202,7 +203,7 @@ abstract public class AbstractDataType<U extends AbstractDataType<?>> {
 	 */
 	@SuppressWarnings("rawtypes")
 	protected ArrayList<Enum> getFieldsToIgnoreInEqualsMethod() {
-		return new ArrayList<Enum>();
+		return new ArrayList<>();
 	}
 
 	/**
@@ -363,6 +364,14 @@ abstract public class AbstractDataType<U extends AbstractDataType<?>> {
 		return values;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = (prime * result) + ((this.fieldsMap == null) ? 0 : this.fieldsMap.hashCode());
+		return result;
+	}
+
 	/**
 	 * Sets the int value from boolean string.
 	 *
@@ -406,7 +415,7 @@ abstract public class AbstractDataType<U extends AbstractDataType<?>> {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#toString()
 	 */
 	@Override

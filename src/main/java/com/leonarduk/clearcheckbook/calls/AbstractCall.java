@@ -243,7 +243,7 @@ abstract public class AbstractCall<T extends AbstractDataType<?>> {
 			        .debug("get: " + jsonString + " -> " + list + " -> " + returnedList);
 		}
 		catch (final JsonMappingException e) {
-			AbstractCall._logger.warn("No values returned");
+			AbstractCall._logger.warn("No values returned", e);
 			return returnedList;
 		}
 		catch (final IOException e) {

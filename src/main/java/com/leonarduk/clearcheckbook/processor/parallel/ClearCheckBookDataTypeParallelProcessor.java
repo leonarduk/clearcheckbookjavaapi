@@ -66,7 +66,7 @@ public class ClearCheckBookDataTypeParallelProcessor<T extends AbstractDataType<
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.leonarduk.clearcheckbook.processor.ClearCheckBookTaskProcessor#processQueue(java.util.
 	 * List)
@@ -97,7 +97,7 @@ public class ClearCheckBookDataTypeParallelProcessor<T extends AbstractDataType<
 		final List<ClearCheckBookDataTypeConsumer<T>> workers = new ArrayList<>(
 		        this.numberOfConsumers);
 		for (int i = 0; i < this.numberOfConsumers; i++) {
-			final ClearCheckBookDataTypeConsumer<T> worker = new ClearCheckBookDataTypeConsumer<T>(
+			final ClearCheckBookDataTypeConsumer<T> worker = new ClearCheckBookDataTypeConsumer<>(
 			        queue, this.call, returnStatusList);
 			executor.execute(worker);
 			workers.add(worker);
