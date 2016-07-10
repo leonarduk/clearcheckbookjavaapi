@@ -5,7 +5,8 @@
 	<version>1.0.0</version>
 	<url>https://sourceforge.net/projects/clearcheckbookjavaapi</url>
 	<description>A Java library to access the HTTP developer API for
-		Clearcheckbook.com, the money management website.</description>
+		Clearcheckbook.com, the money management website.
+	</description>
 	<groupId>com.leonarduk</groupId>
 	<artifactId>clearcheckbookapi</artifactId>
 	<properties>
@@ -36,7 +37,7 @@
 		<maven-surefire-plugin.version>2.16</maven-surefire-plugin.version>
 		<maven-changes-plugin.version>2.9</maven-changes-plugin.version>
 	</properties>
-		<repositories>
+	<repositories>
 		<repository>
 			<id>central.maven.org</id>
 			<url>http://central.maven.org/maven2/</url>
@@ -98,6 +99,34 @@
 					</descriptorRefs>
 				</configuration>
 			</plugin>
+			<plugin>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<version>2.9</version>
+				<configuration>
+					<downloadSources>true</downloadSources>
+					<downloadJavadocs>true</downloadJavadocs>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.sonatype.plugins</groupId>
+				<artifactId>nexus-staging-maven-plugin</artifactId>
+				<version>1.6.3</version>
+				<extensions>true</extensions>
+				<configuration>
+					<serverId>ossrh</serverId>
+					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+					<autoReleaseAfterClose>true</autoReleaseAfterClose>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<version>2.9</version>
+				<configuration>
+					<downloadSources>true</downloadSources>
+					<downloadJavadocs>true</downloadJavadocs>
+				</configuration>
+			</plugin>
+
 			<!-- for compiling code in Maven -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
