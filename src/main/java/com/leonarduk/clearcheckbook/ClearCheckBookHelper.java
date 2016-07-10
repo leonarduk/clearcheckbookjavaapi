@@ -170,7 +170,7 @@ public class ClearCheckBookHelper {
 
 			final List<AccountDataType> accounts = this.connection.account().getAll();
 			this.accountsMap = new HashMap<Long, AccountDataType>();
-			for (AccountDataType accountDataType : accounts) {
+			for (final AccountDataType accountDataType : accounts) {
 				this.accountsMap.put(accountDataType.getId(), accountDataType);
 			}
 		}
