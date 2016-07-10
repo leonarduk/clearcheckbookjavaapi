@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<name>ClearCheckBookJavaApi</name>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	<url>https://sourceforge.net/projects/clearcheckbookjavaapi</url>
 	<description>A Java library to access the HTTP developer API for
 		Clearcheckbook.com, the money management website.
@@ -28,9 +28,7 @@
 		<maven-surefire-plugin.version>2.16</maven-surefire-plugin.version>
 		<maven-project-info-reports-plugin.version>2.7
 		</maven-project-info-reports-plugin.version>
-		<changes-maven-plugin.version>0.2</changes-maven-plugin.version>
 		<taglist-maven-plugin.version>2.4</taglist-maven-plugin.version>
-		<maven-changelog-plugin.version>2.2</maven-changelog-plugin.version>
 		<maven-clover-plugin.version>3.2.0</maven-clover-plugin.version>
 		<maven-javadoc-plugin.version>2.9.1</maven-javadoc-plugin.version>
 		<maven-pmd-plugin.version>3.0.1</maven-pmd-plugin.version>
@@ -154,20 +152,6 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-changes-plugin</artifactId>
-				<version>${maven-changes-plugin.version}</version>
-				<executions>
-					<execution>
-						<id>check-changes</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>changes-check</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>${jacoco.version}</version>
@@ -231,24 +215,6 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
 				<version>${maven-site-plugin.version}</version>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-changelog-plugin</artifactId>
-				<version>${maven-changelog-plugin.version}</version>
-			</plugin>
-			<!-- show closed tickets per release -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-changes-plugin</artifactId>
-				<version>${maven-changes-plugin.version}</version>
-				<reportSets>
-					<reportSet>
-						<reports>
-							<report>changes-report</report>
-						</reports>
-					</reportSet>
-				</reportSets>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

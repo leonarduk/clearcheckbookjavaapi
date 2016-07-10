@@ -98,8 +98,9 @@ public class TransactionDataType extends AbstractDataType<TransactionDataType> {
 	        final String checkNum, final String memo, final String payee) {
 		final TransactionDataType transactionDataType = new TransactionDataType();
 		transactionDataType.setDate(date);
-		transactionDataType.setAmount(amount);
-		transactionDataType.setTransactionType(TransactionDataType.getTransactionType(amount));
+		transactionDataType.setAmount(Double.valueOf(Math.abs(amount.doubleValue())));
+		transactionDataType
+		        .setTransactionType(TransactionDataType.getTransactionType(amount.doubleValue()));
 		transactionDataType.setAccountId(accountId);
 		transactionDataType.setCategoryId(categoryId);
 		transactionDataType.setDescription(description);
@@ -229,7 +230,7 @@ public class TransactionDataType extends AbstractDataType<TransactionDataType> {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.leonarduk.clearcheckbook.dto.AbstractDataType#getEditFields()
 	 */
 	@Override
@@ -242,7 +243,7 @@ public class TransactionDataType extends AbstractDataType<TransactionDataType> {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.leonarduk.clearcheckbook.dto.AbstractDataType#getFields()
 	 */
 	@Override
@@ -261,7 +262,7 @@ public class TransactionDataType extends AbstractDataType<TransactionDataType> {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.leonarduk.clearcheckbook.dto.AbstractDataType#getInsertFields()
 	 */
 	@Override
@@ -322,7 +323,7 @@ public class TransactionDataType extends AbstractDataType<TransactionDataType> {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.leonarduk.clearcheckbook.dto.AbstractDataType#getValues()
 	 */
 	@Override
@@ -560,7 +561,7 @@ public class TransactionDataType extends AbstractDataType<TransactionDataType> {
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see java.lang.Enum#toString()
 		 */
 		@Override
