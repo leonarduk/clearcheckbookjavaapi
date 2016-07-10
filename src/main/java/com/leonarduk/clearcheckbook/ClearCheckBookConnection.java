@@ -1,3 +1,9 @@
+/**
+ * ClearCheckBookConnection
+ *
+ * @author ${author}
+ * @since 10-Jul-2016
+ */
 package com.leonarduk.clearcheckbook;
 
 import java.io.IOException;
@@ -16,25 +22,56 @@ import com.leonarduk.clearcheckbook.calls.UserCall;
 import com.leonarduk.clearcheckbook.dto.ParsedNameValuePair;
 import com.leonarduk.utils.HtmlUnitUtils;
 
+/**
+ * The Class ClearCheckBookConnection.
+ */
 public class ClearCheckBookConnection {
 
-	final private String password;
-	final private String userName;
-	public final String baseurl = "https://www.clearcheckbook.com/api/";
-
-	private AccountCall accountCall;
-
-	private CategoryCall categoryCall;
-	private LimitCall limitCall;
-	private PremiumCall premiumCall;
-	private ReminderCall reminderCall;
-	private ReportCall reportCall;
-	private TransactionCall transactionCall;
-	private UserCall userCall;
-
+	/** The Constant _logger. */
 	private static final Logger _logger = Logger.getLogger(AbstractCall.class);
 
-	public ClearCheckBookConnection(String userName, String password) {
+	/** The password. */
+	final private String password;
+
+	/** The user name. */
+	final private String userName;
+
+	/** The baseurl. */
+	public final String baseurl = "https://www.clearcheckbook.com/api/";
+
+	/** The account call. */
+	private final AccountCall accountCall;
+
+	/** The category call. */
+	private final CategoryCall categoryCall;
+
+	/** The limit call. */
+	private final LimitCall limitCall;
+
+	/** The premium call. */
+	private final PremiumCall premiumCall;
+
+	/** The reminder call. */
+	private final ReminderCall reminderCall;
+
+	/** The report call. */
+	private final ReportCall reportCall;
+
+	/** The transaction call. */
+	private final TransactionCall transactionCall;
+
+	/** The user call. */
+	private final UserCall userCall;
+
+	/**
+	 * Instantiates a new clear check book connection.
+	 *
+	 * @param userName
+	 *            the user name
+	 * @param password
+	 *            the password
+	 */
+	public ClearCheckBookConnection(final String userName, final String password) {
 		this.userName = userName;
 		this.password = password;
 
@@ -49,131 +86,205 @@ public class ClearCheckBookConnection {
 
 	}
 
+	/**
+	 * Account.
+	 *
+	 * @return the account call
+	 */
 	public AccountCall account() {
-		return accountCall;
-	}
-
-	public CategoryCall category() {
-		return categoryCall;
-	}
-
-	public LimitCall limit() {
-		return limitCall;
-	}
-
-	public PremiumCall premium() {
-		return premiumCall;
-	}
-
-	public ReminderCall reminder() {
-		return reminderCall;
-	}
-
-	public ReportCall report() {
-		return reportCall;
-	}
-
-	public TransactionCall transaction() {
-		return transactionCall;
-	}
-
-	public UserCall user() {
-		return userCall;
-	}
-
-	public String getUserName() {
-		return userName;
-	}
-
-	public String getBaseurl() {
-		return baseurl;
+		return this.accountCall;
 	}
 
 	/**
-	 * 
+	 * Adds the get parameters.
+	 *
 	 * @param url
+	 *            the url
 	 * @param parameters
-	 * @return
-	 * @throws IOException
+	 *            the parameters
+	 * @return the string
 	 */
-	public String getPage(String url, ParsedNameValuePair... parameters)
-			throws IOException {
-		_logger.debug("URL:" + getFullUrl(url) + parameters);
-		String page = HtmlUnitUtils.getPageText(getFullUrl(url), "GET",
-				userName, password, parameters);
-		return page;
-	}
-
-	private String addGetParameters(String url,
-			ParsedNameValuePair... parameters) {
+	private String addGetParameters(String url, final ParsedNameValuePair... parameters) {
 		url += "?";
 		if (null != parameters[0]) {
-			for (int i = 0; i < parameters.length; i++) {
-				url += parameters[i].getName() + "=" + parameters[i].getValue()
-						+ "&";
+			for (final ParsedNameValuePair parameter : parameters) {
+				url += parameter.getName() + "=" + parameter.getValue() + "&";
 			}
 		}
 		return url;
 	}
 
 	/**
-	 * 
-	 * @param url
-	 * @param parameters
-	 * @return
-	 * @throws IOException
+	 * Category.
+	 *
+	 * @return the category call
 	 */
-	public String postPage(String url, ParsedNameValuePair... parameters)
-			throws IOException {
-		String fullPath = getFullUrl(url);
-		_logger.debug("URL:" + fullPath + " " + parameters);
-		String page = HtmlUnitUtils.getPageText(fullPath, "POST", userName,
-				password, parameters);
+	public CategoryCall category() {
+		return this.categoryCall;
+	}
+
+	/**
+	 * Delete page.
+	 *
+	 * @param url
+	 *            the url
+	 * @param parameters
+	 *            the parameters
+	 * @return the string
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	public String deletePage(final String url, final ParsedNameValuePair... parameters)
+	        throws IOException {
+		ClearCheckBookConnection._logger.debug("URL:" + this.baseurl + url);
+		final String page = HtmlUnitUtils.getPageText(this.baseurl + url, "DELETE", this.userName,
+		        this.password, parameters);
 		return page;
 	}
 
 	/**
-	 * 
-	 * @param url
-	 * @return
+	 * Gets the baseurl.
+	 *
+	 * @return the baseurl
 	 */
-	private String getFullUrl(String url) {
-		String fullPath = "https://" + userName + ":" + password
-				+ "@www.clearcheckbook.com/api/" + url;
+	public String getBaseurl() {
+		return this.baseurl;
+	}
+
+	/**
+	 * Gets the full url.
+	 *
+	 * @param url
+	 *            the url
+	 * @return the full url
+	 */
+	private String getFullUrl(final String url) {
+		final String fullPath = "https://" + this.userName + ":" + this.password
+		        + "@www.clearcheckbook.com/api/" + url;
 		return fullPath;
 	}
 
 	/**
-	 * 
+	 * Gets the page.
+	 *
 	 * @param url
+	 *            the url
 	 * @param parameters
-	 * @return
+	 *            the parameters
+	 * @return the page
 	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
-	public String putPage(String url, ParsedNameValuePair... parameters)
-			throws IOException {
-		url = addGetParameters(url, parameters);
-		String fullUrl = getFullUrl(url);
-
-		_logger.debug("URL:" + fullUrl);
-		String page = HtmlUnitUtils.getPageText(fullUrl, "PUT", userName,
-				password, parameters);
+	public String getPage(final String url, final ParsedNameValuePair... parameters)
+	        throws IOException {
+		ClearCheckBookConnection._logger.debug("URL:" + this.getFullUrl(url) + parameters);
+		final String page = HtmlUnitUtils.getPageText(this.getFullUrl(url), "GET", this.userName,
+		        this.password, parameters);
 		return page;
 	}
 
 	/**
-	 * 
-	 * @param url
-	 * @param parameters
-	 * @return
-	 * @throws IOException
+	 * Gets the user name.
+	 *
+	 * @return the user name
 	 */
-	public String deletePage(String url, ParsedNameValuePair... parameters)
-			throws IOException {
-		_logger.debug("URL:" + this.baseurl + url);
-		String page = HtmlUnitUtils.getPageText(this.baseurl + url, "DELETE",
-				userName, password, parameters);
+	public String getUserName() {
+		return this.userName;
+	}
+
+	/**
+	 * Limit.
+	 *
+	 * @return the limit call
+	 */
+	public LimitCall limit() {
+		return this.limitCall;
+	}
+
+	/**
+	 * Post page.
+	 *
+	 * @param url
+	 *            the url
+	 * @param parameters
+	 *            the parameters
+	 * @return the string
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	public String postPage(final String url, final ParsedNameValuePair... parameters)
+	        throws IOException {
+		final String fullPath = this.getFullUrl(url);
+		ClearCheckBookConnection._logger.debug("URL:" + fullPath + " " + parameters);
+		final String page = HtmlUnitUtils.getPageText(fullPath, "POST", this.userName,
+		        this.password, parameters);
 		return page;
+	}
+
+	/**
+	 * Premium.
+	 *
+	 * @return the premium call
+	 */
+	public PremiumCall premium() {
+		return this.premiumCall;
+	}
+
+	/**
+	 * Put page.
+	 *
+	 * @param url
+	 *            the url
+	 * @param parameters
+	 *            the parameters
+	 * @return the string
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	public String putPage(String url, final ParsedNameValuePair... parameters) throws IOException {
+		url = this.addGetParameters(url, parameters);
+		final String fullUrl = this.getFullUrl(url);
+
+		ClearCheckBookConnection._logger.debug("URL:" + fullUrl);
+		final String page = HtmlUnitUtils.getPageText(fullUrl, "PUT", this.userName, this.password,
+		        parameters);
+		return page;
+	}
+
+	/**
+	 * Reminder.
+	 *
+	 * @return the reminder call
+	 */
+	public ReminderCall reminder() {
+		return this.reminderCall;
+	}
+
+	/**
+	 * Report.
+	 *
+	 * @return the report call
+	 */
+	public ReportCall report() {
+		return this.reportCall;
+	}
+
+	/**
+	 * Transaction.
+	 *
+	 * @return the transaction call
+	 */
+	public TransactionCall transaction() {
+		return this.transactionCall;
+	}
+
+	/**
+	 * User.
+	 *
+	 * @return the user call
+	 */
+	public UserCall user() {
+		return this.userCall;
 	}
 
 }

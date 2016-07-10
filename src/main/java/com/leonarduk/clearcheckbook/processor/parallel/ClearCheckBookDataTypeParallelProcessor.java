@@ -1,3 +1,9 @@
+/**
+ * ClearCheckBookDataTypeParallelProcessor
+ *
+ * @author ${author}
+ * @since 10-Jul-2016
+ */
 package com.leonarduk.clearcheckbook.processor.parallel;
 
 import java.util.ArrayList;
@@ -17,88 +23,112 @@ import com.leonarduk.clearcheckbook.dto.AbstractDataType;
 import com.leonarduk.clearcheckbook.processor.ClearCheckBookTaskProcessor;
 
 /**
- * This co-ordinates the splitting of a set of requests to the Clearcheckbook
- * website into individual messages and farming to consumers
- * 
+ * This co-ordinates the splitting of a set of requests to the Clearcheckbook website into
+ * individual messages and farming to consumers.
+ *
  * @author Stephen Leonard
+ * @param <T>
+ *            the generic type
  * @since 12 Feb 2014
- * 
- * @version $Author:: $: Author of last commit
- * @version $Rev:: $: Revision of last commit
- * @version $Date:: $: Date of last commit
- * 
  */
 public class ClearCheckBookDataTypeParallelProcessor<T extends AbstractDataType<?>>
-		implements ClearCheckBookTaskProcessor<T> {
+        implements ClearCheckBookTaskProcessor<T> {
 
+	/** The Constant _logger. */
 	private static final Logger _logger = Logger
-			.getLogger(ClearCheckBookDataTypeParallelProcessor.class);
-	private BulkProcessable<T> call;
-	private int queueSize;
-	private int numberOfConsumers;
+	        .getLogger(ClearCheckBookDataTypeParallelProcessor.class);
 
-	public ClearCheckBookDataTypeParallelProcessor(BulkProcessable<T> call,
-			int queueSize, int numberOfConsumers) {
+	/** The call. */
+	private final BulkProcessable<T> call;
+
+	/** The queue size. */
+	private final int queueSize;
+
+	/** The number of consumers. */
+	private final int numberOfConsumers;
+
+	/**
+	 * Instantiates a new clear check book data type parallel processor.
+	 *
+	 * @param call
+	 *            the call
+	 * @param queueSize
+	 *            the queue size
+	 * @param numberOfConsumers
+	 *            the number of consumers
+	 */
+	public ClearCheckBookDataTypeParallelProcessor(final BulkProcessable<T> call,
+	        final int queueSize, final int numberOfConsumers) {
 		this.call = call;
 		this.queueSize = queueSize;
 		this.numberOfConsumers = numberOfConsumers;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.leonarduk.clearcheckbook.processor.ClearCheckBookTaskProcessor#processQueue(java.util.
+	 * List)
+	 */
 	@Override
-	public List<String> processQueue(List<T> dataTypeList)
-			throws ClearcheckbookException {
-		_logger.info("Starting processor for " + dataTypeList.size()
-				+ " data items with queue size of " + this.queueSize + " and "
-				+ this.numberOfConsumers + " Consumers");
-		BlockingQueue<T> queue = new ArrayBlockingQueue<>(this.queueSize);
+	public List<String> processQueue(final List<T> dataTypeList) throws ClearcheckbookException {
+		ClearCheckBookDataTypeParallelProcessor._logger.info(
+		        "Starting processor for " + dataTypeList.size() + " data items with queue size of "
+		                + this.queueSize + " and " + this.numberOfConsumers + " Consumers");
+		final BlockingQueue<T> queue = new ArrayBlockingQueue<>(this.queueSize);
 
-		_logger.debug("starting producer to produce messages in queue");
-		ClearCheckBookDataTypeProducer<T> producer = new ClearCheckBookDataTypeProducer<>(
-				queue, dataTypeList);
-		Thread producerThread = new Thread(producer, producer.getClass()
-				.getName());
+		ClearCheckBookDataTypeParallelProcessor._logger
+		        .debug("starting producer to produce messages in queue");
+		final ClearCheckBookDataTypeProducer<T> producer = new ClearCheckBookDataTypeProducer<>(
+		        queue, dataTypeList);
+		final Thread producerThread = new Thread(producer, producer.getClass().getName());
 		producerThread.start();
 
-		ThreadPoolExecutor executor = new ThreadPoolExecutor(numberOfConsumers,
-				numberOfConsumers, 0L, TimeUnit.MILLISECONDS,
-				new LinkedBlockingQueue<Runnable>());
+		final ThreadPoolExecutor executor = new ThreadPoolExecutor(this.numberOfConsumers,
+		        this.numberOfConsumers, 0L, TimeUnit.MILLISECONDS,
+		        new LinkedBlockingQueue<Runnable>());
 
-		MonitorThread monitor = new MonitorThread(executor, 3);
-		Thread monitorThread = new Thread(monitor);
+		final MonitorThread monitor = new MonitorThread(executor, 3);
+		final Thread monitorThread = new Thread(monitor);
 		monitorThread.start();
-		List<String> returnStatusList = Collections
-				.synchronizedList(new ArrayList<String>(numberOfConsumers));
-		List<ClearCheckBookDataTypeConsumer<T>> workers = new ArrayList<>(
-				numberOfConsumers);
-		for (int i = 0; i < numberOfConsumers; i++) {
-			ClearCheckBookDataTypeConsumer<T> worker = new ClearCheckBookDataTypeConsumer<T>(
-					queue, call, returnStatusList);
+		final List<String> returnStatusList = Collections
+		        .synchronizedList(new ArrayList<String>(this.numberOfConsumers));
+		final List<ClearCheckBookDataTypeConsumer<T>> workers = new ArrayList<>(
+		        this.numberOfConsumers);
+		for (int i = 0; i < this.numberOfConsumers; i++) {
+			final ClearCheckBookDataTypeConsumer<T> worker = new ClearCheckBookDataTypeConsumer<T>(
+			        queue, this.call, returnStatusList);
 			executor.execute(worker);
 			workers.add(worker);
 		}
 
-		_logger.debug("Waiting for producer to complete");
+		ClearCheckBookDataTypeParallelProcessor._logger.debug("Waiting for producer to complete");
 		try {
 			producerThread.join();
-		} catch (InterruptedException e) {
+		}
+		catch (final InterruptedException e) {
 			e.printStackTrace();
 		}
 
-		_logger.info("There are " + queue.size() + " still to process");
+		ClearCheckBookDataTypeParallelProcessor._logger
+		        .info("There are " + queue.size() + " still to process");
 		while (returnStatusList.size() < dataTypeList.size()) {
 			try {
 				Thread.sleep(500);
-			} catch (InterruptedException e) {
+			}
+			catch (final InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
 		assert queue.size() == 0;
 
-		_logger.info("There are " + queue.size() + " still to process");
-		_logger.debug("Killing consumers");
+		ClearCheckBookDataTypeParallelProcessor._logger
+		        .info("There are " + queue.size() + " still to process");
+		ClearCheckBookDataTypeParallelProcessor._logger.debug("Killing consumers");
 		executor.shutdown();
 		monitor.shutdown();
-		_logger.info("Processor finished");
+		ClearCheckBookDataTypeParallelProcessor._logger.info("Processor finished");
 		return returnStatusList;
 	}
 }

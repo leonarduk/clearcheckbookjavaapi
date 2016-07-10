@@ -1,10 +1,15 @@
+/**
+ * AbstractCall
+ *
+ * @author ${author}
+ * @since 10-Jul-2016
+ */
 package com.leonarduk.clearcheckbook.calls;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -21,310 +26,360 @@ import com.leonarduk.clearcheckbook.dto.AbstractDataType;
 import com.leonarduk.clearcheckbook.dto.ParsedNameValuePair;
 
 /**
- * Abstract template class to hold the main processing shared by the API calls.
- * Methods are protected scope to be overriden by a public scope version in
- * concrete child class.
- * 
- * @param <T>
- * 
+ * Abstract template class to hold the main processing shared by the API calls. Methods are
+ * protected scope to be overriden by a public scope version in concrete child class.
+ *
  * @author Stephen Leonard
+ * @param <T>
+ *            the generic type
  * @since 29 Jan 2014
- * 
- * @version $Author:: $: Author of last commit
- * @version $Rev:: $: Revision of last commit
- * @version $Date:: $: Date of last commit
- * 
  */
 abstract public class AbstractCall<T extends AbstractDataType<?>> {
 
-	private ClearCheckBookConnection connection;
-
-	private Class<T> dataTypeClass;
-
+	/** The Constant _logger. */
 	private static final Logger _logger = Logger.getLogger(AbstractCall.class);
 
-	protected AbstractCall(ClearCheckBookConnection connection,
-			Class<T> dataTypeClass) {
+	/** The connection. */
+	private final ClearCheckBookConnection connection;
+
+	/** The data type class. */
+	private final Class<T> dataTypeClass;
+
+	/**
+	 * Instantiates a new abstract call.
+	 *
+	 * @param connection
+	 *            the connection
+	 * @param dataTypeClass
+	 *            the data type class
+	 */
+	protected AbstractCall(final ClearCheckBookConnection connection,
+	        final Class<T> dataTypeClass) {
 		this.connection = connection;
 		this.dataTypeClass = dataTypeClass;
 	}
 
-	abstract protected String getUrlSuffix();
-
-	protected String getPluralUrl() {
-		return getUrlSuffix() + "s";
+	/**
+	 * Helper wrapper function to iterate over a list of items to insert/edit/delete calling the
+	 * relevant method on each.
+	 *
+	 * @param dataTypeList
+	 *            the data type list
+	 * @return the list
+	 * @throws ClearcheckbookException
+	 *             the clearcheckbook exception
+	 */
+	protected List<String> bulkProcess(final List<T> dataTypeList) throws ClearcheckbookException {
+		final List<String> returnStatusList = new LinkedList<>();
+		for (final T t : dataTypeList) {
+			returnStatusList.add(this.process(t));
+		}
+		return returnStatusList;
 	}
 
 	/**
-	 * Calls the "get" method from the API that brings back the item by id
-	 * 
-	 * @param id
+	 * Helper class to create instance of this.dataTypeClass
+	 *
+	 * @param map
+	 *            the map
+	 * @param classType
+	 *            the class type
 	 * @return {@link T extends AbstractDataType}
-	 * @throws IOException
 	 * @throws ClearcheckbookException
+	 *             the clearcheckbook exception
 	 */
-	protected T get(ParsedNameValuePair id) throws ClearcheckbookException {
+	private T createDataTypeInstance(final HashMap<String, String> map, final Class<?> classType)
+	        throws ClearcheckbookException {
 		try {
-			String jsonString = this.getConnection()
-					.getPage(getUrlSuffix(), id);
-
-			T dataType = getCore(jsonString);
-			if (null == dataType.getIdParameter().getValue()) {
-				throw new ClearcheckbookException("Could not get "
-						+ getUrlSuffix() + " for id " + id.getValue());
-			}
+			@SuppressWarnings("unchecked")
+			final T dataType = (T) classType.getDeclaredConstructor(Map.class).newInstance(map);
 			return dataType;
-		} catch (IOException | ClearcheckbookException e) {
-			throw new ClearcheckbookException("Failed to get " + getUrlSuffix()
-					+ " id: " + id.getValue(), e);
+		}
+		catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+		        | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+			throw new ClearcheckbookException(
+			        "Failed to find constructor for " + classType.getName(), e);
+		}
+
+	}
+
+	/**
+	 * Delete.
+	 *
+	 * @param id
+	 *            the id
+	 * @return boolean - true means delete was successful
+	 * @throws ClearcheckbookException
+	 *             the clearcheckbook exception
+	 */
+	protected boolean delete(final ParsedNameValuePair id) throws ClearcheckbookException {
+		AbstractCall._logger.debug("delete: " + id.getValue());
+		String returnString;
+		try {
+			returnString = this.getConnection().deletePage(this.getUrlSuffix(), id);
+			final boolean ok = Boolean.valueOf(returnString);
+			AbstractCall._logger.info("insert : deleted " + ok);
+			return ok;
+		}
+		catch (final IOException e) {
+			throw new ClearcheckbookException(
+			        "Failed to delete " + this.getUrlSuffix() + " id: " + id.getValue(), e);
 		}
 	}
 
 	/**
-	 * 
+	 * Edits the.
+	 *
+	 * @param input
+	 *            the input
+	 * @return boolean - true means edit was successful
+	 * @throws ClearcheckbookException
+	 *             the clearcheckbook exception
+	 */
+	protected boolean edit(final T input) throws ClearcheckbookException {
+		AbstractCall._logger.debug("edit: " + input);
+		final AbstractDataType<?> dataType = input;
+		String returnString;
+		try {
+			returnString = this.getConnection().putPage(this.getUrlSuffix(),
+			        dataType.getEditParameters());
+			AbstractCall._logger.debug("returned: " + returnString);
+			final boolean ok = Boolean.valueOf(returnString);
+			AbstractCall._logger.info("edit : edited " + ok);
+			return ok;
+		}
+		catch (final IOException e) {
+			throw new ClearcheckbookException("Failed to create " + this.getUrlSuffix(), e);
+		}
+	}
+
+	/**
+	 * Gets the.
+	 *
 	 * @return {@link T extends AbstractDataType}
 	 * @throws ClearcheckbookException
+	 *             the clearcheckbook exception
 	 */
 	protected T get() throws ClearcheckbookException {
 		try {
-			String jsonString = this.getConnection().getPage(getUrlSuffix());
-			return getCore(jsonString);
-		} catch (IOException e) {
-			throw new ClearcheckbookException(
-					"Failed to get " + getUrlSuffix(), e);
+			final String jsonString = this.getConnection().getPage(this.getUrlSuffix());
+			return this.getCore(jsonString);
+		}
+		catch (final IOException e) {
+			throw new ClearcheckbookException("Failed to get " + this.getUrlSuffix(), e);
 		}
 	}
 
 	/**
-	 * 
-	 * @param jsonString
+	 * Calls the "get" method from the API that brings back the item by id.
+	 *
+	 * @param id
+	 *            the id
 	 * @return {@link T extends AbstractDataType}
 	 * @throws ClearcheckbookException
-	 * @throws IOException
-	 * @throws JsonMappingException
-	 * @throws JsonParseException
+	 *             the clearcheckbook exception
 	 */
-	private T getCore(String jsonString) throws ClearcheckbookException,
-			JsonParseException, JsonMappingException, IOException {
-		if (jsonString.equals("null") || jsonString.trim().equals("")) {
-			throw new ClearcheckbookException("Failed to get " + getUrlSuffix());
-		}
-		_logger.debug("getCore: " + jsonString);
-		ObjectMapper mapper = new ObjectMapper();
+	protected T get(final ParsedNameValuePair id) throws ClearcheckbookException {
+		try {
+			final String jsonString = this.getConnection().getPage(this.getUrlSuffix(), id);
 
-		// convert JSON string to Map
-		HashMap<String, String> map = mapper.readValue(jsonString,
-				new TypeReference<HashMap<String, String>>() {
-				});
-		T dataType = createDataTypeInstance(map, this.dataTypeClass);
-		return dataType;
+			final T dataType = this.getCore(jsonString);
+			if (null == dataType.getIdParameter().getValue()) {
+				throw new ClearcheckbookException(
+				        "Could not get " + this.getUrlSuffix() + " for id " + id.getValue());
+			}
+			return dataType;
+		}
+		catch (IOException | ClearcheckbookException e) {
+			throw new ClearcheckbookException(
+			        "Failed to get " + this.getUrlSuffix() + " id: " + id.getValue(), e);
+		}
 	}
 
 	/**
-	 * Calls the "get" method from the API that brings back all the values
-	 * 
-	 * @param parameters
-	 * 
-	 * @return {@link List }<{@link T extends AbstractDataType}>
+	 * Calls the "get" method from the API that brings back all the values.
+	 *
+	 * @return the all
 	 * @throws ClearcheckbookException
+	 *             the clearcheckbook exception
 	 */
 	protected List<T> getAll() throws ClearcheckbookException {
-		return getAll((ParsedNameValuePair) null);
+		return this.getAll((ParsedNameValuePair) null);
 	}
 
 	/**
-	 * Calls the "get" method from the API that brings back all the values
-	 * 
+	 * Calls the "get" method from the API that brings back all the values.
+	 *
 	 * @param parameters
-	 * 
-	 * @return {@link List }<{@link T extends AbstractDataType}>
+	 *            the parameters
+	 * @return the all
 	 * @throws ClearcheckbookException
+	 *             the clearcheckbook exception
 	 */
-	protected List<T> getAll(ParsedNameValuePair... parameters)
-			throws ClearcheckbookException {
-		List<T> returnedList = new ArrayList<>();
+	protected List<T> getAll(final ParsedNameValuePair... parameters)
+	        throws ClearcheckbookException {
+		final List<T> returnedList = new ArrayList<>();
 		String jsonString = "FAILED";
 		try {
-			jsonString = this.getConnection().getPage(getPluralUrl(),
-					parameters);
-			_logger.debug("get: " + jsonString);
+			jsonString = this.getConnection().getPage(this.getPluralUrl(), parameters);
+			AbstractCall._logger.debug("get: " + jsonString);
 
 			// No values returned
 			if (jsonString.equals("")) {
 				return returnedList;
 			}
-			ObjectMapper mapper = new ObjectMapper();
+			final ObjectMapper mapper = new ObjectMapper();
 
 			// convert JSON string to Map
-			List<HashMap<String, String>> list = mapper.readValue(jsonString,
-					new TypeReference<List<HashMap<String, String>>>() {
-					});
+			final List<HashMap<String, String>> list = mapper.readValue(jsonString,
+			        new TypeReference<List<HashMap<String, String>>>() {
+			        });
 
-			for (Iterator<HashMap<String, String>> iterator = list.iterator(); iterator
-					.hasNext();) {
-				HashMap<String, String> map = iterator.next();
-				T dataType = createDataTypeInstance(map, this.dataTypeClass);
+			for (final HashMap<String, String> map : list) {
+				final T dataType = this.createDataTypeInstance(map, this.dataTypeClass);
 				returnedList.add(dataType);
 			}
-			_logger.debug("get: " + jsonString + " -> " + list + " -> "
-					+ returnedList);
-		} catch (JsonMappingException e) {
-			_logger.warn("No values returned");
+			AbstractCall._logger
+			        .debug("get: " + jsonString + " -> " + list + " -> " + returnedList);
+		}
+		catch (final JsonMappingException e) {
+			AbstractCall._logger.warn("No values returned");
 			return returnedList;
-		} catch (IOException e) {
-			_logger.error("getAll : Failed to bring back values [" + jsonString
-					+ "]", e);
-			throw new ClearcheckbookException(
-					"getAll : Failed to bring back values", e);
+		}
+		catch (final IOException e) {
+			AbstractCall._logger.error("getAll : Failed to bring back values [" + jsonString + "]",
+			        e);
+			throw new ClearcheckbookException("getAll : Failed to bring back values", e);
 		}
 		return returnedList;
 	}
 
 	/**
-	 * Helper class to create instance of this.dataTypeClass
-	 * 
-	 * @param map
-	 * @return {@link T extends AbstractDataType}
-	 * @throws ClearcheckbookException
+	 * Gets the connection.
+	 *
+	 * @return the connection
 	 */
-	private T createDataTypeInstance(HashMap<String, String> map,
-			Class<?> classType) throws ClearcheckbookException {
-		try {
-			@SuppressWarnings("unchecked")
-			T dataType = (T) classType.getDeclaredConstructor(Map.class)
-					.newInstance(map);
-			return dataType;
-		} catch (InstantiationException | IllegalAccessException
-				| IllegalArgumentException | InvocationTargetException
-				| NoSuchMethodException | SecurityException e) {
-			throw new ClearcheckbookException("Failed to find constructor for "
-					+ classType.getName(), e);
-		}
-
+	public ClearCheckBookConnection getConnection() {
+		return this.connection;
 	}
 
 	/**
-	 * Helper wrapper function to iterate over a list of items to
-	 * insert/edit/delete calling the relevant method on each.
-	 * 
-	 * @return {@link List}<{@link String}>
+	 * Gets the core.
+	 *
+	 * @param jsonString
+	 *            the json string
+	 * @return {@link T extends AbstractDataType}
 	 * @throws ClearcheckbookException
+	 *             the clearcheckbook exception
+	 * @throws JsonParseException
+	 *             the json parse exception
+	 * @throws JsonMappingException
+	 *             the json mapping exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
-	protected List<String> bulkProcess(List<T> dataTypeList)
-			throws ClearcheckbookException {
-		List<String> returnStatusList = new LinkedList<>();
-		for (Iterator<T> iterator = dataTypeList.iterator(); iterator.hasNext();) {
-			returnStatusList.add(process(iterator.next()));
+	private T getCore(final String jsonString)
+	        throws ClearcheckbookException, JsonParseException, JsonMappingException, IOException {
+		if (jsonString.equals("null") || jsonString.trim().equals("")) {
+			throw new ClearcheckbookException("Failed to get " + this.getUrlSuffix());
 		}
-		return returnStatusList;
+		AbstractCall._logger.debug("getCore: " + jsonString);
+		final ObjectMapper mapper = new ObjectMapper();
+
+		// convert JSON string to Map
+		final HashMap<String, String> map = mapper.readValue(jsonString,
+		        new TypeReference<HashMap<String, String>>() {
+		        });
+		final T dataType = this.createDataTypeInstance(map, this.dataTypeClass);
+		return dataType;
 	}
 
-	protected String process(T dataType) throws ClearcheckbookException {
-		_logger.debug("process " + dataType);
+	/**
+	 * Gets the plural url.
+	 *
+	 * @return the plural url
+	 */
+	protected String getPluralUrl() {
+		return this.getUrlSuffix() + "s";
+	}
+
+	/**
+	 * Gets the url suffix.
+	 *
+	 * @return the url suffix
+	 */
+	abstract protected String getUrlSuffix();
+
+	/**
+	 * Insert.
+	 *
+	 * @param input
+	 *            the input
+	 * @return String if successful, returns the id, else throws exception
+	 * @throws ClearcheckbookException
+	 *             the clearcheckbook exception
+	 */
+	protected String insert(final T input) throws ClearcheckbookException {
+		AbstractCall._logger.debug("insert: " + input);
+		final AbstractDataType<?> dataType = input;
+		String returnString;
+		try {
+			returnString = this.getConnection().postPage(this.getUrlSuffix(),
+			        dataType.getInsertParameters());
+
+			final Long id = Long.valueOf(returnString);
+			AbstractCall._logger.info("insert : created " + id);
+			return id.toString();
+		}
+		catch (final NumberFormatException e) {
+			throw new ClearcheckbookException("Failed to create " + this.getUrlSuffix(), e);
+		}
+		catch (final IOException e) {
+			throw new ClearcheckbookException("Failed to create " + this.getUrlSuffix(), e);
+		}
+	}
+
+	/**
+	 * Process.
+	 *
+	 * @param dataType
+	 *            the data type
+	 * @return the string
+	 * @throws ClearcheckbookException
+	 *             the clearcheckbook exception
+	 */
+	protected String process(final T dataType) throws ClearcheckbookException {
+		AbstractCall._logger.debug("process " + dataType);
 		String id = dataType.getIdParameter().getValue();
 
 		// Inserts
-		if ("".equals(id) || dataType.getId() == 0) {
-			_logger.info("insert: " + dataType);
-			id = insert(dataType);
+		if ("".equals(id) || (dataType.getId() == 0)) {
+			AbstractCall._logger.info("insert: " + dataType);
+			id = this.insert(dataType);
 			return "Inserted " + id;
 		}
 		// deletes
 		else if (dataType.getId() < 0) {
-			_logger.info("delete: " + dataType);
-			boolean status = delete(AbstractDataType.getIdParameter(-1
-					* dataType.getId()));
+			AbstractCall._logger.info("delete: " + dataType);
+			final boolean status = this
+			        .delete(AbstractDataType.getIdParameter(-1 * dataType.getId()));
 			if (status) {
 				return "Deleted " + id;
-			} else {
+			}
+			else {
 				return "Failed to delete " + id;
 			}
-		} else {
-			_logger.info("edit: " + dataType);
-			boolean status = edit(dataType);
+		}
+		else {
+			AbstractCall._logger.info("edit: " + dataType);
+			final boolean status = this.edit(dataType);
 			if (status) {
 				return "Edited " + id;
-			} else {
+			}
+			else {
 				return "Failed to edit " + id;
 			}
 		}
-	}
-
-	/**
-	 * 
-	 * @param input
-	 * @return String if successful, returns the id, else throws exception
-	 * @throws ClearcheckbookException
-	 */
-	protected String insert(T input) throws ClearcheckbookException {
-		_logger.debug("insert: " + input);
-		AbstractDataType<?> dataType = (AbstractDataType<?>) input;
-		String returnString;
-		try {
-			returnString = this.getConnection().postPage(getUrlSuffix(),
-					dataType.getInsertParameters());
-
-			Long id = Long.valueOf(returnString);
-			_logger.info("insert : created " + id);
-			return id.toString();
-		} catch (NumberFormatException e) {
-			throw new ClearcheckbookException("Failed to create "
-					+ getUrlSuffix(), e);
-		} catch (IOException e) {
-			throw new ClearcheckbookException("Failed to create "
-					+ getUrlSuffix(), e);
-		}
-	}
-
-	/**
-	 * 
-	 * @param input
-	 * @return boolean - true means edit was successful
-	 * @throws ClearcheckbookException
-	 */
-	protected boolean edit(T input) throws ClearcheckbookException {
-		_logger.debug("edit: " + input);
-		AbstractDataType<?> dataType = (AbstractDataType<?>) input;
-		String returnString;
-		try {
-			returnString = this.getConnection().putPage(getUrlSuffix(),
-					dataType.getEditParameters());
-			_logger.debug("returned: " + returnString);
-			boolean ok = Boolean.valueOf(returnString);
-			_logger.info("edit : edited " + ok);
-			return ok;
-		} catch (IOException e) {
-			throw new ClearcheckbookException("Failed to create "
-					+ getUrlSuffix(), e);
-		}
-	}
-
-	/**
-	 * 
-	 * @param input
-	 * @return boolean - true means delete was successful
-	 * @throws ClearcheckbookException
-	 */
-	protected boolean delete(ParsedNameValuePair id)
-			throws ClearcheckbookException {
-		_logger.debug("delete: " + id.getValue());
-		String returnString;
-		try {
-			returnString = this.getConnection().deletePage(getUrlSuffix(), id);
-			boolean ok = Boolean.valueOf(returnString);
-			_logger.info("insert : deleted " + ok);
-			return ok;
-		} catch (IOException e) {
-			throw new ClearcheckbookException("Failed to delete "
-					+ getUrlSuffix() + " id: " + id.getValue(), e);
-		}
-	}
-
-	/**
-	 * @return the connection
-	 */
-	public ClearCheckBookConnection getConnection() {
-		return connection;
 	}
 
 }
