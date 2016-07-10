@@ -1,3 +1,9 @@
+/**
+ * TransactionDataType
+ *
+ * @author ${author}
+ * @since 10-Jul-2016
+ */
 package com.leonarduk.clearcheckbook.dto;
 
 import java.util.Arrays;
@@ -10,132 +16,90 @@ import org.apache.log4j.Logger;
 import com.leonarduk.clearcheckbook.ClearcheckbookException;
 
 /**
- * 
- * 
- * 
+ * The Class TransactionDataType.
+ *
  * @author Stephen Leonard
  * @since 28 Jan 2014
- * 
- * @version $Author:: $: Author of last commit
- * @version $Rev:: $: Revision of last commit
- * @version $Date:: $: Date of last commit
- * 
  */
 public class TransactionDataType extends AbstractDataType<TransactionDataType> {
 
-	/**
-	 * 
-	 * This holds the output fields
-	 */
-	public enum Fields {
-		ID, DATE, AMOUNT, DESCRIPTION, CHECK_NUM, MEMO, PAYEE, ACCOUNT_ID, CATEGORY_ID, JIVE, TRANSACTION_TYPE, SPECIALSTATUS, PARENT, RELATED_TRANSFER, INITIAL_BALANCE;
-	}
-
-	@Override
-	protected Enum<?>[] getFields() {
-		return Fields.values();
-	}
-
-	public static Enum<?>[] getFileFields() {
-		Fields[] values = Fields.values();
-		List<Fields> asList = new LinkedList<>(Arrays.asList(values));
-		asList.remove(Fields.TRANSACTION_TYPE.ordinal());
-		return asList.toArray(new Fields[asList.size()]);
-	}
-
-	public enum NonoutputFields {
-		FROM_ACCOUNT_ID, TO_ACCOUNT_ID;
-	}
-
-	@Override
-	public String[] getValues() throws ClearcheckbookException {
-		Enum<?>[] fields = getFileFields();
-		String[] values = new String[fields.length];
-		for (int i = 0; i < values.length; i++) {
-			values[i] = getNonNullValue(fields[i]);
-		}
-		return values;
-	}
-
-	public enum Type {
-		WITHDRAWAL, DEPOSIT;
-
-		public String toString() {
-			return String.valueOf(ordinal());
-		};
-
-		public static boolean isMember(String key) {
-			Type[] values = values();
-			for (int i = 0; i < values.length; i++) {
-				if (values[i].name().equalsIgnoreCase(key)) {
-					return true;
-				}
-			}
-			return false;
-		}
-
-		public static Type fromString(String ordinal)
-				throws ClearcheckbookException {
-			try {
-				int i = Integer.valueOf(ordinal);
-				return Type.values()[i];
-			} catch (Exception e) {
-				throw new ClearcheckbookException(ordinal
-						+ " is not a valid Type", e);
-			}
-		}
-
-		public static Type fromOrdinal(int ordinal)
-				throws ClearcheckbookException {
-			try {
-				return Type.values()[ordinal];
-			} catch (Exception e) {
-				throw new ClearcheckbookException(ordinal
-						+ " is not a valid Type", e);
-			}
-		}
-	}
-
-	private static final Logger _logger = Logger
-			.getLogger(TransactionDataType.class);
+	/** The Constant _logger. */
+	private static final Logger _logger = Logger.getLogger(TransactionDataType.class);
 
 	/**
 	 * Version with id field.
-	 * 
+	 *
 	 * @param id
+	 *            the id
 	 * @param date
+	 *            the date
 	 * @param amount
-	 * @param transactionType
+	 *            the amount
 	 * @param accountId
+	 *            the account id
 	 * @param categoryId
+	 *            the category id
 	 * @param description
+	 *            the description
 	 * @param jive
+	 *            the jive
 	 * @param fromAccountId
+	 *            the from account id
 	 * @param toAccountId
+	 *            the to account id
 	 * @param checkNum
+	 *            the check num
 	 * @param memo
+	 *            the memo
 	 * @param payee
-	 * @return
+	 *            the payee
+	 * @return the transaction data type
 	 */
-	public static TransactionDataType create(Long id, String date,
-			double amount, long accountId, long categoryId, String description,
-			boolean jive, long fromAccountId, long toAccountId,
-			String checkNum, String memo, String payee) {
-		TransactionDataType create = TransactionDataType.create(date, amount,
-				accountId, categoryId, description, jive, fromAccountId,
-				toAccountId, checkNum, memo, payee);
+	public static TransactionDataType create(final Long id, final String date, final double amount,
+	        final long accountId, final long categoryId, final String description,
+	        final boolean jive, final long fromAccountId, final long toAccountId,
+	        final String checkNum, final String memo, final String payee) {
+		final TransactionDataType create = TransactionDataType.create(date, amount, accountId,
+		        categoryId, description, jive, fromAccountId, toAccountId, checkNum, memo, payee);
 		create.setValue(Fields.ID, id);
 		return create;
 	}
 
-	public static TransactionDataType create(String date, Double amount,
-			Long accountId, Long categoryId, String description, Boolean jive,
-			Long fromAccountId, Long toAccountId, String checkNum, String memo,
-			String payee) {
-		TransactionDataType transactionDataType = new TransactionDataType();
+	/**
+	 * Creates the.
+	 *
+	 * @param date
+	 *            the date
+	 * @param amount
+	 *            the amount
+	 * @param accountId
+	 *            the account id
+	 * @param categoryId
+	 *            the category id
+	 * @param description
+	 *            the description
+	 * @param jive
+	 *            the jive
+	 * @param fromAccountId
+	 *            the from account id
+	 * @param toAccountId
+	 *            the to account id
+	 * @param checkNum
+	 *            the check num
+	 * @param memo
+	 *            the memo
+	 * @param payee
+	 *            the payee
+	 * @return the transaction data type
+	 */
+	public static TransactionDataType create(final String date, final Double amount,
+	        final Long accountId, final Long categoryId, final String description,
+	        final Boolean jive, final Long fromAccountId, final Long toAccountId,
+	        final String checkNum, final String memo, final String payee) {
+		final TransactionDataType transactionDataType = new TransactionDataType();
 		transactionDataType.setDate(date);
 		transactionDataType.setAmount(amount);
-		transactionDataType.setTransactionType(getTransactionType(amount));
+		transactionDataType.setTransactionType(TransactionDataType.getTransactionType(amount));
 		transactionDataType.setAccountId(accountId);
 		transactionDataType.setCategoryId(categoryId);
 		transactionDataType.setDescription(description);
@@ -146,155 +110,463 @@ public class TransactionDataType extends AbstractDataType<TransactionDataType> {
 		transactionDataType.setMemo(memo);
 		transactionDataType.setPayee(payee);
 
-		_logger.debug("createCategoriesDataType: " + transactionDataType);
+		TransactionDataType._logger.debug("createCategoriesDataType: " + transactionDataType);
 		return transactionDataType;
 	}
 
 	/**
-	 * if amount is negative is WITHDRAWAL else DEPOSIT
-	 * 
-	 * @param amount
-	 * @return
+	 * Gets the file fields.
+	 *
+	 * @return the file fields
 	 */
-	private static Type getTransactionType(double amount) {
+	public static Enum<?>[] getFileFields() {
+		final Fields[] values = Fields.values();
+		final List<Fields> asList = new LinkedList<>(Arrays.asList(values));
+		asList.remove(Fields.TRANSACTION_TYPE.ordinal());
+		return asList.toArray(new Fields[asList.size()]);
+	}
+
+	/**
+	 * if amount is negative is WITHDRAWAL else DEPOSIT.
+	 *
+	 * @param amount
+	 *            the amount
+	 * @return the transaction type
+	 */
+	private static Type getTransactionType(final double amount) {
 		if (amount < 0) {
 			return Type.WITHDRAWAL;
 		}
 		return Type.DEPOSIT;
 	}
 
+	/**
+	 * Instantiates a new transaction data type.
+	 */
 	private TransactionDataType() {
 		super();
 	}
 
-	public TransactionDataType(TransactionDataType original){
+	/**
+	 * Instantiates a new transaction data type.
+	 *
+	 * @param map
+	 *            the map
+	 * @throws ClearcheckbookException
+	 *             the clearcheckbook exception
+	 */
+	public TransactionDataType(final Map<String, String> map) throws ClearcheckbookException {
+		super(map);
+		if (null == this.getJive()) {
+			this.setJive(false);
+		}
+		this.setTransactionType(TransactionDataType.getTransactionType(this.getAmount()));
+	}
+
+	/**
+	 * Instantiates a new transaction data type.
+	 *
+	 * @param original
+	 *            the original
+	 */
+	public TransactionDataType(final TransactionDataType original) {
 		super(original);
 	}
-	public TransactionDataType(Map<String, String> map)
-			throws ClearcheckbookException {
-		super(map);
-		if (null == getJive()) {
-			setJive(false);
-		}
-		setTransactionType(getTransactionType(getAmount()));
-	}
 
+	/**
+	 * Gets the account id.
+	 *
+	 * @return the account id
+	 */
 	public Long getAccountId() {
-		return getLongValue(Fields.ACCOUNT_ID);
+		return this.getLongValue(Fields.ACCOUNT_ID);
 	}
 
+	/**
+	 * Gets the amount.
+	 *
+	 * @return the amount
+	 */
 	public Double getAmount() {
-		return getDoubleValue(Fields.AMOUNT);
+		return this.getDoubleValue(Fields.AMOUNT);
 	}
 
+	/**
+	 * Gets the category id.
+	 *
+	 * @return the category id
+	 */
 	public Long getCategoryId() {
-		return getLongValue(Fields.CATEGORY_ID);
+		return this.getLongValue(Fields.CATEGORY_ID);
 	}
 
+	/**
+	 * Gets the check num.
+	 *
+	 * @return the check num
+	 */
 	public String getCheckNum() {
-		return getValue(Fields.CHECK_NUM);
+		return this.getValue(Fields.CHECK_NUM);
 	}
 
+	/**
+	 * Gets the date.
+	 *
+	 * @return the date
+	 */
 	public String getDate() {
-		return getValue(Fields.DATE);
+		return this.getValue(Fields.DATE);
 	}
 
+	/**
+	 * Gets the description.
+	 *
+	 * @return the description
+	 */
 	public String getDescription() {
-		return getValue(Fields.DESCRIPTION);
+		return this.getValue(Fields.DESCRIPTION);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.leonarduk.clearcheckbook.dto.AbstractDataType#getEditFields()
+	 */
 	@Override
 	protected Enum<?>[] getEditFields() {
-		Fields[] insertFields = new Fields[] { Fields.ID, Fields.DATE,
-				Fields.AMOUNT, Fields.TRANSACTION_TYPE, Fields.ACCOUNT_ID,
-				Fields.CATEGORY_ID, Fields.DESCRIPTION, Fields.JIVE,
-				Fields.CHECK_NUM, Fields.MEMO };
+		final Fields[] insertFields = new Fields[] { Fields.ID, Fields.DATE, Fields.AMOUNT,
+		        Fields.TRANSACTION_TYPE, Fields.ACCOUNT_ID, Fields.CATEGORY_ID, Fields.DESCRIPTION,
+		        Fields.JIVE, Fields.CHECK_NUM, Fields.MEMO };
 		return insertFields;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.leonarduk.clearcheckbook.dto.AbstractDataType#getFields()
+	 */
+	@Override
+	protected Enum<?>[] getFields() {
+		return Fields.values();
+	}
+
+	/**
+	 * Gets the from account id.
+	 *
+	 * @return the from account id
+	 */
 	public Long getFromAccountId() {
-		return getLongValue(NonoutputFields.FROM_ACCOUNT_ID);
+		return this.getLongValue(NonoutputFields.FROM_ACCOUNT_ID);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.leonarduk.clearcheckbook.dto.AbstractDataType#getInsertFields()
+	 */
+	@Override
 	protected Enum<?>[] getInsertFields() {
-		Enum<?>[] insertFields = new Enum<?>[] { Fields.DATE, Fields.AMOUNT,
-				Fields.TRANSACTION_TYPE, Fields.ACCOUNT_ID, Fields.CATEGORY_ID,
-				Fields.DESCRIPTION, Fields.JIVE,
-				NonoutputFields.FROM_ACCOUNT_ID, NonoutputFields.TO_ACCOUNT_ID,
-				Fields.CHECK_NUM, Fields.MEMO, Fields.PAYEE };
+		final Enum<?>[] insertFields = new Enum<?>[] { Fields.DATE, Fields.AMOUNT,
+		        Fields.TRANSACTION_TYPE, Fields.ACCOUNT_ID, Fields.CATEGORY_ID, Fields.DESCRIPTION,
+		        Fields.JIVE, NonoutputFields.FROM_ACCOUNT_ID, NonoutputFields.TO_ACCOUNT_ID,
+		        Fields.CHECK_NUM, Fields.MEMO, Fields.PAYEE };
 		return insertFields;
 	}
 
+	/**
+	 * Gets the jive.
+	 *
+	 * @return the jive
+	 */
 	public Boolean getJive() {
-		return getBooleanValue(Fields.JIVE);
+		return this.getBooleanValue(Fields.JIVE);
 	}
 
+	/**
+	 * Gets the memo.
+	 *
+	 * @return the memo
+	 */
 	public String getMemo() {
-		return getValue(Fields.MEMO);
+		return this.getValue(Fields.MEMO);
 	}
 
+	/**
+	 * Gets the payee.
+	 *
+	 * @return the payee
+	 */
 	public String getPayee() {
-		return getValue(Fields.PAYEE);
+		return this.getValue(Fields.PAYEE);
 	}
 
+	/**
+	 * Gets the to account.
+	 *
+	 * @return the to account
+	 */
 	public Long getToAccount() {
-		return getLongValue(NonoutputFields.TO_ACCOUNT_ID);
+		return this.getLongValue(NonoutputFields.TO_ACCOUNT_ID);
 	}
 
+	/**
+	 * Gets the transaction type.
+	 *
+	 * @return the transaction type
+	 * @throws ClearcheckbookException
+	 *             the clearcheckbook exception
+	 */
 	public Type getTransactionType() throws ClearcheckbookException {
-		return Type.fromString(getValue(Fields.TRANSACTION_TYPE));
+		return Type.fromString(this.getValue(Fields.TRANSACTION_TYPE));
 	}
 
-	public void setAccountId(Long string) {
-		setValue(Fields.ACCOUNT_ID, string);
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.leonarduk.clearcheckbook.dto.AbstractDataType#getValues()
+	 */
+	@Override
+	public String[] getValues() throws ClearcheckbookException {
+		final Enum<?>[] fields = TransactionDataType.getFileFields();
+		final String[] values = new String[fields.length];
+		for (int i = 0; i < values.length; i++) {
+			values[i] = this.getNonNullValue(fields[i]);
+		}
+		return values;
 	}
 
-	public void setAmount(Double amount) {
-		setValue(Fields.AMOUNT, amount);
-	}
-
-	public void setCategoryId(Long string) {
-		setValue(Fields.CATEGORY_ID, string);
-	}
-
-	public void setCheckNum(String string) {
-		setValue(Fields.CHECK_NUM, string);
-	}
-
-	public void setDate(String string) {
-		setValue(Fields.DATE, string);
-	}
-
-	public void setDescription(String string) {
-		setValue(Fields.DESCRIPTION, string);
-	}
-
-	public void setFromAccountId(Long fromAccountId) {
-		setValue(NonoutputFields.FROM_ACCOUNT_ID, fromAccountId);
-	}
-
-	public void setJive(Boolean jive) {
-		setValue(Fields.JIVE, jive);
-	}
-
-	public void setMemo(String string) {
-		setValue(Fields.MEMO, string);
-	}
-
-	public void setPayee(String valString) {
-		setValue(Fields.PAYEE, valString);
-	}
-
-	public void setToAccountId(Long toAccountId) {
-		setValue(NonoutputFields.TO_ACCOUNT_ID, toAccountId);
-	}
-
-	public void setTransactionType(Type transactionType) {
-		setValue(Fields.TRANSACTION_TYPE, transactionType);
-	}
-
+	/**
+	 * Mark to be deleted.
+	 */
 	public void markToBeDeleted() {
-		setValue(Fields.ID, -1 * getId());
+		this.setValue(Fields.ID, -1 * this.getId());
+	}
+
+	/**
+	 * Sets the account id.
+	 *
+	 * @param string
+	 *            the new account id
+	 */
+	public void setAccountId(final Long string) {
+		this.setValue(Fields.ACCOUNT_ID, string);
+	}
+
+	/**
+	 * Sets the amount.
+	 *
+	 * @param amount
+	 *            the new amount
+	 */
+	public void setAmount(final Double amount) {
+		this.setValue(Fields.AMOUNT, amount);
+	}
+
+	/**
+	 * Sets the category id.
+	 *
+	 * @param string
+	 *            the new category id
+	 */
+	public void setCategoryId(final Long string) {
+		this.setValue(Fields.CATEGORY_ID, string);
+	}
+
+	/**
+	 * Sets the check num.
+	 *
+	 * @param string
+	 *            the new check num
+	 */
+	public void setCheckNum(final String string) {
+		this.setValue(Fields.CHECK_NUM, string);
+	}
+
+	/**
+	 * Sets the date.
+	 *
+	 * @param string
+	 *            the new date
+	 */
+	public void setDate(final String string) {
+		this.setValue(Fields.DATE, string);
+	}
+
+	/**
+	 * Sets the description.
+	 *
+	 * @param string
+	 *            the new description
+	 */
+	public void setDescription(final String string) {
+		this.setValue(Fields.DESCRIPTION, string);
+	}
+
+	/**
+	 * Sets the from account id.
+	 *
+	 * @param fromAccountId
+	 *            the new from account id
+	 */
+	public void setFromAccountId(final Long fromAccountId) {
+		this.setValue(NonoutputFields.FROM_ACCOUNT_ID, fromAccountId);
+	}
+
+	/**
+	 * Sets the jive.
+	 *
+	 * @param jive
+	 *            the new jive
+	 */
+	public void setJive(final Boolean jive) {
+		this.setValue(Fields.JIVE, jive);
+	}
+
+	/**
+	 * Sets the memo.
+	 *
+	 * @param string
+	 *            the new memo
+	 */
+	public void setMemo(final String string) {
+		this.setValue(Fields.MEMO, string);
+	}
+
+	/**
+	 * Sets the payee.
+	 *
+	 * @param valString
+	 *            the new payee
+	 */
+	public void setPayee(final String valString) {
+		this.setValue(Fields.PAYEE, valString);
+	}
+
+	/**
+	 * Sets the to account id.
+	 *
+	 * @param toAccountId
+	 *            the new to account id
+	 */
+	public void setToAccountId(final Long toAccountId) {
+		this.setValue(NonoutputFields.TO_ACCOUNT_ID, toAccountId);
+	}
+
+	/**
+	 * Sets the transaction type.
+	 *
+	 * @param transactionType
+	 *            the new transaction type
+	 */
+	public void setTransactionType(final Type transactionType) {
+		this.setValue(Fields.TRANSACTION_TYPE, transactionType);
+	}
+
+	/**
+	 * This holds the output fields.
+	 */
+	public enum Fields {
+
+		/** The id. */
+		ID, /** The date. */
+		DATE, /** The amount. */
+		AMOUNT, /** The description. */
+		DESCRIPTION, /** The check num. */
+		CHECK_NUM, /** The memo. */
+		MEMO, /** The payee. */
+		PAYEE, /** The account id. */
+		ACCOUNT_ID, /** The category id. */
+		CATEGORY_ID, /** The jive. */
+		JIVE, /** The transaction type. */
+		TRANSACTION_TYPE, /** The specialstatus. */
+		SPECIALSTATUS, /** The parent. */
+		PARENT, /** The related transfer. */
+		RELATED_TRANSFER, /** The initial balance. */
+		INITIAL_BALANCE;
+	}
+
+	/**
+	 * The Enum NonoutputFields.
+	 */
+	public enum NonoutputFields {
+
+		/** The from account id. */
+		FROM_ACCOUNT_ID, /** The to account id. */
+		TO_ACCOUNT_ID;
+	}
+
+	/**
+	 * The Enum Type.
+	 */
+	public enum Type {
+
+		/** The withdrawal. */
+		WITHDRAWAL, /** The deposit. */
+		DEPOSIT;
+
+		/**
+		 * From ordinal.
+		 *
+		 * @param ordinal
+		 *            the ordinal
+		 * @return the type
+		 * @throws ClearcheckbookException
+		 *             the clearcheckbook exception
+		 */
+		public static Type fromOrdinal(final int ordinal) throws ClearcheckbookException {
+			try {
+				return Type.values()[ordinal];
+			}
+			catch (final Exception e) {
+				throw new ClearcheckbookException(ordinal + " is not a valid Type", e);
+			}
+		};
+
+		/**
+		 * From string.
+		 *
+		 * @param ordinal
+		 *            the ordinal
+		 * @return the type
+		 * @throws ClearcheckbookException
+		 *             the clearcheckbook exception
+		 */
+		public static Type fromString(final String ordinal) throws ClearcheckbookException {
+			try {
+				final int i = Integer.valueOf(ordinal);
+				return Type.values()[i];
+			}
+			catch (final Exception e) {
+				throw new ClearcheckbookException(ordinal + " is not a valid Type", e);
+			}
+		}
+
+		/**
+		 * Checks if is member.
+		 *
+		 * @param key
+		 *            the key
+		 * @return true, if is member
+		 */
+		public static boolean isMember(final String key) {
+			final Type[] values = Type.values();
+			for (final Type value : values) {
+				if (value.name().equalsIgnoreCase(key)) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see java.lang.Enum#toString()
+		 */
+		@Override
+		public String toString() {
+			return String.valueOf(this.ordinal());
+		}
 	}
 
 }

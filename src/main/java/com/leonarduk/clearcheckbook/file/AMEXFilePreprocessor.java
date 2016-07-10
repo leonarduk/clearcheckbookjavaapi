@@ -1,3 +1,9 @@
+/**
+ * AMEXFilePreprocessor
+ *
+ * @author ${author}
+ * @since 10-Jul-2016
+ */
 package com.leonarduk.clearcheckbook.file;
 
 import java.io.IOException;
@@ -13,50 +19,83 @@ import com.leonarduk.clearcheckbook.ClearcheckbookException;
 import com.leonarduk.clearcheckbook.dto.TransactionDataType;
 import com.leonarduk.utils.DateUtils;
 
+/**
+ * The Class AMEXFilePreprocessor.
+ */
 public class AMEXFilePreprocessor extends TransactionFilePreprocessor {
 
-	private static final Logger _logger = Logger
-			.getLogger(AMEXFilePreprocessor.class);
+	/** The Constant _logger. */
+	private static final Logger _logger = Logger.getLogger(AMEXFilePreprocessor.class);
 
 	/**
-	 * 
+	 * Instantiates a new AMEX file preprocessor.
 	 */
 	public AMEXFilePreprocessor() {
 		super(0);
 	}
 
-	public AMEXFilePreprocessor(long accountId) {
+	/**
+	 * Instantiates a new AMEX file preprocessor.
+	 *
+	 * @param accountId
+	 *            the account id
+	 */
+	public AMEXFilePreprocessor(final long accountId) {
 		super(0, accountId);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.leonarduk.clearcheckbook.file.TransactionFilePreprocessor#getAmount(java.util.Map)
+	 */
 	@Override
-	protected String getDate(Map<String, String> fieldsMap)
-			throws ClearcheckbookException {
-		String dateString = fieldsMap.get("date");
-		_logger.debug("getDate:" + dateString + ":" + fieldsMap);
+	protected String getAmount(final Map<String, String> fieldsMap) {
+		return String.valueOf(-1 * Double
+		        .valueOf(fieldsMap.get(TransactionDataType.Fields.AMOUNT.name().toLowerCase())));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.leonarduk.clearcheckbook.file.TransactionFilePreprocessor#getDate(java.util.Map)
+	 */
+	@Override
+	protected String getDate(final Map<String, String> fieldsMap) throws ClearcheckbookException {
+		final String dateString = fieldsMap.get("date");
+		AMEXFilePreprocessor._logger.debug("getDate:" + dateString + ":" + fieldsMap);
 		Date date;
 		try {
 			date = DateUtils.getDate(dateString, "dd/MM/yyyy");
-		} catch (ParseException e) {
-			throw new ClearcheckbookException("Failed to parse date: "
-					+ dateString, e);
+		}
+		catch (final ParseException e) {
+			throw new ClearcheckbookException("Failed to parse date: " + dateString, e);
 		}
 		return DateUtils.getFormattedDate("yyyy-MM-dd", date);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.leonarduk.clearcheckbook.file.TransactionFilePreprocessor#getPayee(java.util.Map)
+	 */
 	@Override
-	protected String getAmount(Map<String, String> fieldsMap) {
-		return String.valueOf(-1
-				* Double.valueOf(fieldsMap
-						.get(TransactionDataType.Fields.AMOUNT.name()
-								.toLowerCase())));
+	protected String getPayee(final Map<String, String> fieldsMap) {
+		return super.getDesription(fieldsMap);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.leonarduk.clearcheckbook.file.TransactionFilePreprocessor#processHeaderRow(java.lang.
+	 * String, java.lang.String)
+	 */
 	@Override
-	public List<String> processHeaderRow(String separator, String line)
-			throws IOException {
+	public List<String> processHeaderRow(final String separator, final String line)
+	        throws IOException {
 		// Read header
-		List<String> headerFields = new LinkedList<>();
+		final List<String> headerFields = new LinkedList<>();
 		// 21/01/2014,"Reference: AT140220038000010303608"," 56.76",
 		// "TESCO STORES 2934 NEW MALDEN"," Process Date 22/01/2014",
 
@@ -68,10 +107,5 @@ public class AMEXFilePreprocessor extends TransactionFilePreprocessor {
 		headerFields.add("IGNORE");
 
 		return headerFields;
-	}
-	
-	@Override
-	protected String getPayee(Map<String, String> fieldsMap) {
-		return super.getDesription(fieldsMap);
 	}
 }

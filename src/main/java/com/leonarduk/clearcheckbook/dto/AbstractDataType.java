@@ -1,3 +1,9 @@
+/**
+ * AbstractDataType
+ *
+ * @author ${author}
+ * @since 10-Jul-2016
+ */
 package com.leonarduk.clearcheckbook.dto;
 
 import java.util.ArrayList;
@@ -9,229 +15,414 @@ import org.apache.log4j.Logger;
 
 import com.leonarduk.clearcheckbook.ClearcheckbookException;
 
+/**
+ * The Class AbstractDataType.
+ *
+ * @param <U>
+ *            the generic type
+ */
 abstract public class AbstractDataType<U extends AbstractDataType<?>> {
 
-	public enum ControlField {
-		ID, LIMIT, PAGE
-	}
+	/** The Constant _logger. */
+	private static final Logger _logger = Logger.getLogger(AbstractDataType.class);
 
-	private static final Logger _logger = Logger
-			.getLogger(AbstractDataType.class);
-
-	/**
-	 * @return the fieldsMap
-	 */
-	protected Map<String, String> getFieldsMap() {
-		return fieldsMap;
-	}
+	/** The fields map. */
+	final private Map<String, String> fieldsMap;
 
 	/**
 	 * Helper method for use in get method.
-	 * 
+	 *
 	 * @param id
-	 * @return
+	 *            the id
+	 * @return the id parameter
 	 */
-	public static ParsedNameValuePair getIdParameter(long id) {
-		return new ParsedNameValuePair(ControlField.ID.name().toLowerCase(),
-				String.valueOf(id));
+	public static ParsedNameValuePair getIdParameter(final long id) {
+		return new ParsedNameValuePair(ControlField.ID.name().toLowerCase(), String.valueOf(id));
+	}
+
+	/**
+	 * Gets the limit parameter.
+	 *
+	 * @param limit
+	 *            the limit
+	 * @return the limit parameter
+	 */
+	public static ParsedNameValuePair getLimitParameter(final int limit) {
+		return new ParsedNameValuePair(ControlField.LIMIT.name().toLowerCase(),
+		        String.valueOf(limit));
 	};
 
-	public static ParsedNameValuePair getLimitParameter(int limit) {
-		return new ParsedNameValuePair(ControlField.LIMIT.name().toLowerCase(),
-				String.valueOf(limit));
-	}
-
-	public static ParsedNameValuePair getPageParameter(int page) {
+	/**
+	 * Gets the page parameter.
+	 *
+	 * @param page
+	 *            the page
+	 * @return the page parameter
+	 */
+	public static ParsedNameValuePair getPageParameter(final int page) {
 		return new ParsedNameValuePair(ControlField.PAGE.name().toLowerCase(),
-				String.valueOf(page));
+		        String.valueOf(page));
 	}
 
-	final private Map<String, String> fieldsMap;
-
+	/**
+	 * Instantiates a new abstract data type.
+	 */
 	protected AbstractDataType() {
 		this.fieldsMap = new HashMap<String, String>();
 	}
 
-	public AbstractDataType(Map<String, String> map) {
+	/**
+	 * Instantiates a new abstract data type.
+	 *
+	 * @param map
+	 *            the map
+	 */
+	public AbstractDataType(final Map<String, String> map) {
 		this.fieldsMap = map;
 	}
 
-	public AbstractDataType(U original) {
+	/**
+	 * Instantiates a new abstract data type.
+	 *
+	 * @param original
+	 *            the original
+	 */
+	public AbstractDataType(final U original) {
 		this(original.getFieldsMap());
 	}
 
-	protected void addField(Enum<?> field, String value) {
+	/**
+	 * Adds the field.
+	 *
+	 * @param field
+	 *            the field
+	 * @param value
+	 *            the value
+	 */
+	protected void addField(final Enum<?> field, final String value) {
 		this.getFieldsMap().put(field.name().toLowerCase(), value);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	@Override
-	public boolean equals(Object obj) {
-		if (null == obj || !obj.getClass().equals(this.getClass())) {
-			_logger.info("not equal " + this + " vs " + obj);
+	public boolean equals(final Object obj) {
+		if ((null == obj) || !obj.getClass().equals(this.getClass())) {
+			AbstractDataType._logger.info("not equal " + this + " vs " + obj);
 			return false;
 		}
 		@SuppressWarnings("unchecked")
-		U that = (U) obj;
-		Enum<?>[] fields = getFields();
-		ArrayList<Enum> ignore = getFieldsToIgnoreInEqualsMethod();
+		final U that = (U) obj;
+		final Enum<?>[] fields = this.getFields();
+		final ArrayList<Enum> ignore = this.getFieldsToIgnoreInEqualsMethod();
 		for (int i = 0; i < fields.length; i++) {
-			String thisValue = getNonNullValue(fields[i]);
-			String thatValue = that.getNonNullValue(fields[i]);
-			if (!ignore.contains(fields[i])
-					&& !thisValue.equals(
-							thatValue)) {
-				_logger.info(fields[i].name() + " don't match. This:"
-						+ thisValue + " vs That:"
-						+ thatValue);
+			final String thisValue = this.getNonNullValue(fields[i]);
+			final String thatValue = that.getNonNullValue(fields[i]);
+			if (!ignore.contains(fields[i]) && !thisValue.equals(thatValue)) {
+				AbstractDataType._logger.info(fields[i].name() + " don't match. This:" + thisValue
+				        + " vs That:" + thatValue);
 				return false;
 			}
 		}
 		return true;
 	}
 
+	/**
+	 * Gets the boolean value.
+	 *
+	 * @param field
+	 *            the field
+	 * @return the boolean value
+	 */
+	protected Boolean getBooleanValue(final Enum<?> field) {
+		final String value = this.getValue(field);
+		if (null == value) {
+			return null;
+		}
+		return Boolean.valueOf(value);
+	}
+
+	/**
+	 * Gets the double value.
+	 *
+	 * @param field
+	 *            the field
+	 * @return the double value
+	 */
+	protected Double getDoubleValue(final Enum<?> field) {
+		final String value = this.getValue(field);
+		if (null == value) {
+			return null;
+		}
+		return Double.valueOf(value);
+	}
+
+	/**
+	 * Gets the edits the fields.
+	 *
+	 * @return the edits the fields
+	 */
+	protected Enum<?>[] getEditFields() {
+		throw new IllegalArgumentException("Not implemented");
+	}
+
+	/**
+	 * Gets the edits the parameters.
+	 *
+	 * @return the edits the parameters
+	 */
+	public ParsedNameValuePair[] getEditParameters() {
+		final Enum<?>[] insertFields = this.getEditFields();
+		return this.getParameters(insertFields);
+	}
+
+	/**
+	 * Gets the fields.
+	 *
+	 * @return the fields
+	 */
+	abstract protected Enum<?>[] getFields();
+
+	/**
+	 * Gets the fields map.
+	 *
+	 * @return the fieldsMap
+	 */
+	protected Map<String, String> getFieldsMap() {
+		return this.fieldsMap;
+	}
+
+	/**
+	 * Gets the fields to ignore in equals method.
+	 *
+	 * @return the fields to ignore in equals method
+	 */
 	@SuppressWarnings("rawtypes")
 	protected ArrayList<Enum> getFieldsToIgnoreInEqualsMethod() {
 		return new ArrayList<Enum>();
 	}
 
-	protected Boolean getBooleanValue(Enum<?> field) {
-		String value = getValue(field);
-		if (null == value)
-			return null;
-		return Boolean.valueOf(value);
-	}
-
-	protected Double getDoubleValue(Enum<?> field) {
-		String value = getValue(field);
-		if (null == value)
-			return null;
-		return Double.valueOf(value);
-	}
-
-	protected Enum<?>[] getEditFields() {
-		throw new IllegalArgumentException("Not implemented");
-	}
-
-	public ParsedNameValuePair[] getEditParameters() {
-		Enum<?>[] insertFields = getEditFields();
-		return getParameters(insertFields);
-	}
-
-	abstract protected Enum<?>[] getFields();
-
+	/**
+	 * Gets the id.
+	 *
+	 * @return the id
+	 */
 	public long getId() {
-		String value = getIdParameter().getValue();
+		final String value = this.getIdParameter().getValue();
 		if (null == value) {
 			return 0;
 		}
 		return Long.valueOf(value);
 	}
 
+	/**
+	 * Gets the id parameter.
+	 *
+	 * @return the id parameter
+	 */
 	public ParsedNameValuePair getIdParameter() {
-		return getNameValuePair(ControlField.ID);
+		return this.getNameValuePair(ControlField.ID);
 	}
 
+	/**
+	 * Gets the insert fields.
+	 *
+	 * @return the insert fields
+	 */
 	protected Enum<?>[] getInsertFields() {
 		throw new IllegalArgumentException("Not implemented");
 	}
 
+	/**
+	 * Gets the insert parameters.
+	 *
+	 * @return the insert parameters
+	 */
 	public ParsedNameValuePair[] getInsertParameters() {
-		Enum<?>[] insertFields = getInsertFields();
-		return getParameters(insertFields);
+		final Enum<?>[] insertFields = this.getInsertFields();
+		return this.getParameters(insertFields);
 	}
 
-	protected Integer getIntegerValue(Enum<?> field) {
-		String value = getValue(field);
-		if (null == value)
+	/**
+	 * Gets the integer value.
+	 *
+	 * @param field
+	 *            the field
+	 * @return the integer value
+	 */
+	protected Integer getIntegerValue(final Enum<?> field) {
+		final String value = this.getValue(field);
+		if (null == value) {
 			return null;
+		}
 		return Integer.valueOf(value);
 	}
 
-	protected Long getLongValue(Enum<?> field) {
-		String value = getValue(field);
-		if (null == value)
+	/**
+	 * Gets the long value.
+	 *
+	 * @param field
+	 *            the field
+	 * @return the long value
+	 */
+	protected Long getLongValue(final Enum<?> field) {
+		final String value = this.getValue(field);
+		if (null == value) {
 			return 0L;
+		}
 		return Long.valueOf(value);
 	}
 
 	/**
-	 * 
+	 * Gets the name value pair.
+	 *
 	 * @param field
-	 * @return
+	 *            the field
+	 * @return the name value pair
 	 */
-	protected ParsedNameValuePair getNameValuePair(Enum<?> field) {
-		String lowerKey = field.name().toLowerCase();
-		ParsedNameValuePair nameValuePair = new ParsedNameValuePair(lowerKey,
-				getValue(lowerKey));
-		_logger.debug("getNameValuePair : " + lowerKey + " -> " + nameValuePair);
+	protected ParsedNameValuePair getNameValuePair(final Enum<?> field) {
+		final String lowerKey = field.name().toLowerCase();
+		final ParsedNameValuePair nameValuePair = new ParsedNameValuePair(lowerKey,
+		        this.getValue(lowerKey));
+		AbstractDataType._logger.debug("getNameValuePair : " + lowerKey + " -> " + nameValuePair);
 		return nameValuePair;
 	}
 
-	protected String getNonNullValue(Enum<?> fields) {
-		String value = getValue(fields);
+	/**
+	 * Gets the non null value.
+	 *
+	 * @param fields
+	 *            the fields
+	 * @return the non null value
+	 */
+	protected String getNonNullValue(final Enum<?> fields) {
+		final String value = this.getValue(fields);
 		if (null == value) {
 			return "";
 		}
 		return value;
 	}
 
-	private ParsedNameValuePair[] getParameters(Enum<?>[] fields) {
-		ParsedNameValuePair[] parameters = new ParsedNameValuePair[fields.length];
+	/**
+	 * Gets the parameters.
+	 *
+	 * @param fields
+	 *            the fields
+	 * @return the parameters
+	 */
+	private ParsedNameValuePair[] getParameters(final Enum<?>[] fields) {
+		final ParsedNameValuePair[] parameters = new ParsedNameValuePair[fields.length];
 		for (int i = 0; i < fields.length; i++) {
-			parameters[i] = getNameValuePair(fields[i]);
+			parameters[i] = this.getNameValuePair(fields[i]);
 		}
-		_logger.debug("getParameters: " + Arrays.asList(parameters));
+		AbstractDataType._logger.debug("getParameters: " + Arrays.asList(parameters));
 		return parameters;
 	}
 
-	protected String getValue(Enum<?> field) {
-		String key = field.name().toLowerCase();
-		return getValue(key);
+	/**
+	 * Gets the value.
+	 *
+	 * @param field
+	 *            the field
+	 * @return the value
+	 */
+	protected String getValue(final Enum<?> field) {
+		final String key = field.name().toLowerCase();
+		return this.getValue(key);
 	}
 
-	protected String getValue(String key) {
-		String value = this.getFieldsMap().get(key);
-		_logger.debug("getValue : " + key + "=" + value);
+	/**
+	 * Gets the value.
+	 *
+	 * @param key
+	 *            the key
+	 * @return the value
+	 */
+	protected String getValue(final String key) {
+		final String value = this.getFieldsMap().get(key);
+		AbstractDataType._logger.debug("getValue : " + key + "=" + value);
 		return value;
 	}
 
+	/**
+	 * Gets the values.
+	 *
+	 * @return the values
+	 * @throws ClearcheckbookException
+	 *             the clearcheckbook exception
+	 */
 	public String[] getValues() throws ClearcheckbookException {
-		Enum<?>[] fields = getFields();
-		String[] values = new String[fields.length];
+		final Enum<?>[] fields = this.getFields();
+		final String[] values = new String[fields.length];
 		for (int i = 0; i < values.length; i++) {
-			values[i] = getNonNullValue(fields[i]);
+			values[i] = this.getNonNullValue(fields[i]);
 		}
 		return values;
 	}
 
-	protected void setIntValueFromBooleanString(Enum<?> field, String value) {
-		_logger.debug("setIntValueFromBooleanString: " + field.name() + "="
-				+ value);
+	/**
+	 * Sets the int value from boolean string.
+	 *
+	 * @param field
+	 *            the field
+	 * @param value
+	 *            the value
+	 */
+	protected void setIntValueFromBooleanString(final Enum<?> field, String value) {
+		AbstractDataType._logger
+		        .debug("setIntValueFromBooleanString: " + field.name() + "=" + value);
 		switch (value) {
-		case "false":
-			value = "0";
-			break;
-		case "true":
-			value = "1";
-			break;
+			case "false":
+				value = "0";
+				break;
+			case "true":
+				value = "1";
+				break;
 		}
-		_logger.debug("setIntValueFromBooleanString: " + field.name() + "="
-				+ value);
-		setValue(field, value);
+		AbstractDataType._logger
+		        .debug("setIntValueFromBooleanString: " + field.name() + "=" + value);
+		this.setValue(field, value);
 	}
 
-	protected void setValue(Enum<?> field, Object value) {
-		if (null == value || value.equals("")) {
+	/**
+	 * Sets the value.
+	 *
+	 * @param field
+	 *            the field
+	 * @param value
+	 *            the value
+	 */
+	protected void setValue(final Enum<?> field, final Object value) {
+		if ((null == value) || value.equals("")) {
 			this.getFieldsMap().put(field.name().toLowerCase(), null);
-		} else {
-			this.getFieldsMap().put(field.name().toLowerCase(),
-					value.toString());
+		}
+		else {
+			this.getFieldsMap().put(field.name().toLowerCase(), value.toString());
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
-		return "AbstractDataType [fieldsMap=" + getFieldsMap() + "]";
+		return "AbstractDataType [fieldsMap=" + this.getFieldsMap() + "]";
+	}
+
+	/**
+	 * The Enum ControlField.
+	 */
+	public enum ControlField {
+
+		/** The id. */
+		ID, /** The limit. */
+		LIMIT, /** The page. */
+		PAGE
 	}
 
 }
