@@ -293,6 +293,7 @@ public class ClearCheckBookFileHandlerTest {
 	 * Test import transactions.
 	 */
 	@Test
+	@Ignore
 	public void testImportTransactions() {
 		try {
 			final List<TransactionDataType> transactions = this.fileHandler.importTransactions(
