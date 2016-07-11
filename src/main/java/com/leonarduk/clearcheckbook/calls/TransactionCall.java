@@ -294,7 +294,7 @@ public class TransactionCall extends AbstractCall<TransactionDataType>
 	 *             the clearcheckbook exception
 	 */
 	public List<TransactionDataType> getAll(final long accountId) throws ClearcheckbookException {
-		return super.getAll(AbstractDataType.getIdParameter(accountId));
+		return super.getAll(new ParsedNameValuePair("account_id", String.valueOf(accountId)));
 	}
 
 	/**
@@ -312,7 +312,7 @@ public class TransactionCall extends AbstractCall<TransactionDataType>
 	 */
 	public List<TransactionDataType> getAll(final long accountId, final int page, final int limit)
 	        throws ClearcheckbookException {
-		return super.getAll(AbstractDataType.getIdParameter(accountId),
+		return super.getAll(new ParsedNameValuePair("account_id", String.valueOf(accountId)),
 		        AbstractDataType.getPageParameter(page), AbstractDataType.getLimitParameter(limit));
 	}
 

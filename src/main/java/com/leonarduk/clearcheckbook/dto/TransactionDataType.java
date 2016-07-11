@@ -161,7 +161,7 @@ public class TransactionDataType extends AbstractDataType<TransactionDataType> {
 		if (null == this.getJive()) {
 			this.setJive(false);
 		}
-		this.setTransactionType(TransactionDataType.getTransactionType(this.getAmount()));
+		this.setTransactionType(this.getTransactionType());
 	}
 
 	/**
@@ -172,6 +172,31 @@ public class TransactionDataType extends AbstractDataType<TransactionDataType> {
 	 */
 	public TransactionDataType(final TransactionDataType original) {
 		super(original);
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if ((null == obj) || !obj.getClass().equals(this.getClass())) {
+			TransactionDataType._logger.info("not equal " + this + " vs " + obj);
+			return false;
+		}
+		final TransactionDataType that = (TransactionDataType) obj;
+		if (this.getAmount() != that.getAmount()) {
+			return false;
+		}
+		if (this.getDate() != that.getDate()) {
+			return false;
+		}
+		if (this.getDescription() != that.getDescription()) {
+			return false;
+		}
+		if (this.getCheckNum() != that.getCheckNum()) {
+			return false;
+		}
+		if (this.getMemo() != that.getMemo()) {
+			return false;
+		}
+		return this.getAccountId() == that.getAccountId();
 	}
 
 	/**
@@ -256,6 +281,21 @@ public class TransactionDataType extends AbstractDataType<TransactionDataType> {
 	protected ArrayList<Enum> getFieldsToIgnoreInEqualsMethod() {
 		final ArrayList<Enum> fields = new ArrayList<>();
 		fields.add(TransactionDataType.Fields.ID);
+		fields.add(TransactionDataType.Fields.SPECIALSTATUS);
+		fields.add(TransactionDataType.Fields.JIVE);
+		fields.add(TransactionDataType.Fields.ATTACHMENT);
+		fields.add(TransactionDataType.Fields.USER_ID);
+		fields.add(TransactionDataType.Fields.ADDITIONAL_USER_ID);
+
+		fields.add(TransactionDataType.Fields.TO_ACCOUNT_ID);
+		fields.add(TransactionDataType.Fields.FROM_ACCOUNT_ID);
+
+		fields.add(TransactionDataType.Fields.INITIAL_BALANCE);
+		fields.add(TransactionDataType.Fields.TRANSACTION_TYPE);
+		fields.add(TransactionDataType.Fields.PARENT);
+		fields.add(TransactionDataType.Fields.CCPARENT);
+		fields.add(TransactionDataType.Fields.RELATED_TRANSFER);
+		fields.add(TransactionDataType.Fields.CREATED_AT);
 		return fields;
 	}
 
@@ -491,7 +531,7 @@ public class TransactionDataType extends AbstractDataType<TransactionDataType> {
 		SPECIALSTATUS, /** The parent. */
 		PARENT, /** The related transfer. */
 		RELATED_TRANSFER, /** The initial balance. */
-		INITIAL_BALANCE;
+		INITIAL_BALANCE, CCPARENT, CREATED_AT, ATTACHMENT, USER_ID, ADDITIONAL_USER_ID, TO_ACCOUNT_ID, FROM_ACCOUNT_ID;
 	}
 
 	/**
@@ -508,7 +548,6 @@ public class TransactionDataType extends AbstractDataType<TransactionDataType> {
 	 * The Enum Type.
 	 */
 	public enum Type {
-
 		/** The withdrawal. */
 		WITHDRAWAL, /** The deposit. */
 		DEPOSIT;

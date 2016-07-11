@@ -123,11 +123,12 @@ abstract public class AbstractDataType<U extends AbstractDataType<?>> {
 			final String thisValue = this.getNonNullValue(fields[i]);
 			final String thatValue = that.getNonNullValue(fields[i]);
 			if (!ignore.contains(fields[i]) && !thisValue.equals(thatValue)) {
-				AbstractDataType._logger.info(fields[i].name() + " don't match. This:" + thisValue
+				AbstractDataType._logger.debug(fields[i].name() + " don't match. This:" + thisValue
 				        + " vs That:" + thatValue);
 				return false;
 			}
 		}
+		AbstractDataType._logger.debug("Match");
 		return true;
 	}
 
@@ -304,7 +305,7 @@ abstract public class AbstractDataType<U extends AbstractDataType<?>> {
 		if (null == value) {
 			return "";
 		}
-		return value;
+		return value.trim();
 	}
 
 	/**
@@ -404,7 +405,14 @@ abstract public class AbstractDataType<U extends AbstractDataType<?>> {
 	 * @param value
 	 *            the value
 	 */
-	protected void setValue(final Enum<?> field, final Object value) {
+	protected void setValue(final Enum<?> field, Object value) {
+		if (value instanceof Enum) {
+			value = ((Enum) value).ordinal();
+		}
+
+		if (value instanceof Double) {
+			value = String.format("%.2f", (Double) value);
+		}
 		if ((null == value) || value.equals("")) {
 			this.getFieldsMap().put(field.name().toLowerCase(), null);
 		}
