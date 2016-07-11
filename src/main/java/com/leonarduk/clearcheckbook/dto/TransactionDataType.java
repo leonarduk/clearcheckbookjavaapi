@@ -256,6 +256,10 @@ public class TransactionDataType extends AbstractDataType<TransactionDataType> {
 	protected ArrayList<Enum> getFieldsToIgnoreInEqualsMethod() {
 		final ArrayList<Enum> fields = new ArrayList<>();
 		fields.add(TransactionDataType.Fields.ID);
+		fields.add(TransactionDataType.Fields.JIVE);
+		fields.add(TransactionDataType.Fields.TRANSACTION_TYPE);
+		fields.add(TransactionDataType.Fields.PARENT);
+		fields.add(TransactionDataType.Fields.RELATED_TRANSFER);
 		return fields;
 	}
 
@@ -510,7 +514,9 @@ public class TransactionDataType extends AbstractDataType<TransactionDataType> {
 	public enum Type {
 
 		/** The withdrawal. */
-		WITHDRAWAL, /** The deposit. */
+		WITHDRAWAL,
+
+		/** The deposit. */
 		DEPOSIT;
 
 		/**

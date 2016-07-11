@@ -404,7 +404,10 @@ abstract public class AbstractDataType<U extends AbstractDataType<?>> {
 	 * @param value
 	 *            the value
 	 */
-	protected void setValue(final Enum<?> field, final Object value) {
+	protected void setValue(final Enum<?> field, Object value) {
+		if (value instanceof Enum) {
+			value = ((Enum) value).ordinal();
+		}
 		if ((null == value) || value.equals("")) {
 			this.getFieldsMap().put(field.name().toLowerCase(), null);
 		}
