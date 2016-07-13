@@ -281,7 +281,6 @@ public class TransactionDataType extends AbstractDataType<TransactionDataType> {
 	protected ArrayList<Enum> getFieldsToIgnoreInEqualsMethod() {
 		final ArrayList<Enum> fields = new ArrayList<>();
 		fields.add(TransactionDataType.Fields.ID);
-<<<<<<< HEAD
 		fields.add(TransactionDataType.Fields.SPECIALSTATUS);
 		fields.add(TransactionDataType.Fields.JIVE);
 		fields.add(TransactionDataType.Fields.ATTACHMENT);
@@ -297,12 +296,6 @@ public class TransactionDataType extends AbstractDataType<TransactionDataType> {
 		fields.add(TransactionDataType.Fields.CCPARENT);
 		fields.add(TransactionDataType.Fields.RELATED_TRANSFER);
 		fields.add(TransactionDataType.Fields.CREATED_AT);
-=======
-		fields.add(TransactionDataType.Fields.JIVE);
-		fields.add(TransactionDataType.Fields.TRANSACTION_TYPE);
-		fields.add(TransactionDataType.Fields.PARENT);
-		fields.add(TransactionDataType.Fields.RELATED_TRANSFER);
->>>>>>> branch '#12-dont-insert-duplicates' of https://github.com/leonarduk/clearcheckbookjavaapi.git
 		return fields;
 	}
 
