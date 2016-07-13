@@ -409,10 +409,13 @@ abstract public class AbstractDataType<U extends AbstractDataType<?>> {
 		if (value instanceof Enum) {
 			value = ((Enum) value).ordinal();
 		}
+<<<<<<< HEAD
 
 		if (value instanceof Double) {
 			value = String.format("%.2f", (Double) value);
 		}
+=======
+>>>>>>> branch '#12-dont-insert-duplicates' of https://github.com/leonarduk/clearcheckbookjavaapi.git
 		if ((null == value) || value.equals("")) {
 			this.getFieldsMap().put(field.name().toLowerCase(), null);
 		}
