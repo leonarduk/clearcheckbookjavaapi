@@ -161,7 +161,6 @@ public class TransactionDataType extends AbstractDataType<TransactionDataType> {
 		if (null == this.getJive()) {
 			this.setJive(false);
 		}
-		this.setTransactionType(TransactionDataType.getTransactionType(this.getAmount()));
 	}
 
 	/**
@@ -256,6 +255,21 @@ public class TransactionDataType extends AbstractDataType<TransactionDataType> {
 	protected ArrayList<Enum> getFieldsToIgnoreInEqualsMethod() {
 		final ArrayList<Enum> fields = new ArrayList<>();
 		fields.add(TransactionDataType.Fields.ID);
+		fields.add(TransactionDataType.Fields.SPECIALSTATUS);
+		fields.add(TransactionDataType.Fields.JIVE);
+		fields.add(TransactionDataType.Fields.ATTACHMENT);
+		fields.add(TransactionDataType.Fields.USER_ID);
+		fields.add(TransactionDataType.Fields.ADDITIONAL_USER_ID);
+
+		fields.add(TransactionDataType.Fields.TO_ACCOUNT_ID);
+		fields.add(TransactionDataType.Fields.FROM_ACCOUNT_ID);
+
+		fields.add(TransactionDataType.Fields.INITIAL_BALANCE);
+		fields.add(TransactionDataType.Fields.TRANSACTION_TYPE);
+		fields.add(TransactionDataType.Fields.PARENT);
+		fields.add(TransactionDataType.Fields.CCPARENT);
+		fields.add(TransactionDataType.Fields.RELATED_TRANSFER);
+		fields.add(TransactionDataType.Fields.CREATED_AT);
 		return fields;
 	}
 
@@ -491,7 +505,7 @@ public class TransactionDataType extends AbstractDataType<TransactionDataType> {
 		SPECIALSTATUS, /** The parent. */
 		PARENT, /** The related transfer. */
 		RELATED_TRANSFER, /** The initial balance. */
-		INITIAL_BALANCE;
+		INITIAL_BALANCE, CCPARENT, CREATED_AT, ATTACHMENT, USER_ID, ADDITIONAL_USER_ID, TO_ACCOUNT_ID, FROM_ACCOUNT_ID;
 	}
 
 	/**
@@ -508,9 +522,10 @@ public class TransactionDataType extends AbstractDataType<TransactionDataType> {
 	 * The Enum Type.
 	 */
 	public enum Type {
-
 		/** The withdrawal. */
-		WITHDRAWAL, /** The deposit. */
+		WITHDRAWAL,
+
+		/** The deposit. */
 		DEPOSIT;
 
 		/**

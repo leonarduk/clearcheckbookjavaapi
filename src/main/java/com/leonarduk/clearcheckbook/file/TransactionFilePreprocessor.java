@@ -90,7 +90,12 @@ public class TransactionFilePreprocessor implements FilePreProcessor {
 	 * @return the amount
 	 */
 	protected String getAmount(final Map<String, String> fieldsMap) {
-		return fieldsMap.get(TransactionDataType.Fields.AMOUNT.name().toLowerCase());
+		final String amountString = fieldsMap
+		        .get(TransactionDataType.Fields.AMOUNT.name().toLowerCase());
+		if (null == amountString) {
+			return "0.00";
+		}
+		return String.format("%.2f", Double.valueOf(amountString));
 	}
 
 	/**
@@ -138,7 +143,7 @@ public class TransactionFilePreprocessor implements FilePreProcessor {
 	public double getDouble(final String nextValue) {
 		if (!nextValue.isEmpty()) {
 			final String number = nextValue.replaceAll("[^0-9. ]", "");
-			return Double.valueOf(number);
+			return Double.valueOf(number).doubleValue();
 		}
 		return 0;
 	}
@@ -177,7 +182,7 @@ public class TransactionFilePreprocessor implements FilePreProcessor {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.leonarduk.clearcheckbook.file.FilePreProcessor#processHeaderRow(java.lang.String,
 	 * java.lang.String)
 	 */

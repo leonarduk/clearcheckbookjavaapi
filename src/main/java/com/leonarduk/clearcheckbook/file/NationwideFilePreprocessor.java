@@ -51,7 +51,7 @@ public class NationwideFilePreprocessor extends TransactionFilePreprocessor {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.leonarduk.clearcheckbook.file.TransactionFilePreprocessor#getAmount(java.util.Map)
 	 */
 	@Override
@@ -65,12 +65,12 @@ public class NationwideFilePreprocessor extends TransactionFilePreprocessor {
 		else {
 			amount = this.getDouble(credit);
 		}
-		return String.valueOf(amount);
+		return String.format("%.2f", Double.valueOf(amount));
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.leonarduk.clearcheckbook.file.TransactionFilePreprocessor#getCheckNum(java.util.Map)
 	 */
 	@Override
@@ -80,7 +80,7 @@ public class NationwideFilePreprocessor extends TransactionFilePreprocessor {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.leonarduk.clearcheckbook.file.TransactionFilePreprocessor#getDate(java.util.Map)
 	 */
 	@Override
@@ -99,7 +99,7 @@ public class NationwideFilePreprocessor extends TransactionFilePreprocessor {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.leonarduk.clearcheckbook.file.TransactionFilePreprocessor#getDesription(java.util.Map)
 	 */
@@ -110,7 +110,7 @@ public class NationwideFilePreprocessor extends TransactionFilePreprocessor {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.leonarduk.clearcheckbook.file.TransactionFilePreprocessor#getMemo(java.util.Map)
 	 */
 	@Override
@@ -120,7 +120,7 @@ public class NationwideFilePreprocessor extends TransactionFilePreprocessor {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.leonarduk.clearcheckbook.file.TransactionFilePreprocessor#getPayee(java.util.Map)
 	 */
 	@Override
