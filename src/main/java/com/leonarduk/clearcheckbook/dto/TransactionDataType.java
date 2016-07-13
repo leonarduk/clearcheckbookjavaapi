@@ -161,7 +161,6 @@ public class TransactionDataType extends AbstractDataType<TransactionDataType> {
 		if (null == this.getJive()) {
 			this.setJive(false);
 		}
-		this.setTransactionType(this.getTransactionType());
 	}
 
 	/**
@@ -172,31 +171,6 @@ public class TransactionDataType extends AbstractDataType<TransactionDataType> {
 	 */
 	public TransactionDataType(final TransactionDataType original) {
 		super(original);
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		if ((null == obj) || !obj.getClass().equals(this.getClass())) {
-			TransactionDataType._logger.info("not equal " + this + " vs " + obj);
-			return false;
-		}
-		final TransactionDataType that = (TransactionDataType) obj;
-		if (this.getAmount() != that.getAmount()) {
-			return false;
-		}
-		if (this.getDate() != that.getDate()) {
-			return false;
-		}
-		if (this.getDescription() != that.getDescription()) {
-			return false;
-		}
-		if (this.getCheckNum() != that.getCheckNum()) {
-			return false;
-		}
-		if (this.getMemo() != that.getMemo()) {
-			return false;
-		}
-		return this.getAccountId() == that.getAccountId();
 	}
 
 	/**
