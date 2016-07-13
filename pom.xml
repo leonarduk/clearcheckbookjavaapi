@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<name>ClearCheckBookJavaApi</name>
-	<version>1.0.2</version>
+	<version>1.0.3</version>
 	<url>https://sourceforge.net/projects/clearcheckbookjavaapi</url>
 	<description>A Java library to access the HTTP developer API for
 		Clearcheckbook.com, the money management website.
