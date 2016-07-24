@@ -1,3 +1,3 @@
 "ID","DATE","AMOUNT","DESCRIPTION","CHECK_NUM","MEMO","PAYEE","ACCOUNT_ID","CATEGORY_ID","JIVE","SPECIALSTATUS","PARENT","RELATED_TRANSFER","INITIAL_BALANCE","CCPARENT","CREATED_AT","ATTACHMENT","USER_ID","ADDITIONAL_USER_ID","TO_ACCOUNT_ID","FROM_ACCOUNT_ID"
-"123","20160713","10.00","deposit some cash","","test","Boss","101","123","false","","","","","","","","","","0","0"
-"124","20160713","1000.00","deposit some cash","","test","Boss","101","123","false","","","","","","","","","","0","0"
+"123","20160724","10.00","deposit some cash","","test","Boss","101","123","false","","","","","","","","","","0","0"
+"124","20160724","1000.00","deposit some cash","","test","Boss","101","123","false","","","","","","","","","","0","0"

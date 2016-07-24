@@ -27,6 +27,8 @@ import com.leonarduk.utils.HtmlUnitUtils;
  */
 public class ClearCheckBookConnection {
 
+	private static final String CCB_URL = "www.clearcheckbook.com/api/";
+
 	/** The Constant _logger. */
 	private static final Logger _logger = Logger.getLogger(AbstractCall.class);
 
@@ -37,7 +39,7 @@ public class ClearCheckBookConnection {
 	final private String userName;
 
 	/** The baseurl. */
-	public final String baseurl = "https://www.clearcheckbook.com/api/";
+	public final String baseurl = "https://" + ClearCheckBookConnection.CCB_URL;
 
 	/** The account call. */
 	private final AccountCall accountCall;
@@ -159,8 +161,8 @@ public class ClearCheckBookConnection {
 	 * @return the full url
 	 */
 	private String getFullUrl(final String url) {
-		final String fullPath = "https://" + this.userName + ":" + this.password
-		        + "@www.clearcheckbook.com/api/" + url;
+		final String fullPath = "https://" + this.userName.getBytes() + ":"
+		        + this.password.getBytes() + "@" + ClearCheckBookConnection.CCB_URL + url;
 		return fullPath;
 	}
 
