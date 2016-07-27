@@ -161,8 +161,8 @@ public class ClearCheckBookConnection {
 	 * @return the full url
 	 */
 	private String getFullUrl(final String url) {
-		final String fullPath = "https://" + this.userName.getBytes() + ":"
-		        + this.password.getBytes() + "@" + ClearCheckBookConnection.CCB_URL + url;
+		final String fullPath = "https://" + this.userName + ":" + this.password + "@"
+		        + ClearCheckBookConnection.CCB_URL + url;
 		return fullPath;
 	}
 
