@@ -1,6 +1,6 @@
 /**
  * TransactionCallIT
- * 
+ *
  * @author ${author}
  * @since 12-Jul-2016
  */
@@ -111,6 +111,40 @@ public class TransactionCallIT {
 		catch (final ClearcheckbookException e) {
 			TransactionCallIT._logger.error("Failed to getAll", e);
 			Assert.fail();
+		}
+	}
+
+	@Test
+	public void testInsertNationwideTransactionDataType() {
+		TransactionDataType input = null;
+		try {
+			final TransactionDataType original = this.call.getAll().get(0);
+
+			/*
+			 * AbstractDataType [fieldsMap={account_id=1613073, to_account_id=1613073
+			 * transaction_type=0, }]
+			 */
+			final String date = "2016-07-02 12:00:00";
+			final Double amount = 6.85;
+			final Long accountId = 2053078L; // original.getAccountId();
+			final Long categoryId = 0L;
+			final String description = "Visa purchase BOCKETTS FARM SHOP LEATHERHEAD GB";
+			final Boolean jive = Boolean.TRUE;
+			final Long fromAccountId = 0L;
+			final Long toAccountId = 0L;
+			final String checkNum = "A4251.39";
+			final String memo = "Visa purchase BOCKETTS FARM SHOP LEATHERHEAD GB";
+			final String payee = "BOCKETTS FARM SHOP LEATHERHEAD GB";
+
+			input = TransactionDataType.create(date, amount, accountId, categoryId, description,
+			        jive, fromAccountId, toAccountId, checkNum, memo, payee);
+
+			final String id = this.call.insert(input);
+			TransactionCallIT._logger.info("inserted " + id + ":" + input);
+		}
+		catch (ClearcheckbookException | NullPointerException e) {
+			TransactionCallIT._logger.fatal("failed to create transaction ", e);
+			Assert.fail("Failed to create transaction " + input);
 		}
 	}
 
