@@ -1,8 +1,9 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<name>ClearCheckBookJavaApi</name>
-	<version>1.3</version>
+	<version>1.4-SNAPSHOT</version>
 	<url>https://sourceforge.net/projects/clearcheckbookjavaapi</url>
 	<description>A Java library to access the HTTP developer API for
 		Clearcheckbook.com, the money management website.
@@ -12,14 +13,14 @@
 	<properties>
 		<maven.test.failure.ignore>true</maven.test.failure.ignore>
 		<maven.test.skip>false</maven.test.skip>
-		<java.version>1.8</java.version>
+		<java.version>11</java.version>
 		<!-- dependencies checked at http://search.maven.org/ 2014-02-11 -->
-		<htmlunit.version>2.13</htmlunit.version>
+		<htmlunit.version>2.33</htmlunit.version>
 		<log4j.version>1.2.17</log4j.version>
-		<jacoco.version>0.7.6.201602180812</jacoco.version>
+		<jacoco.version>0.8.3</jacoco.version>
 		<jackson-mapper-asl.version>1.9.13</jackson-mapper-asl.version>
-		<guava.version>15.0</guava.version>
-		<junit.version>4.11</junit.version>
+		<guava.version>27.0.1-jre</guava.version>
+		<junit.version>4.13-beta-2</junit.version>
 		<maven.verion>2.2.1</maven.verion>
 		<!-- Plugins -->
 		<maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
@@ -33,6 +34,8 @@
 		<maven-javadoc-plugin.version>2.9.1</maven-javadoc-plugin.version>
 		<maven-pmd-plugin.version>3.0.1</maven-pmd-plugin.version>
 		<maven-changes-plugin.version>2.9</maven-changes-plugin.version>
+		<versions-maven-plugin.version>2.7</versions-maven-plugin.version>
+ 
 	</properties>
 	<repositories>
 		<repository>
@@ -70,7 +73,6 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>${junit.version}</version>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.jacoco</groupId>
@@ -246,6 +248,15 @@
 					<minimumTokens>100</minimumTokens>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>versions-maven-plugin</artifactId>
+				<version>${versions-maven-plugin.version}</version>
+				<configuration>
+					<generateBackupPoms>false</generateBackupPoms>
+				</configuration>
+			</plugin>
+
 		</plugins>
 	</reporting>
 	<distributionManagement>
