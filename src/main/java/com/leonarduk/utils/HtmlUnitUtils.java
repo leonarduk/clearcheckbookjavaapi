@@ -129,7 +129,7 @@ public class HtmlUnitUtils {
 	 */
 	public static String getPageText(final String url, final String method, final NameValuePair... parameters)
 			throws FailingHttpStatusCodeException, IOException {
-		return HtmlUnitUtils.getPage(url, Enum.valueOf(HttpMethod.class, method), parameters).asText();
+		return HtmlUnitUtils.getPage(url, Enum.valueOf(HttpMethod.class, method), parameters).toString();
 	}
 
 	/**
@@ -149,7 +149,7 @@ public class HtmlUnitUtils {
 			final String password, final NameValuePair... parameters)
 			throws FailingHttpStatusCodeException, IOException {
 		return HtmlUnitUtils.getPage(url, Enum.valueOf(HttpMethod.class, method), userName, password, parameters)
-				.asText();
+				.toString();
 	}
 
 	/**
